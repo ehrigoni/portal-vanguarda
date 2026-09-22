@@ -1,7 +1,11 @@
 {
 	"folders": [
 		{
-			"path": "siteDecisaoChave"
+			"path": "."
+		},
+		{
+			"path": "../simuladores"
 		}
-	]
+	],
+	"settings": {}
 }
