@@ -358,9 +358,9 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
       <div class="price"><span>R$</span><input id="preco" type="number" min="1" max="100000" step="0.5" value="15" inputmode="decimal"></div>
       <input id="preco-faixa" type="range" min="1" max="200" step="0.5" value="15" aria-label="Ajustar preço">
       <div class="rule">
-        <span>Lucro = <code>preço × 10%</code></span>
-        <span>Insumos = <code>(preço − lucro) ÷ 1,5</code></span>
-        <span>Cada comissão = <code>(preço − lucro − insumos) ÷ 3</code></span>
+        <span>Valor sem lucro = <code>preço × 0,9</code> (lucro de 10%)</span>
+        <span>Insumos = <code>valor sem lucro ÷ 1,5</code></span>
+        <span>Cada comissão = <code>(valor sem lucro − insumos) ÷ 3</code></span>
       </div>
     </form>
     <ul class="bones" id="bones">
@@ -540,7 +540,7 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
   var fmt=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
   var num=document.getElementById('preco'), rng=document.getElementById('preco-faixa');
   var svgV=document.querySelectorAll('.rx .lbl-v'), svgP=document.getElementById('rx-price');
-  function calc(p){var l=p*0.1,i=(p-l)/1.5,c=(p-l-i)/3;return{venda:p,lucro:l,insumos:i,com:c};}
+  function calc(p){var s=p*0.9,l=p-s,i=s/1.5,c=(s-i)/3;return{venda:p,lucro:l,insumos:i,com:c};}
   function render(p){
     if(!(p>0))return;
     var r=calc(p);
