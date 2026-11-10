@@ -11,7 +11,7 @@
 /* Layout: sala de raio X. Fundo de filme escuro, a cena animada abre o site, seções em faixas com grade de 12 colunas; o ciano é a luz do negatoscópio, o âmbar marca ação. Visual único escuro, por escolha. */
 :root{
   --bg:#0b1b2c; --film:#0e2436; --panel:#10263a; --line:#284459;
-  --fg:#e8f2f8; --muted:#9fb7c8; --glow:#7fd3f0; --amber:#f2b84b; --ink:#0b1b2c;
+  --fg:#e8f2f8; --muted:#9fb7c8; --glow:#7fd3f0; --amber:#f2b84b; --ink:#0b1b2c; --btn-ink:#123f6b;
   --display:"Space Grotesk",system-ui,sans-serif;
   --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -41,9 +41,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .top nav{display:flex;gap:18px;margin-left:auto;font-size:14px;flex-wrap:wrap}
 .top nav a{color:var(--muted);text-decoration:none}
 .top nav a:hover{color:var(--fg)}
-.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:500;font-size:15px;padding:11px 18px;border-radius:999px;text-decoration:none;border:1px solid var(--line);color:var(--fg);background:transparent;cursor:pointer;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:500;font-size:15px;padding:11px 18px;border-radius:999px;text-decoration:none;border:1px solid var(--line);color:var(--fg);background:transparent;cursor:pointer;white-space:nowrap;justify-content:center;text-align:center}
 .btn:hover{border-color:var(--glow)}
-.btn.go{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.btn.go{background:var(--amber);border-color:var(--amber);color:var(--btn-ink)}
 .btn.go:hover{filter:brightness(1.08)}
 .top .btn{padding:8px 14px;font-size:14px}
 @media (max-width:760px){.top nav{display:none}.top .btn{margin-left:auto}}
