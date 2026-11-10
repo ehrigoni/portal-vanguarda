@@ -434,10 +434,16 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
           <label for="c-insumos"><span>Insumos de produtos ou serviços</span><input id="c-insumos" type="number" min="0" step="50" value="1800" inputmode="decimal"></label>
         </div>
       </fieldset>
+      <fieldset>
+        <legend>Outros</legend>
+        <div class="fields two">
+          <label for="c-outros"><span>Outros custos</span><input id="c-outros" type="number" min="0" step="50" value="0" inputmode="decimal"></label>
+        </div>
+      </fieldset>
       <p class="hint">Valores em reais, por mês. O exemplo preenchido é ilustrativo.</p>
     </form>
     <div class="pr-out" aria-live="polite">
-      <div class="out-row"><small>Custo operacional total</small><b class="mono" id="r-custo"></b><p>Pessoas, estrutura, conhecimento e insumos somados.</p></div>
+      <div class="out-row"><small>Custo operacional total</small><b class="mono" id="r-custo"></b><p>Pessoas, estrutura, conhecimento, insumos e outros custos somados.</p></div>
       <div class="out-row goalbox"><small>Meta de faturamento mensal</small><b class="mono" id="r-meta"></b><p>Quanto vender por mês para pagar a operação, as comissões e o lucro.</p></div>
       <ul class="mix" id="r-mix"></ul>
     </div>
@@ -628,14 +634,14 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
     try{navigator.clipboard.writeText(txt).then(function(){b.textContent='Copiado';},sel);}catch(e){sel();}
     setTimeout(function(){b.textContent='Copiar';},2000);
   });});
-  var ids=['pessoas','salario','aluguel','energia','agua','gas','cursos','insumos'];
+  var ids=['pessoas','salario','aluguel','energia','agua','gas','cursos','insumos','outros'];
   function v(k){var n=parseFloat(document.getElementById('c-'+k).value);return n>0?n:0;}
   function custos(){
-    var equipe=v('pessoas')*v('salario'),estrutura=v('aluguel')+v('energia')+v('agua')+v('gas'),conh=v('cursos'),ins=v('insumos');
-    var total=equipe+estrutura+conh+ins,meta=total*1.5/0.9;
+    var equipe=v('pessoas')*v('salario'),estrutura=v('aluguel')+v('energia')+v('agua')+v('gas'),conh=v('cursos'),ins=v('insumos'),outros=v('outros');
+    var total=equipe+estrutura+conh+ins+outros,meta=total*1.5/0.9;
     document.getElementById('r-custo').textContent=fmt.format(total);
     document.getElementById('r-meta').textContent=fmt.format(meta);
-    var rows=[['Pessoas',equipe],['Estrutura e contas',estrutura],['Cursos e treinamentos',conh],['Insumos',ins]];
+    var rows=[['Pessoas',equipe],['Estrutura e contas',estrutura],['Cursos e treinamentos',conh],['Insumos',ins],['Outros custos',outros]];
     document.getElementById('r-mix').innerHTML=rows.map(function(r){return '<li><span>'+r[0]+'</span><span>'+fmt.format(r[1])+'</span></li>';}).join('');
   }
   ids.forEach(function(k){document.getElementById('c-'+k).addEventListener('input',custos);});
