@@ -1,1 +1,551 @@
-<h1>Teste</h1>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portal Vanguarda</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Simuladores, conteúdo educativo e comunidade para pequenos empreendedores. Gratuito para quem empreende, sustentado por quem apadrinha.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: sala de raio X. Fundo de filme escuro, a cena animada abre o site, seções em faixas com grade de 12 colunas; o ciano é a luz do negatoscópio, o âmbar marca ação. Visual único escuro, por escolha. */
+:root{
+  --bg:#0b1b2c; --film:#0e2436; --panel:#10263a; --line:#284459;
+  --fg:#e8f2f8; --muted:#9fb7c8; --glow:#7fd3f0; --amber:#f2b84b; --ink:#0b1b2c;
+  --display:"Space Grotesk",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6}
+a{color:var(--glow)}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:4px}
+.in{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(26px,3.4vw,38px);line-height:1.15}
+h3{font-size:19px;font-weight:500;line-height:1.3}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--glow)}
+.lede{color:var(--muted);max-width:62ch;font-size:17px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* topo */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .in{display:flex;align-items:center;gap:20px;padding-block:12px}
+.brand{font-family:var(--display);font-weight:700;font-size:18px;color:var(--fg);text-decoration:none;white-space:nowrap}
+.brand span{color:var(--glow)}
+.top nav{display:flex;gap:18px;margin-left:auto;font-size:14px;flex-wrap:wrap}
+.top nav a{color:var(--muted);text-decoration:none}
+.top nav a:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:500;font-size:15px;padding:11px 18px;border-radius:999px;text-decoration:none;border:1px solid var(--line);color:var(--fg);background:transparent;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--glow)}
+.btn.go{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.btn.go:hover{filter:brightness(1.08)}
+.top .btn{padding:8px 14px;font-size:14px}
+@media (max-width:760px){.top nav{display:none}.top .btn{margin-left:auto}}
+
+/* abertura */
+.hero .in{padding-block:56px 28px;display:grid;gap:22px}
+.hero h1{font-size:clamp(34px,5.6vw,64px);line-height:1.04;font-weight:700;max-width:18ch}
+.hero h1 em{font-style:normal;color:var(--glow)}
+.hero .actions{display:flex;gap:12px;flex-wrap:wrap}
+.scene{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg);margin-top:8px}
+.scene svg{display:block;width:100%;height:auto}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.facts div{background:var(--bg);padding:16px 18px;display:grid;gap:2px}
+.facts b{font-family:var(--display);font-size:22px;font-weight:500}
+.facts small{color:var(--muted);font-size:13px}
+
+section.band{border-top:1px solid var(--line)}
+section.band > .in{padding-block:64px;display:grid;gap:28px}
+.head{display:grid;gap:12px}
+
+/* raio x interativo */
+.xr{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px;align-items:start}
+@media (max-width:860px){.xr{grid-template-columns:1fr}}
+.calc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:16px}
+.calc label{font-size:14px;color:var(--muted)}
+.price{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:30px;font-weight:600}
+.price input[type=number]{width:100%;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--fg);font:inherit;padding:8px 12px}
+.calc input[type=range]{width:100%;accent-color:var(--glow)}
+.rule{font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:4px}
+.rule code{font-family:var(--mono);color:var(--fg);font-size:12.5px}
+.bones{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:0;padding:0;list-style:none}
+.bones li{border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:4px;align-content:start}
+.bones small{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.bones b{font-family:var(--display);font-weight:500;font-size:16px;line-height:1.3}
+.bones .v{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--glow);font-size:20px}
+.bones .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.bones .bar i{display:block;height:100%;background:var(--glow)}
+.bones li.head-bone{border-color:var(--glow)}
+.bones li.head-bone .bar i{background:var(--amber)}
+
+/* modelos */
+.models{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:860px){.models{grid-template-columns:1fr}}
+.model{border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:12px;align-content:start}
+.model.rec{background:var(--panel);border-color:var(--glow)}
+.tag{justify-self:start;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.model.rec .tag{border-color:var(--glow);color:var(--glow)}
+.model p{color:var(--muted);font-size:15px}
+.model .who{font-size:14px;color:var(--fg);border-top:1px dashed var(--line);padding-top:10px}
+
+/* trilha */
+.trail{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;counter-reset:s}
+@media (max-width:860px){.trail{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.trail{grid-template-columns:1fr}}
+.trail li{counter-increment:s;padding:22px 20px 22px 0;display:grid;gap:8px;align-content:start;position:relative}
+.trail li::before{content:"0" counter(s);font-family:var(--mono);font-size:13px;color:var(--glow);padding-bottom:12px;border-bottom:2px solid var(--line)}
+.trail li:last-child::before{border-color:var(--amber);color:var(--amber)}
+.trail p{color:var(--muted);font-size:15px}
+.loop{border:1px dashed var(--glow);border-radius:12px;padding:18px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.loop p{color:var(--muted);flex:1 1 300px;min-width:0}
+.loop b{color:var(--fg)}
+
+/* padrinhos */
+.sponsor{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:24px}
+@media (max-width:860px){.sponsor{grid-template-columns:1fr}}
+.people{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:14px;align-content:start}
+.tiers{display:flex;gap:8px;flex-wrap:wrap}
+.tiers span{font-family:var(--mono);font-size:15px;padding:8px 14px;border:1px solid var(--line);border-radius:8px}
+.people p{color:var(--muted);font-size:15px}
+.seals{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.seal{border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;grid-template-columns:44px 1fr;gap:4px 14px;align-items:start}
+.seal .mark{grid-row:span 2;width:44px;height:44px;border-radius:50%;border:2px solid var(--glow);display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--glow);text-align:center;line-height:1.1}
+.seal.amber .mark{border-color:var(--amber);color:var(--amber)}
+.seal b{font-family:var(--display);font-weight:500;font-size:16px;line-height:1.3}
+.seal p{color:var(--muted);font-size:14px}
+.subhead{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);grid-column:1/-1;margin-top:6px}
+.proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.proof div{border-left:2px solid var(--glow);padding:4px 0 4px 16px;display:grid;gap:4px}
+.proof p{color:var(--muted);font-size:15px}
+.proof code{font-family:var(--mono);color:var(--fg);font-size:13px}
+
+/* território */
+.terr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:860px){.terr{grid-template-columns:1fr}}
+.terr div{display:grid;gap:8px;align-content:start;padding-top:14px;border-top:2px solid var(--line)}
+.terr p{color:var(--muted);font-size:15px}
+
+/* transparência */
+.open{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:24px;align-items:start}
+@media (max-width:860px){.open{grid-template-columns:1fr}}
+.budget{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:18px}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.total b{font-family:var(--mono);font-size:30px;font-variant-numeric:tabular-nums}
+.stack{position:relative;padding-top:30px}
+.stack .row{display:flex;height:22px;border-radius:4px;overflow:hidden}
+.stack .row i{display:block;height:100%}
+.goal{position:absolute;top:0;bottom:-6px;border-left:2px dashed var(--amber);padding-left:6px;font-family:var(--mono);font-size:11.5px;color:var(--amber);white-space:nowrap}
+.goal.end{border-left:0;border-right:2px dashed var(--amber);padding-left:0;padding-right:6px;right:0;text-align:right}
+.keys{display:grid;gap:8px;margin:0;padding:0;list-style:none;font-size:14px}
+.keys li{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center}
+.keys i{width:12px;height:12px;border-radius:3px}
+.keys span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.goals{display:grid;gap:10px;border-top:1px dashed var(--line);padding-top:16px}
+.goals div{display:grid;grid-template-columns:auto 1fr;gap:2px 14px}
+.goals b{font-family:var(--mono);color:var(--amber);font-variant-numeric:tabular-nums}
+.goals p{color:var(--muted);font-size:14px;grid-column:2}
+.goals span{font-size:15px}
+.side{display:grid;gap:18px}
+.flow{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.flow li{display:grid;grid-template-columns:28px 1fr;gap:12px;padding-bottom:14px;position:relative}
+.flow li::before{content:"";width:12px;height:12px;border-radius:50%;border:2px solid var(--glow);margin:6px 0 0 6px;background:var(--bg);z-index:1}
+.flow li:not(:last-child)::after{content:"";position:absolute;left:13px;top:20px;bottom:0;border-left:1px dashed var(--line)}
+.flow p{color:var(--muted);font-size:15px}
+.flow b{color:var(--fg);font-weight:500}
+.legal{border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:grid;gap:10px}
+.legal p{color:var(--muted);font-size:14px}
+.cnae{display:grid;gap:6px;margin:0;padding:0;list-style:none;font-size:14px}
+.cnae li{display:grid;grid-template-columns:86px 1fr;gap:10px}
+.cnae span:first-child{font-family:var(--mono);color:var(--glow)}
+
+/* chamada final */
+.cta{background:var(--film)}
+.cta .in{padding-block:64px;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:28px;align-items:center}
+@media (max-width:860px){.cta .in{grid-template-columns:1fr}}
+.cta .actions{display:grid;gap:10px}
+.cta .actions .btn{justify-content:center}
+.cta small{color:var(--muted);font-size:13px}
+footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+</style>
+<style>body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+
+
+<header class="top"><div class="in">
+  <a class="brand" href="#inicio">Portal <span>Vanguarda</span></a>
+  <nav aria-label="Seções">
+    <a href="#raio-x">Raio X</a><a href="#modelo">Como se sustenta</a><a href="#trilha">Trilha</a><a href="#padrinhos">Padrinhos</a><a href="#transparencia">Transparência</a>
+  </nav>
+  <a class="btn go" href="#apoie">Apoiar</a>
+</div></header>
+
+<main>
+<section class="hero" id="inicio"><div class="in">
+  <p class="eyebrow">Negócio social · simuladores · educação · arte</p>
+  <h1>Veja o esqueleto do seu negócio <em>antes</em> de vender.</h1>
+  <p class="lede">O Portal Vanguarda leva simuladores econômicos, conteúdo educativo e artístico a pequenos empreendedores e microempresários. Para quem empreende, é gratuito. Quem já prosperou, ou quer ver o bairro prosperar, apadrinha.</p>
+  <div class="actions">
+    <a class="btn go" href="#raio-x">Fazer o raio X de um preço</a>
+    <a class="btn" href="#padrinhos">Quero apadrinhar</a>
+  </div>
+  <div class="scene"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-labelledby="rx-t rx-d" class="rx">
+<title id="rx-t">Raio X da empresa</title>
+<desc id="rx-d">Uma empresa entra na máquina de raio X e sai como um esqueleto: cabeça = vendas, costelas = insumos (pessoas, recursos, conhecimento), braços = comissões de vendedores e trabalhadores, pernas = comissão da logística de entregas, bacia = lucro.</desc>
+<style>
+.rx{--bg:#0b1b2c;--film:#0e2436;--bone:#e8f2f8;--glow:#7fd3f0;--steel:#3b566c;--steel2:#29404f;--amber:#f2b84b;--ink:#9fb7c8;--co:#577a91;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+.rx text{fill:var(--bone);font-size:14px}
+.rx .lbl-t{font-weight:600;font-size:15px}
+.rx .lbl-v{fill:var(--glow);font-size:13px}
+.rx .lbl-s{fill:var(--ink);font-size:12px}
+.rx .bone{fill:none;stroke:var(--bone);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;filter:url(#rx-glow)}
+.rx .bone.thin{stroke-width:4}
+.rx .lead{stroke:var(--glow);stroke-width:1.2;stroke-dasharray:3 4;fill:none;opacity:.8}
+.rx .t,.rx .anim{animation-duration:12s;animation-iteration-count:infinite;animation-fill-mode:both;animation-timing-function:ease-in-out;animation-delay:-10s}
+/* empresa entra na máquina */
+.rx .empresa{animation-name:rx-move}
+@keyframes rx-move{0%{transform:translateX(0);opacity:1}25%{transform:translateX(350px);opacity:1}55%{transform:translateX(350px);opacity:1}62%{transform:translateX(350px);opacity:0}63%{transform:translateX(0);opacity:0}92%{transform:translateX(0);opacity:0}100%{transform:translateX(0);opacity:1}}
+.rx .belt{stroke-dasharray:14 10;animation:rx-belt 1.2s linear infinite}
+@keyframes rx-belt{to{stroke-dashoffset:-24}}
+/* máquina */
+.rx .glass{animation-name:rx-glass}
+@keyframes rx-glass{0%,25%{opacity:.3}30%,55%{opacity:.88}62%,100%{opacity:.3}}
+.rx .xin{opacity:0;animation-name:rx-xin}
+@keyframes rx-xin{0%,27%{opacity:0}32%,55%{opacity:1}60%,100%{opacity:0}}
+.rx .beam{opacity:0;animation-name:rx-beam;animation-timing-function:linear}
+@keyframes rx-beam{0%,28%{opacity:0;transform:translateX(0)}29%{opacity:1;transform:translateX(0)}41%{transform:translateX(160px)}54%{opacity:1;transform:translateX(0)}55%,100%{opacity:0}}
+.rx .led{animation:rx-led .8s steps(2) infinite}
+.rx .led2{animation-delay:.4s}
+@keyframes rx-led{50%{opacity:.25}}
+.rx .ray{opacity:0;animation-name:rx-ray}
+@keyframes rx-ray{0%,54%{opacity:0}57%,62%{opacity:1}68%,100%{opacity:0}}
+/* filme */
+.rx .lightbox{animation-name:rx-film}
+@keyframes rx-film{0%,55%{opacity:.35}60%,96%{opacity:1}100%{opacity:.35}}
+.rx .bone{stroke-dasharray:1;stroke-dashoffset:0;animation-name:rx-draw}
+@keyframes rx-draw{0%,57%{stroke-dashoffset:1;opacity:0}58%{opacity:1}72%,95%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+.rx .vert{animation-name:rx-fade}
+.rx .lab{animation-name:rx-fade}
+@keyframes rx-fade{0%,64%{opacity:0}70%,95%{opacity:1}100%{opacity:0}}
+.rx .d1{animation-delay:-9.6s}.rx .d2{animation-delay:-9.3s}.rx .d3{animation-delay:-9s}.rx .d4{animation-delay:-8.7s}.rx .d5{animation-delay:-8.4s}.rx .d6{animation-delay:-8.1s}
+@media (prefers-reduced-motion:reduce){.rx *{animation:none!important}.rx .empresa{opacity:1}}
+</style>
+<defs>
+  <filter id="rx-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <radialGradient id="rx-filmg" cx="50%" cy="45%" r="65%"><stop offset="0" stop-color="#1d4b68"/><stop offset="1" stop-color="#0e2436"/></radialGradient>
+  <linearGradient id="rx-beamg" x1="0" x2="1"><stop offset="0" stop-color="#7fd3f0" stop-opacity="0"/><stop offset=".5" stop-color="#7fd3f0" stop-opacity=".9"/><stop offset="1" stop-color="#7fd3f0" stop-opacity="0"/></linearGradient>
+  <clipPath id="rx-win"><rect x="415" y="290" width="170" height="205"/></clipPath>
+</defs>
+
+<rect width="1200" height="600" fill="#0b1b2c"/>
+
+<!-- esteira -->
+<g>
+  <rect x="30" y="500" width="600" height="14" rx="7" fill="#29404f"/>
+  <line class="belt" x1="40" y1="500" x2="620" y2="500" stroke="#5c7b90" stroke-width="3"/>
+  <g fill="#3b566c"><circle cx="60" cy="526" r="9"/><circle cx="180" cy="526" r="9"/><circle cx="300" cy="526" r="9"/><circle cx="420" cy="526" r="9"/><circle cx="540" cy="526" r="9"/></g>
+  <text x="60" y="566" class="lbl-s">1 · EMPRESA</text>
+  <text x="415" y="566" class="lbl-s">2 · MÁQUINA DE RAIO X</text>
+  <text x="670" y="580" class="lbl-s">3 · ESQUELETO DA EMPRESA</text>
+</g>
+
+<!-- máquina: fundo -->
+<rect x="395" y="240" width="210" height="262" rx="14" fill="#16293a"/>
+
+<!-- empresa -->
+<g class="empresa t">
+  <rect x="88" y="304" width="124" height="24" rx="4" fill="#f2b84b"/>
+  <text x="150" y="321" text-anchor="middle" style="fill:#0b1b2c;font-weight:700;font-size:13px;letter-spacing:2px">EMPRESA</text>
+  <rect x="80" y="334" width="140" height="166" rx="3" fill="#577a91"/>
+  <g fill="#f2d9a0">
+    <rect x="96" y="350" width="22" height="18" rx="2"/><rect x="139" y="350" width="22" height="18" rx="2"/><rect x="182" y="350" width="22" height="18" rx="2"/>
+    <rect x="96" y="382" width="22" height="18" rx="2"/><rect x="139" y="382" width="22" height="18" rx="2"/><rect x="182" y="382" width="22" height="18" rx="2"/>
+    <rect x="96" y="414" width="22" height="18" rx="2"/><rect x="182" y="414" width="22" height="18" rx="2"/>
+  </g>
+  <rect x="134" y="446" width="32" height="54" rx="2" fill="#29404f"/>
+  <circle cx="160" cy="474" r="2.5" fill="#f2b84b"/>
+</g>
+
+<!-- máquina: frente -->
+<path fill="#3b566c" fill-rule="evenodd" d="M409 240h182a14 14 0 0 1 14 14v248H395V254a14 14 0 0 1 14-14zM415 290v205h170V290z"/>
+<rect x="395" y="240" width="210" height="40" rx="14" fill="#29404f"/>
+<text x="416" y="266" style="font-weight:700;letter-spacing:3px;font-size:14px">RAIO X</text>
+<circle class="led" cx="562" cy="260" r="6" fill="#f2b84b"/>
+<circle class="led led2" cx="584" cy="260" r="6" fill="#7fd3f0"/>
+<rect class="glass t" x="415" y="290" width="170" height="205" fill="#06121d"/>
+<g class="xin t" clip-path="url(#rx-win)" fill="none" stroke="#7fd3f0" stroke-width="2">
+  <rect x="430" y="334" width="140" height="166" rx="3" stroke-dasharray="5 4"/>
+  <rect x="438" y="304" width="124" height="24" rx="4" stroke-dasharray="5 4"/>
+  <g stroke="#e8f2f8" stroke-width="4" stroke-linecap="round" filter="url(#rx-glow)">
+    <circle cx="500" cy="370" r="13"/>
+    <line x1="500" y1="386" x2="500" y2="448"/>
+    <path d="M500 398c-12 0-22 4-24 14M500 398c12 0 22 4 24 14M500 414c-10 0-18 3-20 11M500 414c10 0 18 3 20 11"/>
+    <path d="M476 392l-10 38M524 392l10 38M492 450l-6 38M508 450l6 38"/>
+  </g>
+</g>
+<g class="beam t"><rect x="415" y="290" width="10" height="205" fill="url(#rx-beamg)"/><line x1="420" y1="290" x2="420" y2="495" stroke="#e8f2f8" stroke-width="1.5"/></g>
+<g class="ray t" stroke="#7fd3f0" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 7" fill="none">
+  <path d="M608 330L648 290M608 380H648M608 430L648 470"/>
+</g>
+
+<!-- filme / negatoscópio -->
+<rect x="650" y="40" width="520" height="515" rx="10" fill="#081521" stroke="#3b566c" stroke-width="2"/>
+<rect class="lightbox t" x="660" y="50" width="500" height="495" rx="6" fill="url(#rx-filmg)"/>
+<text x="676" y="78" class="lbl-s" style="letter-spacing:2px">RAIO X · EMPRESA</text>
+<text id="rx-price" x="1146" y="78" class="lbl-s" text-anchor="end">por venda de R$ 15,00</text>
+
+<g>
+  <circle class="bone t" pathLength="1" cx="900" cy="122" r="32"/>
+  <path class="bone thin t" pathLength="1" d="M882 150q18 14 36 0"/>
+  <circle cx="888" cy="117" r="7" fill="#e8f2f8" class="vert t" opacity=".9"/>
+  <circle cx="912" cy="117" r="7" fill="#e8f2f8" class="vert t" opacity=".9"/>
+  <path class="bone t" pathLength="1" d="M840 182Q900 170 960 182"/>
+  <g class="vert t" fill="#e8f2f8">
+    <rect x="894" y="158" width="12" height="9" rx="3"/><rect x="894" y="174" width="12" height="9" rx="3"/><rect x="894" y="190" width="12" height="9" rx="3"/><rect x="894" y="206" width="12" height="9" rx="3"/><rect x="894" y="222" width="12" height="9" rx="3"/><rect x="894" y="238" width="12" height="9" rx="3"/><rect x="894" y="254" width="12" height="9" rx="3"/><rect x="894" y="270" width="12" height="9" rx="3"/><rect x="894" y="286" width="12" height="9" rx="3"/><rect x="894" y="302" width="12" height="9" rx="3"/><rect x="894" y="318" width="12" height="9" rx="3"/><rect x="894" y="334" width="12" height="9" rx="3"/><rect x="894" y="350" width="12" height="9" rx="3"/>
+  </g>
+  <path class="bone thin t" pathLength="1" d="M900 200C870 192 846 202 846 222M900 200C930 192 954 202 954 222"/>
+  <path class="bone thin t" pathLength="1" d="M900 235C868 227 844 237 846 257M900 235C932 227 956 237 954 257"/>
+  <path class="bone thin t" pathLength="1" d="M900 270C872 262 852 272 854 292M900 270C928 262 948 272 946 292"/>
+  <path class="bone t" pathLength="1" d="M840 182L820 275L808 350M808 350l-8 14M808 350l2 16M808 350l10 12"/>
+  <path class="bone t" pathLength="1" d="M960 182L980 275L992 350M992 350l8 14M992 350l-2 16M992 350l-10 12"/>
+  <path class="bone t" pathLength="1" d="M860 376Q900 356 940 376Q946 404 900 410Q854 404 860 376Z"/>
+  <path class="bone t" pathLength="1" d="M882 405L874 465L870 520L854 526"/>
+  <path class="bone t" pathLength="1" d="M918 405L926 465L930 520L946 526"/>
+</g>
+
+<!-- rótulos -->
+<g class="lab t d1"><line class="lead" x1="936" y1="118" x2="1010" y2="118"/><text x="1016" y="116" class="lbl-t">Vendas</text><text x="1016" y="134" class="lbl-v">R$ 15,00</text></g>
+<g class="lab t d2">
+  <text x="1016" y="182" class="lbl-t">Insumos</text><text x="1092" y="182" class="lbl-v">R$ 9,00</text>
+  <line class="lead" x1="958" y1="214" x2="1010" y2="214"/><text x="1016" y="219" class="lbl-s">Pessoas</text>
+  <line class="lead" x1="958" y1="249" x2="1010" y2="249"/><text x="1016" y="254" class="lbl-s">Recursos</text>
+  <line class="lead" x1="950" y1="284" x2="1010" y2="284"/><text x="1016" y="289" class="lbl-s">Conhecimento</text>
+</g>
+<g class="lab t d3"><line class="lead" x1="800" y1="358" x2="790" y2="358"/><text x="784" y="350" class="lbl-t" text-anchor="end">Comissão dos</text><text x="784" y="368" class="lbl-t" text-anchor="end">vendedores</text><text x="784" y="386" class="lbl-v" text-anchor="end">R$ 1,50</text></g>
+<g class="lab t d4"><line class="lead" x1="1002" y1="358" x2="1010" y2="358"/><text x="1016" y="350" class="lbl-t">Comissão dos</text><text x="1016" y="368" class="lbl-t">trabalhadores</text><text x="1016" y="386" class="lbl-v">R$ 1,50</text></g>
+<g class="lab t d5"><line class="lead" x1="954" y1="524" x2="1010" y2="510"/><text x="1016" y="500" class="lbl-t">Comissão da</text><text x="1016" y="518" class="lbl-t">logística</text><text x="1016" y="536" class="lbl-v">R$ 1,50</text></g>
+<g class="lab t d6"><path class="lead" d="M858 394L826 428H790"/><text x="784" y="424" class="lbl-t" text-anchor="end">Lucro</text><text x="784" y="442" class="lbl-v" text-anchor="end">R$ 1,50</text></g>
+</svg>
+</div>
+  <div class="facts">
+    <div><b>100% gratuito</b><small>simuladores e trilhas para quem empreende</small></div>
+    <div><b>Notas automáticas</b><small>cada apoio gera a NFS-e sozinho, sem papelada</small></div>
+    <div><b>ODS 4 · 8 · 10</b><small>educação, trabalho decente, menos desigualdade</small></div>
+  </div>
+</div></section>
+
+<section class="band" id="raio-x"><div class="in">
+  <div class="head">
+    <p class="eyebrow">Simulador · raio X da venda</p>
+    <h2>Para onde vai cada real que você vende</h2>
+    <p class="lede">Digite o preço de um produto. O raio X separa a venda nos ossos do negócio: insumos, as três comissões e o lucro. É a mesma regra usada nas empresas da comunidade.</p>
+  </div>
+  <div class="xr">
+    <form class="calc" id="calc" onsubmit="return false">
+      <label for="preco">Preço de venda</label>
+      <div class="price"><span>R$</span><input id="preco" type="number" min="1" max="100000" step="0.5" value="15" inputmode="decimal"></div>
+      <input id="preco-faixa" type="range" min="1" max="200" step="0.5" value="15" aria-label="Ajustar preço">
+      <div class="rule">
+        <span>Lucro = <code>preço × 10%</code></span>
+        <span>Insumos = <code>(preço − lucro) ÷ 1,5</code></span>
+        <span>Cada comissão = <code>(preço − lucro − insumos) ÷ 3</code></span>
+      </div>
+    </form>
+    <ul class="bones" id="bones">
+      <li class="head-bone"><small>Cabeça</small><b>Vendas</b><span class="v" data-k="venda"></span><span class="bar"><i data-b="venda"></i></span></li>
+      <li><small>Costelas</small><b>Insumos: pessoas, recursos, conhecimento</b><span class="v" data-k="insumos"></span><span class="bar"><i data-b="insumos"></i></span></li>
+      <li><small>Braço esquerdo</small><b>Comissão dos vendedores</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
+      <li><small>Braço direito</small><b>Comissão dos trabalhadores</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
+      <li><small>Pernas</small><b>Comissão da logística de entregas</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
+      <li><small>Bacia</small><b>Lucro</b><span class="v" data-k="lucro"></span><span class="bar"><i data-b="lucro"></i></span></li>
+    </ul>
+  </div>
+</div></section>
+
+<section class="band" id="modelo"><div class="in">
+  <div class="head">
+    <p class="eyebrow">Como o portal se sustenta</p>
+    <h2>Acesso aberto para todos, pago por quem pode</h2>
+    <p class="lede">Funcionamos como um negócio de impacto social: a causa de um instituto com a agilidade de uma empresa. Três fontes de receita mantêm o conteúdo gratuito.</p>
+  </div>
+  <div class="models">
+    <article class="model rec">
+      <span class="tag">Base do modelo</span>
+      <h3>Freemium + apadrinhamento</h3>
+      <p>Conteúdo e simuladores básicos são livres. Padrinhos, empresas ou empreendedores que prosperaram, assinam um apoio mensal e recebem selos de impacto, recursos avançados nos simuladores e mentorias.</p>
+      <p class="who">Quem paga: padrinhos recorrentes</p>
+    </article>
+    <article class="model">
+      <span class="tag">Comunidade</span>
+      <h3>Financiamento coletivo recorrente</h3>
+      <p>Microdoações mensais de quem acredita na causa. O foco sai da venda de um produto e vai para o apoio a uma ideia: ferramentas de gestão para quem nunca teve acesso.</p>
+      <p class="who">Quem paga: apoiadores, a partir de R$ 10/mês</p>
+    </article>
+    <article class="model">
+      <span class="tag">Parceiros</span>
+      <h3>Plataforma multilateral</h3>
+      <p>O empreendedor não paga nada. Bancos, fintechs e instituições que querem chegar a esse público financiam cotas de patrocínio e integrações nos simuladores.</p>
+      <p class="who">Quem paga: poucas empresas, cotas de alto valor</p>
+    </article>
+  </div>
+</div></section>
+
+<section class="band" id="trilha"><div class="in">
+  <div class="head">
+    <p class="eyebrow">A trilha da emancipação</p>
+    <h2>Uma jornada com fim: de aprendiz a padrinho</h2>
+    <p class="lede">O objetivo é que a comunidade cresça a ponto de não depender mais de nós. Cada etapa devolve algo para quem vem depois.</p>
+  </div>
+  <ol class="trail">
+    <li><h3>Aprende</h3><p>Usa os simuladores e as trilhas de conteúdo sem pagar nada. Precifica, planeja e entende o próprio negócio.</p></li>
+    <li><h3>Convida</h3><p>Ao trazer outros 3 empreendedores, desbloqueia funções especiais do simulador e certificados artísticos.</p></li>
+    <li><h3>Ensina</h3><p>No espaço da comunidade, quem já usou as ferramentas e prosperou vira tutor de quem está chegando.</p></li>
+    <li><h3>Apadrinha</h3><p>Ao atingir a maturidade, recebe o status de Mentor Aluno: passa a financiar o projeto ou a formar novos integrantes.</p></li>
+  </ol>
+  <div class="loop">
+    <span class="eyebrow">Ciclo</span>
+    <p><b>Cada padrinho veio da trilha ou abre espaço para ela.</b> O portal cresce pelo boca a boca dos próprios empreendedores, sem depender de anúncios.</p>
+  </div>
+</div></section>
+
+<section class="band" id="padrinhos"><div class="in">
+  <div class="head">
+    <p class="eyebrow">Apadrinhamento</p>
+    <h2>Apadrinhe um empreendedor, ou cinco mil</h2>
+    <p class="lede">Pessoas apoiam com microdoações. Empresas recebem selos de impacto ligados a resultados medidos, prontos para relatórios de ESG e redes sociais.</p>
+  </div>
+  <div class="sponsor">
+    <div class="people">
+      <h3>Para pessoas</h3>
+      <p>Apoio mensal recorrente, por PIX, boleto ou cartão.</p>
+      <div class="tiers"><span>R$ 10</span><span>R$ 20</span><span>R$ 50</span></div>
+      <p>Seu apoio mantém servidores, simuladores e criadores de conteúdo funcionando para quem não pode pagar.</p>
+      <a class="btn go" href="#apoie">Quero apoiar</a>
+    </div>
+    <div class="seals">
+      <p class="subhead">Selos de impacto social</p>
+      <div class="seal amber"><span class="mark">500</span><b>Empresa Madrinha · Bronze</b><p>Mantém o acesso gratuito de 500 microempresários.</p></div>
+      <div class="seal amber"><span class="mark">2 mil</span><b>Empresa Madrinha · Prata</b><p>Mantém o acesso gratuito de 2.000 microempresários.</p></div>
+      <div class="seal amber"><span class="mark">5 mil+</span><b>Empresa Madrinha · Ouro</b><p>Mantém o acesso gratuito de 5.000 ou mais microempresários.</p></div>
+      <div class="seal"><span class="mark">EDU</span><b>Investidora em Educação Empreendedora</b><p>Financia novas trilhas e novos simuladores para comunidades vulneráveis.</p></div>
+      <div class="seal"><span class="mark">PER</span><b>Aceleradora de Negócios Periféricos</b><p>Direciona o apoio a empreendedores de favelas e regiões vulneráveis.</p></div>
+      <div class="seal"><span class="mark">PWR</span><b>Powered by sua empresa</b><p>Cota master: sua marca no rodapé de um simulador de alta demanda.</p></div>
+      <p class="subhead">Selos alinhados aos ODS da ONU</p>
+      <div class="seal"><span class="mark">ODS 4</span><b>Educação de Qualidade</b><p>Acesso gratuito e democrático a simulação econômica de ponta.</p></div>
+      <div class="seal"><span class="mark">ODS 8</span><b>Trabalho Decente e Crescimento</b><p>Investimento direto na emancipação financeira de pequenos negócios.</p></div>
+      <div class="seal"><span class="mark">ODS 10</span><b>Redução das Desigualdades</b><p>Ferramentas de gestão de grande empresa para o comércio de bairro.</p></div>
+    </div>
+  </div>
+  <div class="proof">
+    <div><h3>Selo verificável</h3><p>Quem clica no selo no site da empresa chega a uma página pública com o histórico de empreendedores apoiados: <code>/selo/nome-da-empresa</code></p></div>
+    <div><h3>Kit de mídia pronto</h3><p>Selo em alta resolução e vetor, modelos de post para LinkedIn e Instagram e um texto sugerido para o relatório anual de ESG.</p></div>
+    <div><h3>Tecnologia para o Bem</h3><p>Selo para empresas de tecnologia e startups que querem apoiar ferramentas gratuitas e abertas.</p></div>
+  </div>
+</div></section>
+
+<section class="band" id="territorio"><div class="in">
+  <div class="head">
+    <p class="eyebrow">Para empresas do território</p>
+    <h2>Fornecedores e talentos locais, conectados a quem contrata</h2>
+    <p class="lede">Empresas com operação na região encontram no portal fornecedores e profissionais qualificados da própria comunidade. Não é caridade: é menos rotatividade, cadeia local mais forte e menos risco de reputação.</p>
+  </div>
+  <div class="terr">
+    <div><h3>Conexão por resultado</h3><p>Taxa por contratação ou fornecedor conectado, ou mensalidade flexível por território atendido.</p></div>
+    <div><h3>Licença social para operar</h3><p>Indústrias, agronegócio e mineração investem no desenvolvimento da cadeia local com contrato direto, sem lei de incentivo.</p></div>
+    <div><h3>Patrocinador Fundador</h3><p>Duas cotas corporativas de R$ 8.000 por mês colocam a marca na nova interface dos simuladores e cobrem todo o time.</p></div>
+  </div>
+</div></section>
+
+<section class="band" id="transparencia"><div class="in">
+  <div class="head">
+    <p class="eyebrow">Transparência</p>
+    <h2>Quanto custa manter o portal aberto</h2>
+    <p class="lede">Um time enxuto de tecnologia, inteligência artificial e contabilidade digital. Mostramos o custo mensal e as metas da campanha de apadrinhamento.</p>
+  </div>
+  <div class="open">
+    <div class="budget">
+      <div class="total"><span>Custo mensal estimado</span><b>R$ 16.600</b></div>
+      <div class="stack" aria-hidden="true">
+        <span class="goal" style="left:51.2%">Meta 1</span>
+        <span class="goal end">Meta 2</span>
+        <div class="row"><i style="width:90.36%;background:var(--glow)"></i><i style="width:6.63%;background:var(--amber)"></i><i style="width:3.01%;background:var(--muted)"></i></div>
+      </div>
+      <ul class="keys">
+        <li><i style="background:var(--glow)"></i><span>2 programadores plenos (PJ)</span><span>R$ 15.000</span></li>
+        <li><i style="background:var(--amber)"></i><span>Créditos de IA para desenvolvimento e simuladores</span><span>R$ 1.100</span></li>
+        <li><i style="background:var(--muted)"></i><span>Contabilidade digital e infraestrutura</span><span>R$ 500</span></li>
+      </ul>
+      <div class="goals">
+        <div><b>R$ 8.500</b><span>Meta 1</span><p>Contratar o primeiro programador e a IA.</p></div>
+        <div><b>R$ 16.600</b><span>Meta 2</span><p>Time completo de tecnologia, com design profissional nos simuladores.</p></div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="head"><h3>Nota fiscal sem burocracia</h3></div>
+      <ol class="flow">
+        <li><p><b>Você apoia</b> por PIX, boleto ou cartão.</p></li>
+        <li><p><b>O pagamento compensa</b> e o sistema de cobrança registra o valor.</p></li>
+        <li><p><b>A NFS-e é emitida</b> direto com a prefeitura, por integração.</p></li>
+        <li><p><b>A nota chega no seu e-mail</b>, sem ninguém abrir sistema do governo.</p></li>
+      </ol>
+      <div class="legal">
+        <p>Empresa de impacto social (SLU) no Simples Nacional. Atividades registradas:</p>
+        <ul class="cnae">
+          <li><span>6202-3/00</span><span>Desenvolvimento dos simuladores</span></li>
+          <li><span>8599-6/04</span><span>Treinamento profissional e gerencial</span></li>
+          <li><span>9001-9/99</span><span>Produção de conteúdo artístico e cultural</span></li>
+          <li><span>6311-9/00</span><span>Simuladores online e hospedagem</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="cta" id="apoie"><div class="in">
+  <div class="head">
+    <p class="eyebrow">Apoie</p>
+    <h2>Um microempreendedor aprende a precificar em 5 minutos. Ajude a colocar isso no ar.</h2>
+    <p class="lede">A campanha de apadrinhamento financia o design profissional dos simuladores e o time que vai mantê-los gratuitos.</p>
+  </div>
+  <div class="actions">
+    <a class="btn go" href="#padrinhos">Ver formas de apadrinhar</a>
+    <a class="btn" href="#territorio">Sou empresa e quero patrocinar</a>
+    <small>A página de apoio recorrente está em preparação.</small>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="in">
+  <span>Portal Vanguarda · negócio de impacto social</span>
+  <span>Gratuito para quem empreende. Sustentado por quem apadrinha.</span>
+</div></footer>
+
+<script>
+(function(){
+  var fmt=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+  var num=document.getElementById('preco'), rng=document.getElementById('preco-faixa');
+  var svgV=document.querySelectorAll('.rx .lbl-v'), svgP=document.getElementById('rx-price');
+  function calc(p){var l=p*0.1,i=(p-l)/1.5,c=(p-l-i)/3;return{venda:p,lucro:l,insumos:i,com:c};}
+  function render(p){
+    if(!(p>0))return;
+    var r=calc(p);
+    document.querySelectorAll('[data-k]').forEach(function(el){el.textContent=fmt.format(r[el.dataset.k]);});
+    document.querySelectorAll('[data-b]').forEach(function(el){el.style.width=(r[el.dataset.b]/p*100).toFixed(1)+'%';});
+    var order=[r.venda,r.insumos,r.com,r.com,r.com,r.lucro];
+    svgV.forEach(function(t,k){if(order[k]!=null)t.textContent=fmt.format(order[k]);});
+    if(svgP)svgP.textContent='por venda de '+fmt.format(p);
+  }
+  num.addEventListener('input',function(){var p=parseFloat(num.value);if(p>0){if(p<=200)rng.value=p;render(p);}});
+  rng.addEventListener('input',function(){num.value=rng.value;render(parseFloat(rng.value));});
+  render(15);
+})();
+</script>
+
+</body>
+</html>
