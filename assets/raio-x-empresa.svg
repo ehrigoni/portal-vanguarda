@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-labelledby="rx-t rx-d" class="rx" xmlns:c2pa="http://c2pa.org/manifest">
+<title id="rx-t">Raio X da empresa</title>
+<desc id="rx-d">Uma empresa entra na máquina de raio X e sai como um esqueleto: cabeça = vendas, costelas = insumos (pessoas, recursos, conhecimento), braços = comissões de vendedores e trabalhadores, pernas = comissão da logística de entregas, bacia = lucro.</desc>
+<style>
+.rx{--bg:#0b1b2c;--film:#0e2436;--bone:#e8f2f8;--glow:#7fd3f0;--steel:#3b566c;--steel2:#29404f;--amber:#f2b84b;--ink:#9fb7c8;--co:#577a91;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+.rx text{fill:var(--bone);font-size:14px}
+.rx .lbl-t{font-weight:600;font-size:15px}
+.rx .lbl-v{fill:var(--glow);font-size:13px}
+.rx .lbl-s{fill:var(--ink);font-size:12px}
+.rx .bone{fill:none;stroke:var(--bone);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;filter:url(#rx-glow)}
+.rx .bone.thin{stroke-width:4}
+.rx .lead{stroke:var(--glow);stroke-width:1.2;stroke-dasharray:3 4;fill:none;opacity:.8}
+.rx .t,.rx .anim{animation-duration:12s;animation-iteration-count:infinite;animation-fill-mode:both;animation-timing-function:ease-in-out;animation-delay:-10s}
+/* empresa entra na máquina */
+.rx .empresa{animation-name:rx-move}
+@keyframes rx-move{0%{transform:translateX(0);opacity:1}25%{transform:translateX(350px);opacity:1}55%{transform:translateX(350px);opacity:1}62%{transform:translateX(350px);opacity:0}63%{transform:translateX(0);opacity:0}92%{transform:translateX(0);opacity:0}100%{transform:translateX(0);opacity:1}}
+.rx .belt{stroke-dasharray:14 10;animation:rx-belt 1.2s linear infinite}
+@keyframes rx-belt{to{stroke-dashoffset:-24}}
+/* máquina */
+.rx .glass{animation-name:rx-glass}
+@keyframes rx-glass{0%,25%{opacity:.3}30%,55%{opacity:.88}62%,100%{opacity:.3}}
+.rx .xin{opacity:0;animation-name:rx-xin}
+@keyframes rx-xin{0%,27%{opacity:0}32%,55%{opacity:1}60%,100%{opacity:0}}
+.rx .beam{opacity:0;animation-name:rx-beam;animation-timing-function:linear}
+@keyframes rx-beam{0%,28%{opacity:0;transform:translateX(0)}29%{opacity:1;transform:translateX(0)}41%{transform:translateX(160px)}54%{opacity:1;transform:translateX(0)}55%,100%{opacity:0}}
+.rx .led{animation:rx-led .8s steps(2) infinite}
+.rx .led2{animation-delay:.4s}
+@keyframes rx-led{50%{opacity:.25}}
+.rx .ray{opacity:0;animation-name:rx-ray}
+@keyframes rx-ray{0%,54%{opacity:0}57%,62%{opacity:1}68%,100%{opacity:0}}
+/* filme */
+.rx .lightbox{animation-name:rx-film}
+@keyframes rx-film{0%,55%{opacity:.35}60%,96%{opacity:1}100%{opacity:.35}}
+.rx .bone{stroke-dasharray:1;stroke-dashoffset:0;animation-name:rx-draw}
+@keyframes rx-draw{0%,57%{stroke-dashoffset:1;opacity:0}58%{opacity:1}72%,95%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+.rx .vert{animation-name:rx-fade}
+.rx .lab{animation-name:rx-fade}
+@keyframes rx-fade{0%,64%{opacity:0}70%,95%{opacity:1}100%{opacity:0}}
+.rx .d1{animation-delay:-9.6s}.rx .d2{animation-delay:-9.3s}.rx .d3{animation-delay:-9s}.rx .d4{animation-delay:-8.7s}.rx .d5{animation-delay:-8.4s}.rx .d6{animation-delay:-8.1s}
+@media (prefers-reduced-motion:reduce){.rx *{animation:none!important}.rx .empresa{opacity:1}}
+</style>
+<defs>
+  <filter id="rx-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <radialGradient id="rx-filmg" cx="50%" cy="45%" r="65%"><stop offset="0" stop-color="#1d4b68"/><stop offset="1" stop-color="#0e2436"/></radialGradient>
+  <linearGradient id="rx-beamg" x1="0" x2="1"><stop offset="0" stop-color="#7fd3f0" stop-opacity="0"/><stop offset=".5" stop-color="#7fd3f0" stop-opacity=".9"/><stop offset="1" stop-color="#7fd3f0" stop-opacity="0"/></linearGradient>
+  <clipPath id="rx-win"><rect x="415" y="290" width="170" height="205"/></clipPath>
+</defs>
+
+<rect width="1200" height="600" fill="#0b1b2c"/>
+
+<!-- esteira -->
+<g>
+  <rect x="30" y="500" width="600" height="14" rx="7" fill="#29404f"/>
+  <line class="belt" x1="40" y1="500" x2="620" y2="500" stroke="#5c7b90" stroke-width="3"/>
+  <g fill="#3b566c"><circle cx="60" cy="526" r="9"/><circle cx="180" cy="526" r="9"/><circle cx="300" cy="526" r="9"/><circle cx="420" cy="526" r="9"/><circle cx="540" cy="526" r="9"/></g>
+  <text x="60" y="566" class="lbl-s">1 · EMPRESA</text>
+  <text x="415" y="566" class="lbl-s">2 · MÁQUINA DE RAIO X</text>
+  <text x="670" y="580" class="lbl-s">3 · ESQUELETO DA EMPRESA</text>
+</g>
+
+<!-- máquina: fundo -->
+<rect x="395" y="240" width="210" height="262" rx="14" fill="#16293a"/>
+
+<!-- empresa -->
+<g class="empresa t">
+  <rect x="88" y="304" width="124" height="24" rx="4" fill="#f2b84b"/>
+  <text x="150" y="321" text-anchor="middle" style="fill:#0b1b2c;font-weight:700;font-size:13px;letter-spacing:2px">EMPRESA</text>
+  <rect x="80" y="334" width="140" height="166" rx="3" fill="#577a91"/>
+  <g fill="#f2d9a0">
+    <rect x="96" y="350" width="22" height="18" rx="2"/><rect x="139" y="350" width="22" height="18" rx="2"/><rect x="182" y="350" width="22" height="18" rx="2"/>
+    <rect x="96" y="382" width="22" height="18" rx="2"/><rect x="139" y="382" width="22" height="18" rx="2"/><rect x="182" y="382" width="22" height="18" rx="2"/>
+    <rect x="96" y="414" width="22" height="18" rx="2"/><rect x="182" y="414" width="22" height="18" rx="2"/>
+  </g>
+  <rect x="134" y="446" width="32" height="54" rx="2" fill="#29404f"/>
+  <circle cx="160" cy="474" r="2.5" fill="#f2b84b"/>
+</g>
+
+<!-- máquina: frente -->
+<path fill="#3b566c" fill-rule="evenodd" d="M409 240h182a14 14 0 0 1 14 14v248H395V254a14 14 0 0 1 14-14zM415 290v205h170V290z"/>
+<rect x="395" y="240" width="210" height="40" rx="14" fill="#29404f"/>
+<text x="416" y="266" style="font-weight:700;letter-spacing:3px;font-size:14px">RAIO X</text>
+<circle class="led" cx="562" cy="260" r="6" fill="#f2b84b"/>
+<circle class="led led2" cx="584" cy="260" r="6" fill="#7fd3f0"/>
+<rect class="glass t" x="415" y="290" width="170" height="205" fill="#06121d"/>
+<g class="xin t" clip-path="url(#rx-win)" fill="none" stroke="#7fd3f0" stroke-width="2">
+  <rect x="430" y="334" width="140" height="166" rx="3" stroke-dasharray="5 4"/>
+  <rect x="438" y="304" width="124" height="24" rx="4" stroke-dasharray="5 4"/>
+  <g stroke="#e8f2f8" stroke-width="4" stroke-linecap="round" filter="url(#rx-glow)">
+    <circle cx="500" cy="370" r="13"/>
+    <line x1="500" y1="386" x2="500" y2="448"/>
+    <path d="M500 398c-12 0-22 4-24 14M500 398c12 0 22 4 24 14M500 414c-10 0-18 3-20 11M500 414c10 0 18 3 20 11"/>
+    <path d="M476 392l-10 38M524 392l10 38M492 450l-6 38M508 450l6 38"/>
+  </g>
+</g>
+<g class="beam t"><rect x="415" y="290" width="10" height="205" fill="url(#rx-beamg)"/><line x1="420" y1="290" x2="420" y2="495" stroke="#e8f2f8" stroke-width="1.5"/></g>
+<g class="ray t" stroke="#7fd3f0" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 7" fill="none">
+  <path d="M608 330L648 290M608 380H648M608 430L648 470"/>
+</g>
+
+<!-- filme / negatoscópio -->
+<rect x="650" y="40" width="520" height="515" rx="10" fill="#081521" stroke="#3b566c" stroke-width="2"/>
+<rect class="lightbox t" x="660" y="50" width="500" height="495" rx="6" fill="url(#rx-filmg)"/>
+<text x="676" y="78" class="lbl-s" style="letter-spacing:2px">RAIO X · EMPRESA</text>
+<text x="1146" y="78" class="lbl-s" text-anchor="end">por venda de R$ 15,00</text>
+
+<g>
+  <circle class="bone t" pathLength="1" cx="900" cy="122" r="32"/>
+  <path class="bone thin t" pathLength="1" d="M882 150q18 14 36 0"/>
+  <circle cx="888" cy="117" r="7" fill="#e8f2f8" class="vert t" opacity=".9"/>
+  <circle cx="912" cy="117" r="7" fill="#e8f2f8" class="vert t" opacity=".9"/>
+  <path class="bone t" pathLength="1" d="M840 182Q900 170 960 182"/>
+  <g class="vert t" fill="#e8f2f8">
+    <rect x="894" y="158" width="12" height="9" rx="3"/><rect x="894" y="174" width="12" height="9" rx="3"/><rect x="894" y="190" width="12" height="9" rx="3"/><rect x="894" y="206" width="12" height="9" rx="3"/><rect x="894" y="222" width="12" height="9" rx="3"/><rect x="894" y="238" width="12" height="9" rx="3"/><rect x="894" y="254" width="12" height="9" rx="3"/><rect x="894" y="270" width="12" height="9" rx="3"/><rect x="894" y="286" width="12" height="9" rx="3"/><rect x="894" y="302" width="12" height="9" rx="3"/><rect x="894" y="318" width="12" height="9" rx="3"/><rect x="894" y="334" width="12" height="9" rx="3"/><rect x="894" y="350" width="12" height="9" rx="3"/>
+  </g>
+  <path class="bone thin t" pathLength="1" d="M900 200C870 192 846 202 846 222M900 200C930 192 954 202 954 222"/>
+  <path class="bone thin t" pathLength="1" d="M900 235C868 227 844 237 846 257M900 235C932 227 956 237 954 257"/>
+  <path class="bone thin t" pathLength="1" d="M900 270C872 262 852 272 854 292M900 270C928 262 948 272 946 292"/>
+  <path class="bone t" pathLength="1" d="M840 182L820 275L808 350M808 350l-8 14M808 350l2 16M808 350l10 12"/>
+  <path class="bone t" pathLength="1" d="M960 182L980 275L992 350M992 350l8 14M992 350l-2 16M992 350l-10 12"/>
+  <path class="bone t" pathLength="1" d="M860 376Q900 356 940 376Q946 404 900 410Q854 404 860 376Z"/>
+  <path class="bone t" pathLength="1" d="M882 405L874 465L870 520L854 526"/>
+  <path class="bone t" pathLength="1" d="M918 405L926 465L930 520L946 526"/>
+</g>
+
+<!-- rótulos -->
+<g class="lab t d1"><line class="lead" x1="936" y1="118" x2="1010" y2="118"/><text x="1016" y="116" class="lbl-t">Vendas</text><text x="1016" y="134" class="lbl-v">R$ 15,00</text></g>
+<g class="lab t d2">
+  <text x="1016" y="182" class="lbl-t">Insumos</text><text x="1092" y="182" class="lbl-v">R$ 9,00</text>
+  <line class="lead" x1="958" y1="214" x2="1010" y2="214"/><text x="1016" y="219" class="lbl-s">Pessoas</text>
+  <line class="lead" x1="958" y1="249" x2="1010" y2="249"/><text x="1016" y="254" class="lbl-s">Recursos</text>
+  <line class="lead" x1="950" y1="284" x2="1010" y2="284"/><text x="1016" y="289" class="lbl-s">Conhecimento</text>
+</g>
+<g class="lab t d3"><line class="lead" x1="800" y1="358" x2="790" y2="358"/><text x="784" y="350" class="lbl-t" text-anchor="end">Comissão dos</text><text x="784" y="368" class="lbl-t" text-anchor="end">vendedores</text><text x="784" y="386" class="lbl-v" text-anchor="end">R$ 1,50</text></g>
+<g class="lab t d4"><line class="lead" x1="1002" y1="358" x2="1010" y2="358"/><text x="1016" y="350" class="lbl-t">Comissão dos</text><text x="1016" y="368" class="lbl-t">trabalhadores</text><text x="1016" y="386" class="lbl-v">R$ 1,50</text></g>
+<g class="lab t d5"><line class="lead" x1="954" y1="524" x2="1010" y2="510"/><text x="1016" y="500" class="lbl-t">Comissão da</text><text x="1016" y="518" class="lbl-t">logística</text><text x="1016" y="536" class="lbl-v">R$ 1,50</text></g>
+<g class="lab t d6"><path class="lead" d="M858 394L826 428H790"/><text x="784" y="424" class="lbl-t" text-anchor="end">Lucro</text><text x="784" y="442" class="lbl-v" text-anchor="end">R$ 1,50</text></g>
+<metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTozNjQ4ZDA1OS05YWMyLTQ2YjYtYTNmMC01Yzg2NGM1NzEzMTgAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaDlXvhr9dYxCkjvTfgZyA3UAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDozNzBmYjRhYi1mZmQwLTRiZDYtYmMxYy1hMzIwNTMxZWY1YTdscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNorB7EKFBzRl2j9+wHiFkkXgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggtPwLHQiFVXGNFcNv0k65GIjJK7K7EbW0Sy7Ic8TLjLCkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaM4dMkc2lcCJHuk6TJl8KfcAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRMAAAAAAAAAAAAAAAAZGhhc2hYIDRQeETHuRqJYpkQ0OTPPGyqofw4Xhg+4GWgr0sxtj5wZG5hbWVuanVtYmYgbWFuaWZlc3RqZXhjbHVzaW9uc4GiZXN0YXJ0GSsyZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjM2NDhkMDU5LTlhYzItNDZiNi1hM2YwLTVjODY0YzU3MTMxOC9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOmNjNDU5OGYxLWVhZmItNGU3Ny1iMWZkLWM5MzVhNDY0OTczNHJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCC0/AsdCIVVcY0Vw2/STrkYiMkrsrsRtbRLLshzxMuMsKJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggNl17yI/D2kcoasaP0PYTNlfAzJvnI+OkbwtAsW3+N1KiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggt97dllL0RSl1oxNY/c233iDQ8xjiHCWAoG2ehgzvMpd0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQMWTu9cdyCvzB+f+hwgpdFL39FmmQ9TBHD+J+DPHu44Bl8wDRjqdwPsEfwszsm7THH9+/XpBCcnmqzLILSEK8Qg=</c2pa:manifest></metadata></svg>
