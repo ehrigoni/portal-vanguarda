@@ -11,7 +11,7 @@
 /* Layout: sala de raio X. Fundo de filme escuro, a cena animada abre o site, seções em faixas com grade de 12 colunas; o ciano é a luz do negatoscópio, o âmbar marca ação. Visual único escuro, por escolha. */
 :root{
   --bg:#0b1b2c; --film:#0e2436; --panel:#10263a; --line:#284459;
-  --fg:#e8f2f8; --muted:#9fb7c8; --glow:#7fd3f0; --amber:#f2b84b; --ink:#0b1b2c;
+  --fg:#e8f2f8; --muted:#9fb7c8; --glow:#7fd3f0; --amber:#f2b84b; --ink:#0b1b2c; --btn-ink:#123f6b;
   --display:"Space Grotesk",system-ui,sans-serif;
   --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -41,9 +41,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .top nav{display:flex;gap:18px;margin-left:auto;font-size:14px;flex-wrap:wrap}
 .top nav a{color:var(--muted);text-decoration:none}
 .top nav a:hover{color:var(--fg)}
-.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:500;font-size:15px;padding:11px 18px;border-radius:999px;text-decoration:none;border:1px solid var(--line);color:var(--fg);background:transparent;cursor:pointer;white-space:nowrap}
+.top nav a.hl{color:var(--glow)}
+.top nav a.hl:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:500;font-size:15px;padding:11px 18px;border-radius:999px;text-decoration:none;border:1px solid var(--line);color:var(--fg);background:transparent;cursor:pointer;white-space:nowrap;justify-content:center;text-align:center}
 .btn:hover{border-color:var(--glow)}
-.btn.go{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.btn.go{background:var(--amber);border-color:var(--amber);color:var(--btn-ink)}
 .btn.go:hover{filter:brightness(1.08)}
 .top .btn{padding:8px 14px;font-size:14px}
 @media (max-width:760px){.top nav{display:none}.top .btn{margin-left:auto}}
@@ -83,6 +85,35 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 .bones .bar i{display:block;height:100%;background:var(--glow)}
 .bones li.head-bone{border-color:var(--glow)}
 .bones li.head-bone .bar i{background:var(--amber)}
+
+/* raio x do preço */
+.pr{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:24px;align-items:start}
+@media (max-width:860px){.pr{grid-template-columns:1fr}}
+.pr-in{display:grid;gap:18px}
+.pr-in fieldset{border:0;margin:0;padding:0;display:grid;gap:10px;min-width:0}
+.pr-in legend{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0;margin-bottom:10px}
+.fields{display:grid;gap:10px}
+.fields.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.fields.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:640px){.fields.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.fields.two{grid-template-columns:1fr}}
+.fields label{display:grid;gap:6px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel);min-width:0}
+.fields label:focus-within{border-color:var(--glow)}
+.fields span{font-size:13px;color:var(--muted);line-height:1.3}
+.fields input{width:100%;min-width:0;background:transparent;border:0;color:var(--fg);font-family:var(--mono);font-size:18px;font-weight:600;padding:0;outline:none}
+.hint{font-size:13px;color:var(--muted)}
+.pr-out{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:16px}
+.out-row{display:grid;gap:4px}
+.out-row small{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.out-row b{font-size:26px;font-weight:600}
+.out-row p{font-size:14px;color:var(--muted)}
+.goalbox{border-top:1px dashed var(--line);padding-top:16px}
+.goalbox small{color:var(--amber)}
+.goalbox b{font-size:34px;color:var(--amber)}
+.mix{list-style:none;margin:0;padding:14px 0 0;border-top:1px dashed var(--line);display:grid;gap:8px;font-size:14px}
+.mix li{display:grid;grid-template-columns:1fr auto;gap:10px}
+.mix li span:first-child{color:var(--muted)}
+.mix li span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
 /* modelos */
 .models{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
@@ -187,7 +218,7 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
 <header class="top"><div class="in">
   <a class="brand" href="#inicio">Portal <span>Vanguarda</span></a>
   <nav aria-label="Seções">
-    <a href="#raio-x">Raio X</a><a href="#modelo">Como se sustenta</a><a href="#trilha">Trilha</a><a href="#padrinhos">Padrinhos</a><a href="#transparencia">Transparência</a>
+    <a class="hl" href="#raio-x">Raio X</a><a class="hl" href="#raio-x-preco">Meta</a><a href="#modelo">Como se sustenta</a><a href="#trilha">Trilha</a><a href="#padrinhos">Padrinhos</a><a href="#transparencia">Transparência</a>
   </nav>
   <a class="btn go" href="#apoie">Apoiar</a>
 </div></header>
@@ -342,7 +373,7 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
   <div class="facts">
     <div><b>100% gratuito</b><small>simuladores e trilhas para quem empreende</small></div>
     <div><b>Notas automáticas</b><small>cada apoio gera a NFS-e sozinho, sem papelada</small></div>
-    <div><b>ODS 4 · 8 · 10</b><small>educação, trabalho decente, menos desigualdade</small></div>
+    <div><b>ODS 4 · 8 · 10</b><small>Apoiamos o desenvolvimento humano através da educação, trabalho decente e menos desigualdade (ODS: 4 · 8 · 10).</small></div>
   </div>
 </div></section>
 
@@ -371,6 +402,53 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
       <li><small>Pernas</small><b>Comissão da logística de entregas</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
       <li><small>Bacia</small><b>Lucro</b><span class="v" data-k="lucro"></span><span class="bar"><i data-b="lucro"></i></span></li>
     </ul>
+  </div>
+</div></section>
+
+<section class="band" id="raio-x-preco"><div class="in">
+  <div class="head">
+    <p class="eyebrow">Simulador · raio X do preço</p>
+    <h2>Quanto o seu negócio precisa faturar por mês</h2>
+    <p class="lede">Preencha as despesas mensais da operação. O simulador soma o custo operacional e mostra a meta de faturamento que cobre esses custos, as comissões e o lucro.</p>
+  </div>
+  <div class="pr">
+    <form class="pr-in" id="custos" onsubmit="return false">
+      <fieldset>
+        <legend>Pessoas</legend>
+        <div class="fields two">
+          <label for="c-pessoas"><span>Número de pessoas</span><input id="c-pessoas" type="number" min="0" step="1" value="2" inputmode="numeric"></label>
+          <label for="c-salario"><span>Salário médio por pessoa</span><input id="c-salario" type="number" min="0" step="100" value="2500" inputmode="decimal"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Estrutura e contas</legend>
+        <div class="fields four">
+          <label for="c-aluguel"><span>Aluguel</span><input id="c-aluguel" type="number" min="0" step="50" value="1500" inputmode="decimal"></label>
+          <label for="c-energia"><span>Energia</span><input id="c-energia" type="number" min="0" step="10" value="350" inputmode="decimal"></label>
+          <label for="c-agua"><span>Água</span><input id="c-agua" type="number" min="0" step="10" value="100" inputmode="decimal"></label>
+          <label for="c-gas"><span>Gás</span><input id="c-gas" type="number" min="0" step="10" value="50" inputmode="decimal"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Produção e conhecimento</legend>
+        <div class="fields two">
+          <label for="c-cursos"><span>Cursos e treinamentos</span><input id="c-cursos" type="number" min="0" step="50" value="200" inputmode="decimal"></label>
+          <label for="c-insumos"><span>Insumos de produtos ou serviços</span><input id="c-insumos" type="number" min="0" step="50" value="1800" inputmode="decimal"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Outros</legend>
+        <div class="fields two">
+          <label for="c-outros"><span>Outros custos</span><input id="c-outros" type="number" min="0" step="50" value="0" inputmode="decimal"></label>
+        </div>
+      </fieldset>
+      <p class="hint">Valores em reais, por mês. O exemplo preenchido é ilustrativo.</p>
+    </form>
+    <div class="pr-out" aria-live="polite">
+      <div class="out-row"><small>Custo operacional total</small><b class="mono" id="r-custo"></b><p>Pessoas, estrutura, conhecimento, insumos e outros custos somados.</p></div>
+      <div class="out-row goalbox"><small>Meta de faturamento mensal</small><b class="mono" id="r-meta"></b><p>Quanto vender por mês para pagar a operação, as comissões e o lucro.</p></div>
+      <ul class="mix" id="r-mix"></ul>
+    </div>
   </div>
 </div></section>
 
@@ -558,6 +636,18 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
     try{navigator.clipboard.writeText(txt).then(function(){b.textContent='Copiado';},sel);}catch(e){sel();}
     setTimeout(function(){b.textContent='Copiar';},2000);
   });});
+  var ids=['pessoas','salario','aluguel','energia','agua','gas','cursos','insumos','outros'];
+  function v(k){var n=parseFloat(document.getElementById('c-'+k).value);return n>0?n:0;}
+  function custos(){
+    var equipe=v('pessoas')*v('salario'),estrutura=v('aluguel')+v('energia')+v('agua')+v('gas'),conh=v('cursos'),ins=v('insumos'),outros=v('outros');
+    var total=equipe+estrutura+conh+ins+outros,meta=total*1.5/0.9;
+    document.getElementById('r-custo').textContent=fmt.format(total);
+    document.getElementById('r-meta').textContent=fmt.format(meta);
+    var rows=[['Pessoas',equipe],['Estrutura e contas',estrutura],['Cursos e treinamentos',conh],['Insumos',ins],['Outros custos',outros]];
+    document.getElementById('r-mix').innerHTML=rows.map(function(r){return '<li><span>'+r[0]+'</span><span>'+fmt.format(r[1])+'</span></li>';}).join('');
+  }
+  ids.forEach(function(k){document.getElementById('c-'+k).addEventListener('input',custos);});
+  custos();
   render(15);
 })();
 </script>
