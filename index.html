@@ -210,6 +210,12 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 .copy:hover{border-color:var(--glow)}
 footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
 
+[id]{scroll-margin-top:90px}
+/* aviso */
+.notice{border:1px dashed var(--amber);border-radius:10px;padding:12px 14px;font-size:13.5px;color:var(--fg);background:color-mix(in srgb,var(--amber) 8%,transparent);display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
+.notice b{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);padding-top:2px}
+footer .notice{flex-basis:100%}
+
 /* páginas */
 .top nav a[aria-current="page"]{color:var(--fg);text-decoration:underline;text-decoration-color:var(--amber);text-decoration-thickness:2px;text-underline-offset:6px}
 .top nav a.hl[aria-current="page"]{color:var(--glow)}
@@ -418,16 +424,16 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
 </div>
   <div class="doors">
     <a class="door" href="#simuladores"><span class="tag">Grátis</span><h3>Usar os simuladores</h3><p>Raio X da venda e raio X do preço. Sem cadastro.</p><b>Simular agora →</b></a>
-    <a class="door" href="#apoiar"><span class="tag">Pessoas</span><h3>Apoiar o portal</h3><p>A partir de R$ 10 por mês, com nota fiscal no seu e-mail.</p><b>Quero apoiar →</b></a>
+    <a class="door" href="#apoiar"><span class="tag">Pessoas</span><h3>Apoiar o portal</h3><p>A partir de R$ 10 por mês. Cadastre seu interesse.</p><b>Quero apoiar →</b></a>
     <a class="door" href="#empresas"><span class="tag">Empresas</span><h3>Patrocinar e ganhar selo</h3><p>Selos de impacto, cotas de patrocínio e conexão com o território.</p><b>Ver planos →</b></a>
   </div>
   <div class="facts">
     <div><b>100% gratuito</b><small>simuladores e trilhas para quem empreende</small></div>
-    <div><b>Notas automáticas</b><small>cada apoio gera a NFS-e sozinho, sem papelada</small></div>
+    <div><b>Notas automáticas</b><small>no lançamento, cada apoio vai gerar a NFS-e sozinho</small></div>
     <div><b>Desenvolvimento Humano</b><small>educação, trabalho decente e menos desigualdade (ODS: 4 · 8 · 10).</small></div>
 </div></section>
 <section class="band"><div class="in">
-  <div class="head"><p class="eyebrow">Como funciona</p><h2>Do cadastro à nota fiscal em quatro passos</h2></div>
+  <div class="head"><p class="eyebrow">Como vai funcionar</p><h2>Do cadastro à nota fiscal em quatro passos</h2><p class="lede">Os passos 2 a 4 começam no lançamento oficial. Hoje o portal está em fase de estruturação.</p></div>
   <ol class="steps">
       <li><h3>Cadastro</h3><p>Nome, e-mail, WhatsApp, CPF ou CNPJ e cidade. Leva um minuto.</p></li>
       <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
@@ -538,7 +544,7 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Apoiar · pessoas</p>
   <h1>Escolha um plano e apoie em um minuto</h1>
-  <p class="lede">Seu apoio mensal mantém os simuladores gratuitos para quem não pode pagar. Cada pagamento gera nota fiscal no seu e-mail.</p>
+  <p class="lede">Seu apoio mensal vai manter os simuladores gratuitos para quem não pode pagar. Registre seu interesse agora; os pagamentos começam no lançamento oficial.</p>
 </div></section>
 <section class="band"><div class="in">
   <div class="plans">
@@ -549,7 +555,7 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
   </div>
 </div></section>
 <section class="band"><div class="in">
-  <div class="head"><p class="eyebrow">Cadastro</p><h2>Seus dados para a cobrança e a nota</h2></div>
+  <div class="head"><p class="eyebrow">Cadastro de interesse</p><h2>Seus dados para avisarmos no lançamento</h2></div>
   <ol class="steps">
       <li><h3>Cadastro</h3><p>Nome, e-mail, WhatsApp, CPF ou CNPJ e cidade. Leva um minuto.</p></li>
       <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
@@ -562,26 +568,27 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
         <label for="ap-plano" class="wide"><span>Plano escolhido</span><select id="ap-plano"><option>Apoiador Semente · R$ 10/mês</option><option selected>Apoiador Raiz · R$ 20/mês</option><option>Apoiador Árvore · R$ 50/mês</option></select></label>
         
         <label for="ap-nome"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
-        <label for="ap-email"><span>E-mail (a nota chega aqui)</span><input id="ap-email" type="email" required autocomplete="email" inputmode="email"></label>
+        <label for="ap-email"><span>E-mail</span><input id="ap-email" type="email" required autocomplete="email" inputmode="email"></label>
         <label for="ap-whats"><span>WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000"></label>
         <label for="ap-doc"><span>CPF (para a nota fiscal)</span><input id="ap-doc" type="text" required inputmode="numeric"></label>
         <label for="ap-cidade" class="wide"><span>Cidade e estado</span><input id="ap-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
       </div>
       <p class="err" id="ap-err" hidden>Preencha todos os campos para continuar.</p>
-      <button class="btn go" type="submit">Continuar para o pagamento</button>
-      <p class="note">Usamos seus dados só para a cobrança e a nota fiscal.</p>
+      <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
+      <button class="btn go" type="submit">Registrar interesse</button>
+      <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
     </form>
     <div class="aside">
       <div class="done" id="ap-done" hidden>
-        <h3>Cadastro pronto</h3>
-        <p>Envie pelo WhatsApp para receber o link de pagamento. Depois de pago, a nota fiscal chega no seu e-mail.</p>
+        <h3>Interesse registrado aqui</h3>
+        <p>Envie pelo WhatsApp para entrar na lista. Avisaremos quando os pagamentos e as notas fiscais começarem.</p>
         <pre id="ap-resumo"></pre>
         <a class="btn go" id="ap-wa" href="https://wa.me/5551992910038" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
         <p>Prefere e-mail? Copie o resumo e envie para comercial@decisaochave.com.br.</p>
       </div>
       <div class="people" id="ap-help">
         <h3>Como funciona</h3>
-        <p>1. Você preenche o cadastro. 2. Recebe o link de pagamento. 3. Começa a usar. 4. A nota fiscal chega no e-mail.</p>
+        <p>Depois do lançamento: 1. Cadastro. 2. Link de pagamento. 3. Uso. 4. Nota fiscal no e-mail. Por enquanto, o cadastro só registra seu interesse.</p>
         <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
       </div>
     </div>
@@ -643,7 +650,7 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
   </div>
 </div></section>
 <section class="band"><div class="in">
-  <div class="head"><p class="eyebrow">Cadastro da empresa</p><h2>Escolha o selo ou a cota e receba a proposta</h2></div>
+  <div class="head"><p class="eyebrow">Cadastro de interesse da empresa</p><h2>Escolha o selo ou a cota e receba a proposta</h2></div>
   <ol class="steps">
       <li><h3>Cadastro</h3><p>Nome, e-mail, WhatsApp, CPF ou CNPJ e cidade. Leva um minuto.</p></li>
       <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
@@ -656,26 +663,27 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
         <label for="em-plano" class="wide"><span>Plano escolhido</span><select id="em-plano"><option selected>Empresa Madrinha · Bronze</option><option>Empresa Madrinha · Prata</option><option>Empresa Madrinha · Ouro</option><option>Powered by · cota master</option><option>Patrocinador Fundador · R$ 8.000/mês</option><option>Conexão territorial</option><option>Ainda não sei, quero conversar</option></select></label>
         <label for="em-empresa" class="wide"><span>Empresa</span><input id="em-empresa" type="text" required autocomplete="organization"></label>
         <label for="em-nome"><span>Nome completo</span><input id="em-nome" type="text" required autocomplete="name"></label>
-        <label for="em-email"><span>E-mail (a nota chega aqui)</span><input id="em-email" type="email" required autocomplete="email" inputmode="email"></label>
+        <label for="em-email"><span>E-mail</span><input id="em-email" type="email" required autocomplete="email" inputmode="email"></label>
         <label for="em-whats"><span>WhatsApp</span><input id="em-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000"></label>
         <label for="em-doc"><span>CNPJ (para a nota fiscal)</span><input id="em-doc" type="text" required inputmode="numeric"></label>
         <label for="em-cidade" class="wide"><span>Cidade e estado</span><input id="em-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
       </div>
       <p class="err" id="em-err" hidden>Preencha todos os campos para continuar.</p>
-      <button class="btn go" type="submit">Continuar para o pagamento</button>
-      <p class="note">Usamos seus dados só para a cobrança e a nota fiscal.</p>
+      <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
+      <button class="btn go" type="submit">Registrar interesse</button>
+      <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
     </form>
     <div class="aside">
       <div class="done" id="em-done" hidden>
-        <h3>Cadastro pronto</h3>
-        <p>Envie pelo WhatsApp para receber o link de pagamento. Depois de pago, a nota fiscal chega no seu e-mail.</p>
+        <h3>Interesse registrado aqui</h3>
+        <p>Envie pelo WhatsApp para entrar na lista. Avisaremos quando os pagamentos e as notas fiscais começarem.</p>
         <pre id="em-resumo"></pre>
         <a class="btn go" id="em-wa" href="https://wa.me/5551992910038" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
         <p>Prefere e-mail? Copie o resumo e envie para comercial@decisaochave.com.br.</p>
       </div>
       <div class="people" id="em-help">
         <h3>Como funciona</h3>
-        <p>1. Você preenche o cadastro. 2. Recebe o link de pagamento. 3. Começa a usar. 4. A nota fiscal chega no e-mail.</p>
+        <p>Depois do lançamento: 1. Cadastro. 2. Link de pagamento. 3. Uso. 4. Nota fiscal no e-mail. Por enquanto, o cadastro só registra seu interesse.</p>
         <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
       </div>
     </div>
@@ -769,6 +777,7 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
 </main>
 
 <footer><div class="in">
+  <p class="notice" id="aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
   <nav class="footnav" aria-label="Rodapé"><a href="#simuladores">Simuladores</a><a href="#apoiar">Apoiar</a><a href="#empresas">Empresas</a><a href="#sobre">Sobre</a></nav>
   <span>WhatsApp (51) 99291-0038 · comercial@decisaochave.com.br</span>
 </div></footer>
@@ -833,7 +842,7 @@ footer .in{padding-block:28px;display:flex;justify-content:space-between;gap:12p
       var em=document.getElementById(p+'-email');if(em&&em.value&&!/^\S+@\S+\.\S+$/.test(em.value))ok=false;
       document.getElementById(p+'-err').hidden=ok;if(!ok)return;
       var lines=[];f.querySelectorAll('label').forEach(function(l){var i=l.querySelector('input,select');if(i)lines.push(l.querySelector('span').textContent.replace(/ \(.*\)/,'')+': '+i.value.trim());});
-      var txt='Olá! Quero me cadastrar no Portal Vanguarda.\n'+lines.join('\n');
+      var txt='Olá! Tenho interesse no Portal Vanguarda.\n'+lines.join('\n');
       document.getElementById(p+'-resumo').textContent=txt;
       document.getElementById(p+'-wa').href='https://wa.me/5551992910038?text='+encodeURIComponent(txt);
       document.getElementById(p+'-done').hidden=false;document.getElementById(p+'-help').hidden=true;
