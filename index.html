@@ -847,8 +847,8 @@ footer .notice{flex-basis:100%}
   function docOk(v){var d=dig(v);return cpfOk(d)||cnpjOk(d);}
 
   /* contas no Supabase: preencher com os dados do projeto (Project Settings > API) */
-  var SUPABASE_URL='';      /* ex.: https://xxxx.supabase.co */
-  var SUPABASE_ANON_KEY=''; /* chave pública "anon" */
+  var SUPABASE_URL='https://ycqhjtlcczcypzdfeznf.supabase.co';      /* ex.: https://xxxx.supabase.co */
+  var SUPABASE_ANON_KEY='sb_publishable_HTyKQ4PwyVEkjpARrwBriA_qeVpZyC5'; /* chave pública "anon" */
   var LOGIN_DOMINIO='decisaochave.com.br'; /* domínio do e-mail interno de login (nenhum e-mail é enviado) */
   var sb=null;
   try{if(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){sb=null;}
