@@ -474,7 +474,7 @@ footer .notice{flex-basis:100%}
         <label><input type="radio" name="sim-p" value="N"><span>N meses</span></label>
         <label class="nmeses" hidden><input id="sim-m" type="number" min="1" step="1" value="24" inputmode="numeric" aria-label="Número de meses"><span>meses</span></label>
       </fieldset>
-      <div class="sum"><small>Total em recursos</small><b class="mono" id="sim-total">R$ 117,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 117,00</b> por mês.</p></div>
+      <div class="sum"><small>Total em recursos</small><b class="mono" id="sim-total">R$ 228,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 228,00</b> por mês.</p></div>
       <a class="btn go" href="#apoiar-cadastro" id="sim-go">Quero apoiar</a>
     </article>
   </div>
@@ -598,7 +598,7 @@ footer .notice{flex-basis:100%}
         <label for="ap-n"><span>Número de apadrinhados</span><input id="ap-n" type="number" min="1" step="1" value="1" required inputmode="numeric"></label>
         <label for="ap-periodo"><span>Período</span><select id="ap-periodo"><option value="1">1 mês</option><option value="3">3 meses</option><option value="6">6 meses</option><option value="12" selected>12 meses</option><option value="N">N meses</option></select></label>
         <label for="ap-meses" class="wide" hidden><span>Quantos meses</span><input id="ap-meses" type="number" min="1" step="1" value="24" inputmode="numeric"></label>
-        <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 1.404,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 117,00</b> por mês.</p></div>
+        <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 2.736,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 228,00</b> por mês.</p></div>
         <label for="ap-nome"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
         <label for="ap-email"><span>E-mail</span><input id="ap-email" type="email" required autocomplete="email" inputmode="email"></label>
         <label for="ap-whats"><span>WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000"></label>
@@ -806,7 +806,7 @@ footer .notice{flex-basis:100%}
 
   /* como vai funcionar: números e apoio */
   var VG={total:0,custeados:0}; /* atualizar com os números reais */
-  var CUSTO_MEDIO=117; /* custo médio mensal de cada vanguardista apadrinhado, em R$ */
+  var CUSTO_MEDIO=228; /* custo médio mensal de cada vanguardista apadrinhado, em R$ */
   document.querySelectorAll('[data-vg]').forEach(function(el){el.textContent=VG[el.dataset.vg].toLocaleString('pt-BR');});
   /* escala: começa em 0–100; quando um número passa do limite, o limite sobe para o próximo valor redondo (1, 2 ou 5 × 10^k) e as duas barras usam a mesma escala */
   function escala(v){var m=100;while(v>m){var k=Math.pow(10,Math.floor(Math.log10(m))),d=m/k;m=(d<2?2:d<5?5:10)*k;}return m;}
