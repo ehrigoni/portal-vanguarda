@@ -254,6 +254,7 @@ footer .notice{flex-basis:100%}
 .track{height:14px;border-radius:7px;background:var(--line);overflow:hidden}
 .track i{display:block;height:100%;width:0;background:var(--glow);border-radius:7px;transition:width .6s ease}
 .track.amber i{background:var(--amber)}
+.scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:-6px}
 .split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px;align-items:start}
 @media (max-width:860px){.split{grid-template-columns:1fr}}
 .who-box{border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:16px;align-content:start}
@@ -278,17 +279,6 @@ footer .notice{flex-basis:100%}
 .sum p b{color:var(--fg);font-weight:500}
 .fields .sum{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel)}
 .fields .sum > b{font-size:26px}
-/* escolher apadrinhados */
-.pick{border:1px solid var(--line);border-radius:12px;padding:20px 22px;display:grid;gap:14px}
-.vg-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
-.vg-list:empty{display:none}
-.vg-card{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;cursor:pointer;background:var(--panel)}
-.vg-card input{grid-row:span 2;margin-top:4px;accent-color:var(--amber)}
-.vg-card b{font-family:var(--display);font-weight:500}
-.vg-card small{color:var(--muted);font-size:13px}
-.vg-card:has(input:checked){border-color:var(--amber)}
-.vg-card:has(input:disabled:not(:checked)){opacity:.5;cursor:not-allowed}
-.vg-empty{color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:10px;padding:12px 14px}
 .footnav{display:flex;gap:16px;flex-wrap:wrap}
 .footnav a{color:var(--muted);text-decoration:none}
 .footnav a:hover{color:var(--fg)}
@@ -464,6 +454,7 @@ footer .notice{flex-basis:100%}
   <div class="meters">
     <div class="meter"><div class="mt"><span>Total de vanguardistas</span><b class="mono" data-vg="total">0</b></div><div class="track"><i data-vgbar="total"></i></div></div>
     <div class="meter"><div class="mt"><span>Vanguardistas custeados durante 1 ano</span><b class="mono" data-vg="custeados">0</b></div><div class="track amber"><i data-vgbar="custeados"></i></div></div>
+    <div class="scale" aria-hidden="true"><span>0</span><span data-vg-max>100</span></div>
     <p class="hint" data-vg-empty>A contagem começa no lançamento oficial.</p>
   </div>
   <div class="split">
@@ -483,7 +474,7 @@ footer .notice{flex-basis:100%}
         <label><input type="radio" name="sim-p" value="N"><span>N meses</span></label>
         <label class="nmeses" hidden><input id="sim-m" type="number" min="1" step="1" value="24" inputmode="numeric" aria-label="Número de meses"><span>meses</span></label>
       </fieldset>
-      <div class="sum"><small>Total em recursos</small><b class="mono" id="sim-total">R$ 10,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 10,00</b> por mês.</p></div>
+      <div class="sum"><small>Total em recursos</small><b class="mono" id="sim-total">R$ 117,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 117,00</b> por mês.</p></div>
       <a class="btn go" href="#apoiar-cadastro" id="sim-go">Quero apoiar</a>
     </article>
   </div>
@@ -601,19 +592,13 @@ footer .notice{flex-basis:100%}
       <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
       <li><h3>Nota fiscal</h3><p>A NFS-e é emitida e enviada para o seu e-mail a cada pagamento.</p></li>
     </ol>
-  <div class="pick" id="apadrinhar">
-    <div class="head"><h3>Escolha quem apadrinhar</h3><p class="hint">Selecione vanguardistas disponíveis na plataforma, até o número que você vai apoiar. Se não escolher ninguém, o portal distribui seu apoio entre quem está na fila.</p></div>
-    <div class="vg-list" id="vg-list" role="group" aria-label="Vanguardistas disponíveis"></div>
-    <p class="vg-empty" id="vg-empty">Ainda não há vanguardistas disponíveis. Eles aparecem aqui quando concluírem o cadastro, depois do lançamento oficial. Até lá, informe quantos quer apadrinhar e por quanto tempo.</p>
-    <p class="hint" id="vg-count" hidden>Selecionados: <b id="vg-sel">0</b> de <b id="vg-max">1</b></p>
-  </div>
   <div class="signup" id="apoiar-cadastro">
     <form class="fields-form" data-form="ap" novalidate>
       <div class="fields two">
         <label for="ap-n"><span>Número de apadrinhados</span><input id="ap-n" type="number" min="1" step="1" value="1" required inputmode="numeric"></label>
         <label for="ap-periodo"><span>Período</span><select id="ap-periodo"><option value="1">1 mês</option><option value="3">3 meses</option><option value="6">6 meses</option><option value="12" selected>12 meses</option><option value="N">N meses</option></select></label>
         <label for="ap-meses" class="wide" hidden><span>Quantos meses</span><input id="ap-meses" type="number" min="1" step="1" value="24" inputmode="numeric"></label>
-        <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 120,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 10,00</b> por mês.</p></div>
+        <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 1.404,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 117,00</b> por mês.</p></div>
         <label for="ap-nome"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
         <label for="ap-email"><span>E-mail</span><input id="ap-email" type="email" required autocomplete="email" inputmode="email"></label>
         <label for="ap-whats"><span>WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000"></label>
@@ -821,10 +806,13 @@ footer .notice{flex-basis:100%}
 
   /* como vai funcionar: números e apoio */
   var VG={total:0,custeados:0}; /* atualizar com os números reais */
-  var CUSTO_MEDIO=10; /* custo médio mensal de cada vanguardista apadrinhado, em R$ */
-  var VANGUARDISTAS=[]; /* {nome:'',cidade:'',negocio:''} disponíveis para apadrinhar */
+  var CUSTO_MEDIO=117; /* custo médio mensal de cada vanguardista apadrinhado, em R$ */
   document.querySelectorAll('[data-vg]').forEach(function(el){el.textContent=VG[el.dataset.vg].toLocaleString('pt-BR');});
-  document.querySelectorAll('[data-vgbar]').forEach(function(el){var t=VG.total;el.style.width=(t>0?Math.min(100,VG[el.dataset.vgbar]/t*100):0)+'%';});
+  /* escala: começa em 0–100; quando um número passa do limite, o limite sobe para o próximo valor redondo (1, 2 ou 5 × 10^k) e as duas barras usam a mesma escala */
+  function escala(v){var m=100;while(v>m){var k=Math.pow(10,Math.floor(Math.log10(m))),d=m/k;m=(d<2?2:d<5?5:10)*k;}return m;}
+  var vgMax=escala(Math.max(VG.total,VG.custeados));
+  document.querySelectorAll('[data-vg-max]').forEach(function(el){el.textContent=vgMax.toLocaleString('pt-BR');});
+  document.querySelectorAll('[data-vgbar]').forEach(function(el){el.style.width=(VG[el.dataset.vgbar]/vgMax*100)+'%';});
   document.querySelectorAll('[data-vg-empty]').forEach(function(el){el.hidden=VG.total>0;});
   document.querySelectorAll('[data-custo]').forEach(function(el){el.textContent=fmt.format(CUSTO_MEDIO);});
   function int(el,d){var n=parseInt(el.value,10);return n>0?n:d;}
@@ -836,24 +824,9 @@ footer .notice{flex-basis:100%}
   document.querySelectorAll('input[name="sim-p"]').forEach(function(r){r.addEventListener('change',sim);});
   sim();
   var apN=document.getElementById('ap-n'),apP=document.getElementById('ap-periodo'),apM=document.getElementById('ap-meses');
-  function ap(){apM.closest('label').hidden=apP.value!=='N';document.getElementById('ap-total').textContent=fmt.format(int(apN,1)*meses(apP.value,apM)*CUSTO_MEDIO);limit();}
+  function ap(){apM.closest('label').hidden=apP.value!=='N';document.getElementById('ap-total').textContent=fmt.format(int(apN,1)*meses(apP.value,apM)*CUSTO_MEDIO);}
   [apN,apM].forEach(function(el){el.addEventListener('input',ap);});apP.addEventListener('change',ap);
   document.getElementById('sim-go').addEventListener('click',function(){apN.value=int(simN,1);var p=simP();apP.value=p;if(p==='N')apM.value=int(simM,1);ap();});
-  /* escolher apadrinhados */
-  var list=document.getElementById('vg-list');
-  VANGUARDISTAS.forEach(function(v,k){
-    var l=document.createElement('label');l.className='vg-card';
-    var i=document.createElement('input');i.type='checkbox';i.value=v.nome;i.id='vg-c'+k;
-    var b=document.createElement('b');b.textContent=v.nome;
-    var s=document.createElement('small');s.textContent=[v.negocio,v.cidade].filter(Boolean).join(' · ');
-    l.append(i,b,s);list.appendChild(l);i.addEventListener('change',limit);
-  });
-  document.getElementById('vg-empty').hidden=VANGUARDISTAS.length>0;
-  document.getElementById('vg-count').hidden=VANGUARDISTAS.length===0;
-  function escolhidos(){return [].slice.call(list.querySelectorAll('input:checked')).map(function(i){return i.value;});}
-  function limit(){var max=int(apN,1),sel=escolhidos().length;
-    list.querySelectorAll('input').forEach(function(i){i.disabled=!i.checked&&sel>=max;});
-    document.getElementById('vg-sel').textContent=sel;document.getElementById('vg-max').textContent=max;}
   ap();
   /* páginas */
   var views=[].slice.call(document.querySelectorAll('[data-view]'));
@@ -868,8 +841,6 @@ footer .notice{flex-basis:100%}
     if(target)target.scrollIntoView({block:'start'});else window.scrollTo(0,0);
   }
   window.addEventListener('hashchange',show);show();
-  /* escolher plano */
-  document.querySelectorAll('[data-pick]').forEach(function(a){a.addEventListener('click',function(){var s=document.getElementById(a.dataset.pick);if(s)s.value=a.dataset.value;});});
   /* cadastro */
   document.querySelectorAll('[data-form]').forEach(function(f){
     var p=f.dataset.form;
@@ -879,7 +850,7 @@ footer .notice{flex-basis:100%}
       var em=document.getElementById(p+'-email');if(em&&em.value&&!/^\S+@\S+\.\S+$/.test(em.value))ok=false;
       document.getElementById(p+'-err').hidden=ok;if(!ok)return;
       var lines=[];f.querySelectorAll('.fields label').forEach(function(l){if(l.hidden)return;var i=l.querySelector('input,select');if(i)lines.push(l.querySelector('span').textContent.replace(/ \(.*\)/,'')+': '+(i.tagName==='SELECT'?i.options[i.selectedIndex].text:i.value.trim()));});
-      if(p==='ap'){lines.push('Total em recursos: '+document.getElementById('ap-total').textContent);var e=escolhidos();lines.push('Apadrinhados escolhidos: '+(e.length?e.join(', '):'distribuição pelo portal'));}
+      if(p==='ap'){lines.push('Total em recursos: '+document.getElementById('ap-total').textContent);}
       if(p==='vg')lines.unshift('Perfil: Vanguardista');
       var txt='Olá! Tenho interesse no Portal Vanguarda.\n'+lines.join('\n');
       document.getElementById(p+'-resumo').textContent=txt;
