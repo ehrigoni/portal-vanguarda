@@ -281,8 +281,8 @@ footer .notice{flex-basis:100%}
 .fields .sum > b{font-size:26px}
 /* conta */
 .acc-top{display:flex;align-items:center;gap:14px}
-.acc-top .enter{color:var(--fg);text-decoration:none;font-size:14px}
-.acc-top .enter:hover{color:var(--glow)}
+.acc-top{gap:10px}
+.top .acc-top .btn{padding:8px 14px;font-size:14px}
 .me{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px;white-space:nowrap}
 .me b{color:var(--fg);font-weight:500;max-width:14ch;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:760px){.acc-top{margin-left:auto}}
@@ -298,6 +298,15 @@ footer .notice{flex-basis:100%}
 .acc .note{font-size:14px;color:var(--muted)}
 .acc .btn[type=submit]{justify-self:start}
 .fields label.bad{border-color:var(--amber)}
+/* cadastro guiado: o próximo campo acende, os prontos ficam marcados */
+#form-cadastro .chips,#form-cadastro .fields label{transition:border-color .2s,box-shadow .2s,opacity .2s}
+#form-cadastro.guia .fields label{opacity:.55}
+#form-cadastro.guia .fields label.ok,#form-cadastro.guia .fields label.agora,#form-cadastro.guia .fields label:focus-within{opacity:1}
+#form-cadastro .fields label.agora{border-color:var(--amber);box-shadow:0 0 0 3px color-mix(in srgb,var(--amber) 25%,transparent)}
+#form-cadastro .fields label.ok{border-color:var(--glow)}
+#form-cadastro .fields label.ok > span::after{content:" ✓";color:var(--glow)}
+#form-cadastro .chips.agora{border-radius:12px;box-shadow:0 0 0 3px color-mix(in srgb,var(--amber) 25%,transparent);padding:8px 10px;margin:-8px -10px}
+#form-cadastro .chips.agora legend{color:var(--amber)}
 .footnav{display:flex;gap:16px;flex-wrap:wrap}
 .footnav a{color:var(--muted);text-decoration:none}
 .footnav a:hover{color:var(--fg)}
@@ -313,7 +322,7 @@ footer .notice{flex-basis:100%}
     <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#sobre" data-nav="sobre">Sobre</a>
   </nav>
   <div class="acc-top">
-    <a class="enter" href="#entrar" data-guest>Entrar</a>
+    <a class="btn go" href="#entrar" data-guest>Entrar</a>
     <a class="btn go" href="#cadastro" data-guest>Cadastre-se</a>
     <span class="me" data-user hidden>Olá, <b id="me-nome"></b> <button type="button" class="copy" id="sair">Sair</button></span>
   </div>
@@ -686,7 +695,7 @@ footer .notice{flex-basis:100%}
 <section class="band"><div class="in">
   <form class="acc" id="form-entrar" novalidate>
     <div class="fields">
-      <label for="en-login"><span>Celular, WhatsApp ou e-mail</span><input id="en-login" type="text" required autocomplete="username"></label>
+      <label for="en-login"><span>Celular, WhatsApp ou e-mail</span><input id="en-login" type="text" required autocomplete="username" placeholder="(51) 90000-0000 ou nome@exemplo.com" data-mask="login"></label>
       <label for="en-senha"><span>Senha</span><input id="en-senha" type="password" required autocomplete="current-password"></label>
     </div>
     <p class="err" id="en-err" hidden></p>
@@ -838,7 +847,8 @@ footer .notice{flex-basis:100%}
     if(d.length<=11)return d.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
     return d.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1/$2').replace(/(\d{4})(\d)/,'$1-$2');}
   function maskEmail(v){return String(v).replace(/\s+/g,'').toLowerCase();}
-  var MASK={fone:maskFone,doc:maskDoc,email:maskEmail};
+  function maskLogin(v){v=String(v);return /[a-zA-Z@._-]/.test(v.replace(/[()\s-]/g,''))?maskEmail(v):maskFone(v);}
+  var MASK={fone:maskFone,doc:maskDoc,email:maskEmail,login:maskLogin};
   document.querySelectorAll('[data-mask]').forEach(function(i){i.addEventListener('input',function(){var f=MASK[i.dataset.mask],v=f(i.value);if(v!==i.value)i.value=v;});});
   function foneOk(v){var d=dig(v);return d.length===10||d.length===11;}
   function emailOk(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);}
@@ -930,6 +940,34 @@ footer .notice{flex-basis:100%}
   });
   if(sb)sb.auth.getSession().then(function(r){var u=r.data&&r.data.session&&r.data.session.user;return carregarPerfil(u).then(function(c){perfil=c;cabecalho();});});
   cabecalho();
+  /* cadastro guiado */
+  (function(){
+    var f=document.getElementById('form-cadastro');if(!f)return;
+    function g(id){return document.getElementById(id);}
+    var passos=[
+      {el:f.querySelector('.chips'),ok:function(){return !!f.querySelector('input[name="cd-tipo"]:checked');}},
+      {id:'cd-nome',ok:function(){return g('cd-nome').value.trim().length>1;}},
+      {id:'cd-fone',ok:function(){return foneOk(g('cd-fone').value);}},
+      {id:'cd-email',opcional:true,ok:function(){var v=g('cd-email').value;return !!v&&emailOk(v);}},
+      {id:'cd-doc',ok:function(){return docOk(g('cd-doc').value);}},
+      {id:'cd-cidade',ok:function(){return g('cd-cidade').value.trim().length>1;}},
+      {id:'cd-uf',ok:function(){return !!g('cd-uf').value;}},
+      {id:'cd-senha',ok:function(){return g('cd-senha').value.length>=6;}}
+    ];
+    function caixa(p){return p.el||g(p.id).closest('label');}
+    function guia(){
+      f.classList.add('guia');var achou=false;
+      passos.forEach(function(p){
+        var c=caixa(p),ok=p.ok();
+        c.classList.toggle('ok',ok&&!p.el);
+        var agora=!achou&&!ok&&!p.opcional;
+        c.classList.toggle('agora',agora);if(agora)achou=true;
+      });
+    }
+    f.addEventListener('input',guia);f.addEventListener('change',guia);f.addEventListener('reset',function(){setTimeout(guia,0);});
+    f.querySelectorAll('input[name="cd-tipo"]').forEach(function(r){r.addEventListener('change',function(){if(!g('cd-nome').value)g('cd-nome').focus();});});
+    guia();
+  })();
   /* páginas */
   var views=[].slice.call(document.querySelectorAll('[data-view]'));
   function show(){
