@@ -48,7 +48,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .btn.go{background:var(--amber);border-color:var(--amber);color:var(--btn-ink)}
 .btn.go:hover{filter:brightness(1.08)}
 .top .btn{padding:8px 14px;font-size:14px}
-@media (max-width:760px){.top nav{display:none}.top .btn{margin-left:auto}}
+@media (max-width:760px){.top nav{display:none}}
 
 /* abertura */
 .hero .in{padding-block:56px 28px;display:grid;gap:22px}
@@ -116,7 +116,7 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 .mix li span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
 /* modelos */
-.models{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.models{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:760px}
 @media (max-width:860px){.models{grid-template-columns:1fr}}
 .model{border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:12px;align-content:start}
 .model.rec{background:var(--panel);border-color:var(--glow)}
@@ -279,6 +279,25 @@ footer .notice{flex-basis:100%}
 .sum p b{color:var(--fg);font-weight:500}
 .fields .sum{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel)}
 .fields .sum > b{font-size:26px}
+/* conta */
+.acc-top{display:flex;align-items:center;gap:14px}
+.acc-top .enter{color:var(--fg);text-decoration:none;font-size:14px}
+.acc-top .enter:hover{color:var(--glow)}
+.me{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.me b{color:var(--fg);font-weight:500;max-width:14ch;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:760px){.acc-top{margin-left:auto}}
+.hello{background:var(--panel);border-bottom:1px solid var(--line)}
+.hello .in{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:12px}
+.hello p{flex:1 1 280px;font-size:15px}
+.acc{display:grid;gap:14px;max-width:560px}
+.signup .acc{max-width:none}
+.acc .fields select{width:100%;background:transparent;border:0;color:var(--fg);font-family:var(--body);font-size:16px;padding:0;outline:none}
+.acc .fields select option{background:var(--panel);color:var(--fg)}
+.acc .fields input{font-family:var(--body);font-weight:500;font-size:16px}
+.acc .wide{grid-column:1/-1}
+.acc .note{font-size:14px;color:var(--muted)}
+.acc .btn[type=submit]{justify-self:start}
+.fields label.bad{border-color:var(--amber)}
 .footnav{display:flex;gap:16px;flex-wrap:wrap}
 .footnav a{color:var(--muted);text-decoration:none}
 .footnav a:hover{color:var(--fg)}
@@ -293,8 +312,13 @@ footer .notice{flex-basis:100%}
   <nav aria-label="Páginas">
     <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#sobre" data-nav="sobre">Sobre</a>
   </nav>
-  <a class="btn go" href="#apoiar-cadastro">Cadastre-se</a>
+  <div class="acc-top">
+    <a class="enter" href="#entrar" data-guest>Entrar</a>
+    <a class="btn go" href="#cadastro" data-guest>Cadastre-se</a>
+    <span class="me" data-user hidden>Olá, <b id="me-nome"></b> <button type="button" class="copy" id="sair">Sair</button></span>
+  </div>
 </div></header>
+<div class="hello" id="hello" hidden><div class="in"><p id="hello-txt"></p><button type="button" class="copy" id="hello-x" aria-label="Fechar aviso">Fechar</button></div></div>
 
 <main>
 <div data-view="inicio">
@@ -461,7 +485,7 @@ footer .notice{flex-basis:100%}
     <article class="who-box">
       <span class="tag">Para quem é empreendedor</span>
       <ol class="checks"><li>Realize o cadastro.</li><li>Obtenha acesso aos simuladores.</li><li>Uso gratuito e ininterrupto.</li></ol>
-      <a class="btn" href="#apoiar-vanguardista">Quero me cadastrar</a>
+      <a class="btn" href="#cadastro" data-tipo="vanguardista">Quero me cadastrar</a>
     </article>
     <article class="who-box feat" id="simular-apoio">
       <span class="tag">Para quem é apoiador do portal</span>
@@ -587,10 +611,10 @@ footer .notice{flex-basis:100%}
 <section class="band" id="apoiadores"><div class="in">
   <div class="head"><p class="eyebrow">Como funciona para Apoiadores</p><h2>Do cadastro à nota fiscal em quatro passos</h2></div>
   <ol class="steps">
-      <li><h3>Cadastro</h3><p>Nome, e-mail, WhatsApp, CPF ou CNPJ e cidade. Leva um minuto.</p></li>
+      <li><h3>Cadastro</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ, cidade, estado e senha. Leva um minuto.</p></li>
       <li><h3>Apadrinhamento</h3><p>Escolha do número de apadrinhados e período.</p></li>
-      <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
-      <li><h3>Nota fiscal</h3><p>A NFS-e é emitida e enviada para o seu e-mail a cada pagamento.</p></li>
+      <li><h3>Pagamento</h3><p>Você recebe o link e apoia por PIX, boleto ou cartão. O pagamento compensa e o sistema de cobrança registra o valor.</p></li>
+      <li><h3>Nota fiscal sem burocracia</h3><p>A NFS-e é emitida direto com a prefeitura, por integração, e chega no seu e-mail a cada pagamento, sem ninguém abrir sistema do governo.</p></li>
     </ol>
   <div class="signup" id="apoiar-cadastro">
     <form class="fields-form" data-form="ap" novalidate>
@@ -600,12 +624,12 @@ footer .notice{flex-basis:100%}
         <label for="ap-meses" class="wide" hidden><span>Quantos meses</span><input id="ap-meses" type="number" min="1" step="1" value="24" inputmode="numeric"></label>
         <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 1.404,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 117,00</b> por mês.</p></div>
         <label for="ap-nome"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
-        <label for="ap-email"><span>E-mail</span><input id="ap-email" type="email" required autocomplete="email" inputmode="email"></label>
-        <label for="ap-whats"><span>WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000"></label>
-        <label for="ap-doc"><span>CPF ou CNPJ (para a nota fiscal)</span><input id="ap-doc" type="text" required inputmode="numeric"></label>
+        <label for="ap-email"><span>E-mail (opcional)</span><input id="ap-email" type="email" autocomplete="email" inputmode="email" data-mask="email"></label>
+        <label for="ap-whats"><span>Celular ou WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
+        <label for="ap-doc"><span>CPF ou CNPJ (para a nota fiscal)</span><input id="ap-doc" type="text" required inputmode="numeric" data-mask="doc"></label>
         <label for="ap-cidade" class="wide"><span>Cidade e estado</span><input id="ap-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
       </div>
-      <p class="err" id="ap-err" hidden>Preencha todos os campos para continuar.</p>
+      <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira celular e CPF ou CNPJ.</p>
       <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <button class="btn go" type="submit">Registrar interesse</button>
       <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
@@ -629,40 +653,12 @@ footer .notice{flex-basis:100%}
 <section class="band" id="vanguardistas"><div class="in">
   <div class="head"><p class="eyebrow">Como funciona para Vanguardistas</p><h2>Cadastre seu negócio e fique disponível para ser apadrinhado</h2></div>
   <ol class="steps">
-      <li><h3>Cadastro</h3><p>Nome, e-mail, WhatsApp, CPF ou CNPJ e cidade. Leva um minuto.</p></li>
+      <li><h3>Cadastro</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ, cidade, estado e senha. Leva um minuto.</p></li>
       <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
       <li><h3>Uso</h3><p>Acesso aos recursos do plano: simuladores avançados, selo, mentorias.</p></li>
       <li><h3>Apadrinhamento</h3><p>O Vanguardista fica disponível para que seja apadrinhado na plataforma.</p></li>
     </ol>
-  <div class="signup" id="apoiar-vanguardista">
-    <form class="fields-form" data-form="vg" novalidate>
-      <div class="fields two">
-        <label for="vg-nome"><span>Nome completo</span><input id="vg-nome" type="text" required autocomplete="name"></label>
-        <label for="vg-email"><span>E-mail</span><input id="vg-email" type="email" required autocomplete="email" inputmode="email"></label>
-        <label for="vg-whats"><span>WhatsApp</span><input id="vg-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000"></label>
-        <label for="vg-doc"><span>CPF ou CNPJ</span><input id="vg-doc" type="text" required inputmode="numeric"></label>
-        <label for="vg-cidade" class="wide"><span>Cidade e estado</span><input id="vg-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
-      </div>
-      <p class="err" id="vg-err" hidden>Preencha todos os campos para continuar.</p>
-      <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-      <button class="btn go" type="submit">Registrar interesse</button>
-      <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
-    </form>
-    <div class="aside">
-      <div class="done" id="vg-done" hidden>
-        <h3>Interesse registrado aqui</h3>
-        <p>Envie pelo WhatsApp para entrar na lista. Avisaremos quando os pagamentos e as notas fiscais começarem.</p>
-        <pre id="vg-resumo"></pre>
-        <a class="btn go" id="vg-wa" href="https://wa.me/5551992910038" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
-        <p>Prefere e-mail? Copie o resumo e envie para comercial@decisaochave.com.br.</p>
-      </div>
-      <div class="people" id="vg-help">
-        <h3>Como funciona</h3>
-        <p>Depois do lançamento: 1. Cadastro. 2. Link de pagamento. 3. Uso dos recursos do plano. 4. Você fica disponível para ser apadrinhado. Por enquanto, o cadastro só registra seu interesse.</p>
-        <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
-      </div>
-    </div>
-  </div>
+  <div class="loop" id="apoiar-vanguardista"><span class="eyebrow">Vanguardista</span><p><b>Crie sua conta e comece pelos simuladores.</b> Depois do lançamento, você escolhe o plano e fica disponível para ser apadrinhado.</p><a class="btn go" href="#cadastro" data-tipo="vanguardista">Cadastrar-se como vanguardista</a></div>
 </div></section>
 <section class="band" id="trilha"><div class="in">
   <div class="head">
@@ -682,16 +678,71 @@ footer .notice{flex-basis:100%}
   </div>
 </div></section>
 </div>
+<div data-view="entrar">
+<section class="pagehead"><div class="in">
+  <p class="eyebrow">Entrar</p>
+  <h1>Acesse sua conta</h1>
+</div></section>
+<section class="band"><div class="in">
+  <form class="acc" id="form-entrar" novalidate>
+    <div class="fields">
+      <label for="en-login"><span>Celular, WhatsApp ou e-mail</span><input id="en-login" type="text" required autocomplete="username"></label>
+      <label for="en-senha"><span>Senha</span><input id="en-senha" type="password" required autocomplete="current-password"></label>
+    </div>
+    <p class="err" id="en-err" hidden></p>
+    <button class="btn go" type="submit">Entrar</button>
+    <p class="note">Ainda não tem conta? <a href="#cadastro">Cadastrar-se</a></p>
+  </form>
+</div></section>
+</div>
+<div data-view="cadastro">
+<section class="pagehead"><div class="in">
+  <p class="eyebrow">Cadastrar-se</p>
+  <h1>Crie sua conta em um minuto</h1>
+  <p class="lede">Vanguardistas entram direto na área de simuladores. Apoiadores entram direto na área de apoiar vanguardistas.</p>
+</div></section>
+<section class="band"><div class="in">
+  <div class="signup">
+    <form class="acc" id="form-cadastro" novalidate>
+      <fieldset class="chips"><legend>Você é</legend>
+        <label><input type="radio" name="cd-tipo" value="vanguardista"><span>Vanguardista</span></label>
+        <label><input type="radio" name="cd-tipo" value="apoiador"><span>Apoiador</span></label>
+      </fieldset>
+      <div class="fields two">
+        <label for="cd-nome" class="wide"><span>Seu nome</span><input id="cd-nome" type="text" required autocomplete="name"></label>
+        <label for="cd-fone"><span>Celular, WhatsApp ou telefone</span><input id="cd-fone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
+        <label for="cd-email"><span>E-mail (opcional)</span><input id="cd-email" type="email" autocomplete="email" inputmode="email" placeholder="nome@exemplo.com" data-mask="email"></label>
+        <label for="cd-doc" class="wide"><span>CPF ou CNPJ</span><input id="cd-doc" type="text" required inputmode="numeric" placeholder="000.000.000-00" data-mask="doc"></label>
+        <label for="cd-cidade"><span>Cidade</span><input id="cd-cidade" type="text" required autocomplete="address-level2"></label>
+        <label for="cd-uf"><span>Estado</span><select id="cd-uf" required autocomplete="address-level1"><option value="" selected disabled>Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
+        <label for="cd-senha" class="wide"><span>Senha (mínimo de 6 caracteres)</span><input id="cd-senha" type="password" required minlength="6" autocomplete="new-password"></label>
+      </div>
+      <p class="err" id="cd-err" hidden></p>
+      <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. O cadastro cria sua conta e registra seu interesse, sem criar contrato.</span></p>
+      <button class="btn go" type="submit">Cadastrar</button>
+      <p class="note">Já tem conta? <a href="#entrar">Entrar</a></p>
+    </form>
+    <div class="aside">
+      <div class="people">
+        <h3>Por que pedimos esses dados</h3>
+        <p>O celular ou WhatsApp é o seu login e o canal para falarmos com você. O CPF ou CNPJ vai na nota fiscal. O e-mail é opcional: se você informar, também pode usá-lo para entrar e a nota fiscal chega nele.</p>
+        <p>Seus dados ficam guardados no banco de dados do portal e são usados só para o Portal Vanguarda.</p>
+        <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+</div>
 <div data-view="sobre">
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Sobre</p>
-  <h1>Como o Vanguarda funciona e para onde vai o dinheiro</h1>
+  <h1>Como o Vanguarda funciona</h1>
 </div></section>
 <section class="band" id="modelo"><div class="in">
   <div class="head">
     <p class="eyebrow">Como o portal se sustenta</p>
     <h2>Acesso aberto para todos, pago por quem pode</h2>
-    <p class="lede">Funcionamos como um negócio de impacto social: a causa de um instituto com a agilidade de uma empresa. Duas fontes de receita mantêm o conteúdo gratuito.</p>
+    <p class="lede">Funcionamos como um negócio de impacto social: a causa de um instituto com a agilidade de uma empresa. O apadrinhamento mantém o conteúdo gratuito.</p>
   </div>
   <div class="models">
     <article class="model rec">
@@ -700,56 +751,6 @@ footer .notice{flex-basis:100%}
       <p>Conteúdo e simuladores básicos são livres. Apoiadores apadrinham vanguardistas pelo período que escolherem, a partir de 1 mês, e custeiam recursos avançados nos simuladores e mentorias.</p>
       <p class="who">Quem paga: padrinhos recorrentes</p>
     </article>
-    <article class="model">
-      <span class="tag">Comunidade</span>
-      <h3>Financiamento coletivo recorrente</h3>
-      <p>Microdoações mensais de quem acredita na causa. O foco sai da venda de um produto e vai para o apoio a uma ideia: ferramentas de gestão para quem nunca teve acesso.</p>
-      <p class="who">Quem paga: apoiadores, a partir de 1 mês de apoio</p>
-    </article>
-  </div>
-</div></section>
-<section class="band" id="transparencia"><div class="in">
-  <div class="head">
-    <p class="eyebrow">Transparência</p>
-    <h2>Quanto custa manter o portal aberto</h2>
-    <p class="lede">Um time enxuto de tecnologia, inteligência artificial e contabilidade digital. Mostramos o custo mensal e as metas da campanha de apadrinhamento.</p>
-  </div>
-  <div class="open">
-    <div class="budget">
-      <div class="total"><span>Custo mensal estimado</span><b>R$ 16.600</b></div>
-      <div class="stack" aria-hidden="true">
-        <span class="goal" style="left:51.2%">Meta 1</span>
-        <span class="goal end">Meta 2</span>
-        <div class="row"><i style="width:90.36%;background:var(--glow)"></i><i style="width:6.63%;background:var(--amber)"></i><i style="width:3.01%;background:var(--muted)"></i></div>
-      </div>
-      <ul class="keys">
-        <li><i style="background:var(--glow)"></i><span>Time de desenvolvimento</span><span>R$ 15.000</span></li>
-        <li><i style="background:var(--amber)"></i><span>Créditos de IA para desenvolvimento e simuladores</span><span>R$ 1.100</span></li>
-        <li><i style="background:var(--muted)"></i><span>Contabilidade digital e infraestrutura</span><span>R$ 500</span></li>
-      </ul>
-      <div class="goals">
-        <div><b>R$ 8.500</b><span>Meta 1</span><p>Contratar o primeiro programador e a IA.</p></div>
-        <div><b>R$ 16.600</b><span>Meta 2</span><p>Time completo de tecnologia, com design profissional nos simuladores.</p></div>
-      </div>
-    </div>
-    <div class="side">
-      <div class="head"><h3>Nota fiscal sem burocracia</h3></div>
-      <ol class="flow">
-        <li><p><b>Você apoia</b> por PIX, boleto ou cartão.</p></li>
-        <li><p><b>O pagamento compensa</b> e o sistema de cobrança registra o valor.</p></li>
-        <li><p><b>A NFS-e é emitida</b> direto com a prefeitura, por integração.</p></li>
-        <li><p><b>A nota chega no seu e-mail</b>, sem ninguém abrir sistema do governo.</p></li>
-      </ol>
-      <div class="legal">
-        <p>Empresa de impacto social (SLU) no Simples Nacional. Atividades registradas:</p>
-        <ul class="cnae">
-          <li><span>6202-3/00</span><span>Desenvolvimento dos simuladores</span></li>
-          <li><span>8599-6/04</span><span>Treinamento profissional e gerencial</span></li>
-          <li><span>9001-9/99</span><span>Produção de conteúdo artístico e cultural</span></li>
-          <li><span>6311-9/00</span><span>Simuladores online e hospedagem</span></li>
-        </ul>
-      </div>
-    </div>
   </div>
 </div></section>
 <section class="band"><div class="in">
@@ -768,6 +769,7 @@ footer .notice{flex-basis:100%}
   <span>WhatsApp (51) 99291-0038 · comercial@decisaochave.com.br</span>
 </div></footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function(){
   var fmt=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
@@ -785,7 +787,7 @@ footer .notice{flex-basis:100%}
   }
   num.addEventListener('input',function(){var p=parseFloat(num.value);if(p>0){if(p<=200)rng.value=p;render(p);}});
   rng.addEventListener('input',function(){num.value=rng.value;render(parseFloat(rng.value));});
-  document.querySelectorAll('.copy').forEach(function(b){b.addEventListener('click',function(){
+  document.querySelectorAll('.copy[data-copy]').forEach(function(b){b.addEventListener('click',function(){
     var el=document.getElementById(b.dataset.copy),txt=el.textContent;
     function sel(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selecionado';}
     try{navigator.clipboard.writeText(txt).then(function(){b.textContent='Copiado';},sel);}catch(e){sel();}
@@ -828,6 +830,106 @@ footer .notice{flex-basis:100%}
   [apN,apM].forEach(function(el){el.addEventListener('input',ap);});apP.addEventListener('change',ap);
   document.getElementById('sim-go').addEventListener('click',function(){apN.value=int(simN,1);var p=simP();apP.value=p;if(p==='N')apM.value=int(simM,1);ap();});
   ap();
+  /* máscaras */
+  function dig(v){return String(v).replace(/\D/g,'');}
+  function maskFone(v){var d=dig(v).slice(0,11);if(!d)return '';if(d.length<=2)return '('+d;var a='('+d.slice(0,2)+') ',r=d.slice(2);
+    if(d.length<=10)return a+r.slice(0,4)+(r.length>4?'-'+r.slice(4):'');return a+r.slice(0,5)+'-'+r.slice(5);}
+  function maskDoc(v){var d=dig(v).slice(0,14);
+    if(d.length<=11)return d.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+    return d.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1/$2').replace(/(\d{4})(\d)/,'$1-$2');}
+  function maskEmail(v){return String(v).replace(/\s+/g,'').toLowerCase();}
+  var MASK={fone:maskFone,doc:maskDoc,email:maskEmail};
+  document.querySelectorAll('[data-mask]').forEach(function(i){i.addEventListener('input',function(){var f=MASK[i.dataset.mask],v=f(i.value);if(v!==i.value)i.value=v;});});
+  function foneOk(v){var d=dig(v);return d.length===10||d.length===11;}
+  function emailOk(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);}
+  function cpfOk(d){if(d.length!==11||/^(\d)\1+$/.test(d))return false;for(var t=9;t<11;t++){var s=0;for(var k=0;k<t;k++)s+=d[k]*(t+1-k);if(((s*10)%11)%10!=d[t])return false;}return true;}
+  function cnpjOk(d){if(d.length!==14||/^(\d)\1+$/.test(d))return false;function dv(n){var w=n===12?[5,4,3,2,9,8,7,6,5,4,3,2]:[6,5,4,3,2,9,8,7,6,5,4,3,2],s=0;for(var k=0;k<n;k++)s+=d[k]*w[k];var r=s%11;return r<2?0:11-r;}return dv(12)==d[12]&&dv(13)==d[13];}
+  function docOk(v){var d=dig(v);return cpfOk(d)||cnpjOk(d);}
+
+  /* contas no Supabase: preencher com os dados do projeto (Project Settings > API) */
+  var SUPABASE_URL='';      /* ex.: https://xxxx.supabase.co */
+  var SUPABASE_ANON_KEY=''; /* chave pública "anon" */
+  var LOGIN_DOMINIO='decisaochave.com.br'; /* domínio do e-mail interno de login (nenhum e-mail é enviado) */
+  var sb=null;
+  try{if(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){sb=null;}
+  var FORA='O cadastro está sendo ligado e volta em breve. Enquanto isso, fale com a gente pelo WhatsApp (51) 99291-0038.';
+  var perfil=null;
+  function destino(c){return c.tipo==='vanguardista'?'simuladores':'apoiadores';}
+  function emailInterno(){var r='';try{r=crypto.randomUUID().replace(/-/g,'');}catch(e){r=Date.now().toString(36)+Math.random().toString(36).slice(2);}return 'cadastro+'+r+'@'+LOGIN_DOMINIO;}
+  function carregarPerfil(user){
+    if(!user)return Promise.resolve(null);
+    return sb.from('perfis').select('tipo,nome,fone,email,doc,cidade,uf').eq('id',user.id).maybeSingle().then(function(r){
+      var m=user.user_metadata||{};return r.data||(m.tipo?{tipo:m.tipo,nome:m.nome,fone:m.fone,email:m.email_contato,doc:m.doc,cidade:m.cidade,uf:m.uf}:null);
+    },function(){return null;});
+  }
+  function cabecalho(){
+    var c=perfil;
+    document.querySelectorAll('[data-guest]').forEach(function(el){el.hidden=!!c;});
+    document.querySelectorAll('[data-user]').forEach(function(el){el.hidden=!c;});
+    if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];
+      if(c.tipo==='apoiador'){var pre={'ap-nome':c.nome,'ap-email':c.email,'ap-whats':maskFone(c.fone||''),'ap-doc':maskDoc(c.doc||''),'ap-cidade':(c.cidade||'')+(c.uf?', '+c.uf:'')};
+        Object.keys(pre).forEach(function(id){var i=document.getElementById(id);if(i&&!i.value)i.value=pre[id]||'';});}}
+  }
+  function entrou(user,txt){return carregarPerfil(user).then(function(c){perfil=c;cabecalho();if(c){ola(txt.replace('{n}',(c.nome||'').split(' ')[0]));location.hash=destino(c);}return c;});}
+  function ola(txt){var h=document.getElementById('hello');document.getElementById('hello-txt').textContent=txt;h.hidden=false;}
+  document.getElementById('hello-x').addEventListener('click',function(){document.getElementById('hello').hidden=true;});
+  document.getElementById('sair').addEventListener('click',function(){var done=function(){perfil=null;document.getElementById('hello').hidden=true;cabecalho();location.hash='inicio';};if(sb)sb.auth.signOut().then(done,done);else done();});
+  function erro(id,msg,campo){var e=document.getElementById(id);e.textContent=msg;e.hidden=!msg;
+    document.querySelectorAll('.fields label.bad').forEach(function(l){l.classList.remove('bad');});
+    if(campo){var l=campo.closest('label');if(l)l.classList.add('bad');campo.focus();}}
+  function ocupado(form,on){var b=form.querySelector('button[type=submit]');b.disabled=on;b.style.opacity=on?.6:'';}
+  document.querySelectorAll('[data-tipo]').forEach(function(a){a.addEventListener('click',function(){var r=document.querySelector('input[name="cd-tipo"][value="'+a.dataset.tipo+'"]');if(r)r.checked=true;});});
+
+  document.getElementById('form-cadastro').addEventListener('submit',function(e){
+    e.preventDefault();var form=e.target;
+    function g(id){return document.getElementById(id);}
+    var tipo=document.querySelector('input[name="cd-tipo"]:checked');
+    if(!tipo)return erro('cd-err','Escolha se você é vanguardista ou apoiador.',document.querySelector('input[name="cd-tipo"]'));
+    if(!g('cd-nome').value.trim())return erro('cd-err','Informe seu nome.',g('cd-nome'));
+    if(!foneOk(g('cd-fone').value))return erro('cd-err','Informe um celular, WhatsApp ou telefone com DDD.',g('cd-fone'));
+    var email=maskEmail(g('cd-email').value);if(email&&!emailOk(email))return erro('cd-err','Confira o e-mail ou deixe o campo em branco.',g('cd-email'));
+    if(!docOk(g('cd-doc').value))return erro('cd-err','Confira o CPF ou CNPJ.',g('cd-doc'));
+    if(!g('cd-cidade').value.trim())return erro('cd-err','Informe sua cidade.',g('cd-cidade'));
+    if(!g('cd-uf').value)return erro('cd-err','Escolha o estado.',g('cd-uf'));
+    if(g('cd-senha').value.length<6)return erro('cd-err','A senha precisa ter pelo menos 6 caracteres.',g('cd-senha'));
+    if(!sb)return erro('cd-err',FORA);
+    var fone=dig(g('cd-fone').value);
+    var dados={tipo:tipo.value,nome:g('cd-nome').value.trim(),fone:fone,email_contato:email,doc:dig(g('cd-doc').value),cidade:g('cd-cidade').value.trim(),uf:g('cd-uf').value};
+    erro('cd-err','');ocupado(form,true);
+    sb.rpc('contato_em_uso',{p_fone:fone,p_email:email||null}).then(function(r){
+      if(r.error)throw r.error;
+      if(r.data==='fone'){erro('cd-err','Já existe uma conta com esse número. Use Entrar.',g('cd-fone'));return;}
+      if(r.data==='email'){erro('cd-err','Já existe uma conta com esse e-mail. Use Entrar.',g('cd-email'));return;}
+      return sb.auth.signUp({email:emailInterno(),password:g('cd-senha').value,options:{data:dados}}).then(function(res){
+        if(res.error)throw res.error;
+        if(!res.data.session){erro('cd-err','Conta criada. Assim que a confirmação for liberada, você já pode entrar com seu celular e senha.');return;}
+        form.reset();return entrou(res.data.user,'Conta criada. Bem-vindo, {n}.');
+      });
+    }).catch(function(err){
+      var m=String(err&&err.message||'');
+      erro('cd-err',/password/i.test(m)?'Escolha uma senha mais forte, com pelo menos 6 caracteres.':/database|duplicate|unique/i.test(m)?'Já existe uma conta com esse número ou e-mail. Use Entrar.':'Não foi possível criar a conta agora. Tente de novo em instantes.');
+    }).then(function(){ocupado(form,false);});
+  });
+  document.getElementById('form-entrar').addEventListener('submit',function(e){
+    e.preventDefault();var form=e.target;
+    var li=document.getElementById('en-login'),se=document.getElementById('en-senha'),v=li.value.trim();
+    if(!v)return erro('en-err','Informe seu celular, WhatsApp ou e-mail.',li);
+    if(!se.value)return erro('en-err','Informe sua senha.',se);
+    if(!sb)return erro('en-err',FORA);
+    var contato=v.indexOf('@')>=0?maskEmail(v):dig(v);
+    var NAO='Celular, e-mail ou senha não conferem. Confira os dados ou cadastre-se.';
+    erro('en-err','');ocupado(form,true);
+    sb.rpc('email_de_login',{contato:contato}).then(function(r){
+      if(r.error)throw r.error;
+      if(!r.data){erro('en-err',NAO,li);return;}
+      return sb.auth.signInWithPassword({email:r.data,password:se.value}).then(function(res){
+        if(res.error){erro('en-err',NAO,li);return;}
+        form.reset();return entrou(res.data.user,'Bem-vindo de volta, {n}.');
+      });
+    }).catch(function(){erro('en-err','Não foi possível entrar agora. Tente de novo em instantes.');}).then(function(){ocupado(form,false);});
+  });
+  if(sb)sb.auth.getSession().then(function(r){var u=r.data&&r.data.session&&r.data.session.user;return carregarPerfil(u).then(function(c){perfil=c;cabecalho();});});
+  cabecalho();
   /* páginas */
   var views=[].slice.call(document.querySelectorAll('[data-view]'));
   function show(){
@@ -847,7 +949,7 @@ footer .notice{flex-basis:100%}
     f.addEventListener('submit',function(e){
       e.preventDefault();
       var ok=true;f.querySelectorAll('input[required]').forEach(function(i){if(!i.value.trim())ok=false;});
-      var em=document.getElementById(p+'-email');if(em&&em.value&&!/^\S+@\S+\.\S+$/.test(em.value))ok=false;
+      var em=document.getElementById(p+'-email');if(em&&em.value&&!emailOk(em.value))ok=false;var wh=document.getElementById(p+'-whats');if(wh&&!foneOk(wh.value))ok=false;var dc=document.getElementById(p+'-doc');if(dc&&!docOk(dc.value))ok=false;
       document.getElementById(p+'-err').hidden=ok;if(!ok)return;
       var lines=[];f.querySelectorAll('.fields label').forEach(function(l){if(l.hidden)return;var i=l.querySelector('input,select');if(i)lines.push(l.querySelector('span').textContent.replace(/ \(.*\)/,'')+': '+(i.tagName==='SELECT'?i.options[i.selectedIndex].text:i.value.trim()));});
       if(p==='ap'){lines.push('Total em recursos: '+document.getElementById('ap-total').textContent);}

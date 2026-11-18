@@ -1,3 +1,4 @@
 docs/
 *.code-workspace
 .DS_Store
+supabase/
