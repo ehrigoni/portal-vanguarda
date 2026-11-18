@@ -116,7 +116,7 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 .mix li span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
 /* modelos */
-.models{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.models{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 @media (max-width:860px){.models{grid-template-columns:1fr}}
 .model{border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:12px;align-content:start}
 .model.rec{background:var(--panel);border-color:var(--glow)}
@@ -144,23 +144,7 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 .tiers{display:flex;gap:8px;flex-wrap:wrap}
 .tiers span{font-family:var(--mono);font-size:15px;padding:8px 14px;border:1px solid var(--line);border-radius:8px}
 .people p{color:var(--muted);font-size:15px}
-.seals{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
-.seal{border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;grid-template-columns:44px 1fr;gap:4px 14px;align-items:start}
-.seal .mark{grid-row:span 2;width:44px;height:44px;border-radius:50%;border:2px solid var(--glow);display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--glow);text-align:center;line-height:1.1}
-.seal.amber .mark{border-color:var(--amber);color:var(--amber)}
-.seal b{font-family:var(--display);font-weight:500;font-size:16px;line-height:1.3}
-.seal p{color:var(--muted);font-size:14px}
-.subhead{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);grid-column:1/-1;margin-top:6px}
-.proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-.proof div{border-left:2px solid var(--glow);padding:4px 0 4px 16px;display:grid;gap:4px}
-.proof p{color:var(--muted);font-size:15px}
-.proof code{font-family:var(--mono);color:var(--fg);font-size:13px}
 
-/* território */
-.terr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-@media (max-width:860px){.terr{grid-template-columns:1fr}}
-.terr div{display:grid;gap:8px;align-content:start;padding-top:14px;border-top:2px solid var(--line)}
-.terr p{color:var(--muted);font-size:15px}
 
 /* transparência */
 .open{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:24px;align-items:start}
@@ -226,7 +210,7 @@ footer .notice{flex-basis:100%}
 }
 .pagehead .in{padding-block:48px 8px;display:grid;gap:12px}
 .pagehead h1{font-size:clamp(30px,4.6vw,48px);line-height:1.08;font-weight:700;max-width:22ch}
-.doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.doors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:860px){.doors{grid-template-columns:1fr}}
 .door{display:grid;gap:10px;align-content:start;border:1px solid var(--line);border-radius:12px;padding:20px;text-decoration:none;color:var(--fg);background:var(--panel)}
 .door:hover{border-color:var(--glow)}
@@ -261,6 +245,40 @@ footer .notice{flex-basis:100%}
 .err{color:var(--amber);font-size:13px}
 .aside{display:grid;gap:14px}
 .aside .people{gap:10px}
+/* como vai funcionar */
+.meters{display:grid;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px}
+.meter{display:grid;gap:8px}
+.mt{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.mt span{color:var(--muted);font-size:15px}
+.mt b{font-size:24px;font-weight:600}
+.track{height:14px;border-radius:7px;background:var(--line);overflow:hidden}
+.track i{display:block;height:100%;width:0;background:var(--glow);border-radius:7px;transition:width .6s ease}
+.track.amber i{background:var(--amber)}
+.scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:-6px}
+.split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px;align-items:start}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.who-box{border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:16px;align-content:start}
+.who-box.feat{border-color:var(--amber);background:var(--panel)}
+.who-box .btn{justify-self:start}
+.checks{margin:0;padding-left:20px;display:grid;gap:6px;color:var(--fg)}
+.checks li::marker{color:var(--glow);font-family:var(--mono)}
+.nrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:17px}
+.nrow input,.chips input[type=number]{width:90px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--fg);font-family:var(--mono);font-size:18px;font-weight:600;padding:6px 10px}
+.chips{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.chips legend{font-size:14px;color:var(--muted);padding:0;margin-bottom:8px}
+.chips label{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.chips input[type=radio]{position:absolute;opacity:0;pointer-events:none}
+.chips input[type=radio]+span{font-family:var(--mono);font-size:14px;padding:7px 12px;border:1px solid var(--line);border-radius:999px}
+.chips input[type=radio]:checked+span{border-color:var(--amber);color:var(--amber)}
+.chips input[type=radio]:focus-visible+span{outline:2px solid var(--amber);outline-offset:2px}
+.chips .nmeses span{color:var(--muted);font-size:14px}
+.sum{display:grid;gap:4px;border-top:1px dashed var(--line);padding-top:14px}
+.sum small{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber)}
+.sum > b{font-size:32px;color:var(--amber);font-weight:600}
+.sum p{font-size:14px;color:var(--muted)}
+.sum p b{color:var(--fg);font-weight:500}
+.fields .sum{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel)}
+.fields .sum > b{font-size:26px}
 .footnav{display:flex;gap:16px;flex-wrap:wrap}
 .footnav a{color:var(--muted);text-decoration:none}
 .footnav a:hover{color:var(--fg)}
@@ -273,7 +291,7 @@ footer .notice{flex-basis:100%}
 <header class="top"><div class="in">
   <a class="brand" href="#inicio">Portal <span>Vanguarda</span></a>
   <nav aria-label="Páginas">
-    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#empresas" data-nav="empresas">Empresas</a><a href="#sobre" data-nav="sobre">Sobre</a>
+    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#sobre" data-nav="sobre">Sobre</a>
   </nav>
   <a class="btn go" href="#apoiar-cadastro">Cadastre-se</a>
 </div></header>
@@ -424,22 +442,42 @@ footer .notice{flex-basis:100%}
 </div>
   <div class="doors">
     <a class="door" href="#simuladores"><span class="tag">Grátis</span><h3>Usar os simuladores</h3><p>Raio X da venda e raio X do preço. Sem cadastro.</p><b>Simular agora →</b></a>
-    <a class="door" href="#apoiar"><span class="tag">Pessoas</span><h3>Apoiar o portal</h3><p>A partir de R$ 10 por mês. Cadastre seu interesse.</p><b>Quero apoiar →</b></a>
-    <a class="door" href="#empresas"><span class="tag">Empresas</span><h3>Patrocinar e ganhar selo</h3><p>Selos de impacto, cotas de patrocínio e conexão com o território.</p><b>Ver planos →</b></a>
+    <a class="door" href="#apoiar"><span class="tag">Pessoas</span><h3>Apoiar o portal</h3><p>Apoie vanguardistas a partir de 1 mês.</p><b>Quero apoiar →</b></a>
   </div>
   <div class="facts">
     <div><b>100% gratuito</b><small>simuladores e trilhas para quem empreende</small></div>
-    <div><b>Notas automáticas</b><small>no lançamento, cada apoio vai gerar a NFS-e sozinho</small></div>
+    <div><b>Apoio Facilitado</b><small>no lançamento, cada apoio vai gerar a NFS-e sozinho</small></div>
     <div><b>Desenvolvimento Humano</b><small>educação, trabalho decente e menos desigualdade (ODS: 4 · 8 · 10).</small></div>
 </div></section>
-<section class="band"><div class="in">
-  <div class="head"><p class="eyebrow">Como vai funcionar</p><h2>Do cadastro à nota fiscal em quatro passos</h2><p class="lede">Os passos 2 a 4 começam no lançamento oficial. Hoje o portal está em fase de estruturação.</p></div>
-  <ol class="steps">
-      <li><h3>Cadastro</h3><p>Nome, e-mail, WhatsApp, CPF ou CNPJ e cidade. Leva um minuto.</p></li>
-      <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
-      <li><h3>Uso</h3><p>Acesso aos recursos do plano: simuladores avançados, selo, mentorias.</p></li>
-      <li><h3>Nota fiscal</h3><p>A NFS-e é emitida e enviada para o seu e-mail a cada pagamento.</p></li>
-    </ol>
+<section class="band" id="como-funciona"><div class="in">
+  <div class="head"><p class="eyebrow">Como vai funcionar</p><h2>Quem empreende usa de graça. Quem apoia custeia vanguardistas.</h2><p class="lede">Hoje o portal está em fase de estruturação. Os números abaixo começam a contar no lançamento oficial.</p></div>
+  <div class="meters">
+    <div class="meter"><div class="mt"><span>Total de vanguardistas</span><b class="mono" data-vg="total">0</b></div><div class="track"><i data-vgbar="total"></i></div></div>
+    <div class="meter"><div class="mt"><span>Vanguardistas custeados durante 1 ano</span><b class="mono" data-vg="custeados">0</b></div><div class="track amber"><i data-vgbar="custeados"></i></div></div>
+    <div class="scale" aria-hidden="true"><span>0</span><span data-vg-max>100</span></div>
+    <p class="hint" data-vg-empty>A contagem começa no lançamento oficial.</p>
+  </div>
+  <div class="split">
+    <article class="who-box">
+      <span class="tag">Para quem é empreendedor</span>
+      <ol class="checks"><li>Realize o cadastro.</li><li>Obtenha acesso aos simuladores.</li><li>Uso gratuito e ininterrupto.</li></ol>
+      <a class="btn" href="#apoiar-vanguardista">Quero me cadastrar</a>
+    </article>
+    <article class="who-box feat" id="simular-apoio">
+      <span class="tag">Para quem é apoiador do portal</span>
+      <label class="nrow" for="sim-n"><span>Apoiar</span><input id="sim-n" type="number" min="1" step="1" value="1" inputmode="numeric"><span>vanguardistas</span></label>
+      <fieldset class="chips"><legend>Durante</legend>
+        <label><input type="radio" name="sim-p" value="1" checked><span>1 mês</span></label>
+        <label><input type="radio" name="sim-p" value="3"><span>3 meses</span></label>
+        <label><input type="radio" name="sim-p" value="6"><span>6 meses</span></label>
+        <label><input type="radio" name="sim-p" value="12"><span>12 meses</span></label>
+        <label><input type="radio" name="sim-p" value="N"><span>N meses</span></label>
+        <label class="nmeses" hidden><input id="sim-m" type="number" min="1" step="1" value="24" inputmode="numeric" aria-label="Número de meses"><span>meses</span></label>
+      </fieldset>
+      <div class="sum"><small>Total em recursos</small><b class="mono" id="sim-total">R$ 228,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 228,00</b> por mês.</p></div>
+      <a class="btn go" href="#apoiar-cadastro" id="sim-go">Quero apoiar</a>
+    </article>
+  </div>
 </div></section>
 <section class="cta" id="contato"><div class="in">
   <div class="head">
@@ -537,40 +575,34 @@ footer .notice{flex-basis:100%}
   </div>
 </div></section>
 <section class="band"><div class="in">
-  <div class="loop"><span class="eyebrow">Gostou?</span><p><b>Os simuladores continuam gratuitos porque alguém apoia.</b> Indique para 3 empreendedores ou apoie com R$ 10 por mês.</p><a class="btn go" href="#apoiar">Apoiar</a></div>
+  <div class="loop"><span class="eyebrow">Gostou?</span><p><b>Os simuladores continuam gratuitos porque alguém apoia.</b> Indique para 3 empreendedores ou apadrinhe vanguardistas a partir de 1 mês.</p><a class="btn go" href="#apoiar">Apoiar</a></div>
 </div></section>
 </div>
 <div data-view="apoiar">
 <section class="pagehead"><div class="in">
-  <p class="eyebrow">Apoiar · pessoas</p>
-  <h1>Escolha um plano e apoie em um minuto</h1>
-  <p class="lede">Seu apoio mensal vai manter os simuladores gratuitos para quem não pode pagar. Registre seu interesse agora; os pagamentos começam no lançamento oficial.</p>
+  <p class="eyebrow">Apoiar · apoiadores e vanguardistas</p>
+  <h1>Apoie vanguardistas a partir de 1 mês</h1>
+  <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Registre seu interesse agora; os pagamentos começam no lançamento oficial.</p>
 </div></section>
-<section class="band"><div class="in">
-  <div class="plans">
-    <div class="plan"><span class="tag">Grátis</span><h3>Empreendedor</h3><span class="price">R$ 0</span><ul><li>Raio X da venda e do preço</li><li>Trilhas de conteúdo</li><li>Comunidade</li></ul><a class="btn" href="#simuladores">Usar agora</a></div>
-    <div class="plan"><span class="tag">Apoiador</span><h3>Semente</h3><span class="price">R$ 10 <small>por mês</small></span><ul><li>Nome no mural de apoiadores</li><li>Nota fiscal no e-mail</li></ul><a class="btn go" href="#apoiar-cadastro" data-pick="ap-plano" data-value="Apoiador Semente · R$ 10/mês">Escolher</a></div>
-    <div class="plan feat"><span class="tag">Apoiador</span><h3>Raiz</h3><span class="price">R$ 20 <small>por mês</small></span><ul><li>Tudo do Semente</li><li>Recursos avançados nos simuladores</li></ul><a class="btn go" href="#apoiar-cadastro" data-pick="ap-plano" data-value="Apoiador Raiz · R$ 20/mês">Escolher</a></div>
-    <div class="plan"><span class="tag">Apoiador</span><h3>Árvore</h3><span class="price">R$ 50 <small>por mês</small></span><ul><li>Tudo do Raiz</li><li>Mentoria em grupo</li></ul><a class="btn go" href="#apoiar-cadastro" data-pick="ap-plano" data-value="Apoiador Árvore · R$ 50/mês">Escolher</a></div>
-  </div>
-</div></section>
-<section class="band"><div class="in">
-  <div class="head"><p class="eyebrow">Cadastro de interesse</p><h2>Seus dados para avisarmos no lançamento</h2></div>
+<section class="band" id="apoiadores"><div class="in">
+  <div class="head"><p class="eyebrow">Como funciona para Apoiadores</p><h2>Do cadastro à nota fiscal em quatro passos</h2></div>
   <ol class="steps">
       <li><h3>Cadastro</h3><p>Nome, e-mail, WhatsApp, CPF ou CNPJ e cidade. Leva um minuto.</p></li>
+      <li><h3>Apadrinhamento</h3><p>Escolha do número de apadrinhados e período.</p></li>
       <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
-      <li><h3>Uso</h3><p>Acesso aos recursos do plano: simuladores avançados, selo, mentorias.</p></li>
       <li><h3>Nota fiscal</h3><p>A NFS-e é emitida e enviada para o seu e-mail a cada pagamento.</p></li>
     </ol>
   <div class="signup" id="apoiar-cadastro">
     <form class="fields-form" data-form="ap" novalidate>
       <div class="fields two">
-        <label for="ap-plano" class="wide"><span>Plano escolhido</span><select id="ap-plano"><option>Apoiador Semente · R$ 10/mês</option><option selected>Apoiador Raiz · R$ 20/mês</option><option>Apoiador Árvore · R$ 50/mês</option></select></label>
-        
+        <label for="ap-n"><span>Número de apadrinhados</span><input id="ap-n" type="number" min="1" step="1" value="1" required inputmode="numeric"></label>
+        <label for="ap-periodo"><span>Período</span><select id="ap-periodo"><option value="1">1 mês</option><option value="3">3 meses</option><option value="6">6 meses</option><option value="12" selected>12 meses</option><option value="N">N meses</option></select></label>
+        <label for="ap-meses" class="wide" hidden><span>Quantos meses</span><input id="ap-meses" type="number" min="1" step="1" value="24" inputmode="numeric"></label>
+        <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 2.736,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 228,00</b> por mês.</p></div>
         <label for="ap-nome"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
         <label for="ap-email"><span>E-mail</span><input id="ap-email" type="email" required autocomplete="email" inputmode="email"></label>
         <label for="ap-whats"><span>WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000"></label>
-        <label for="ap-doc"><span>CPF (para a nota fiscal)</span><input id="ap-doc" type="text" required inputmode="numeric"></label>
+        <label for="ap-doc"><span>CPF ou CNPJ (para a nota fiscal)</span><input id="ap-doc" type="text" required inputmode="numeric"></label>
         <label for="ap-cidade" class="wide"><span>Cidade e estado</span><input id="ap-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
       </div>
       <p class="err" id="ap-err" hidden>Preencha todos os campos para continuar.</p>
@@ -588,7 +620,45 @@ footer .notice{flex-basis:100%}
       </div>
       <div class="people" id="ap-help">
         <h3>Como funciona</h3>
-        <p>Depois do lançamento: 1. Cadastro. 2. Link de pagamento. 3. Uso. 4. Nota fiscal no e-mail. Por enquanto, o cadastro só registra seu interesse.</p>
+        <p>Depois do lançamento: 1. Cadastro. 2. Escolha dos apadrinhados e do período. 3. Link de pagamento. 4. Nota fiscal no e-mail. Por enquanto, o cadastro só registra seu interesse.</p>
+        <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+<section class="band" id="vanguardistas"><div class="in">
+  <div class="head"><p class="eyebrow">Como funciona para Vanguardistas</p><h2>Cadastre seu negócio e fique disponível para ser apadrinhado</h2></div>
+  <ol class="steps">
+      <li><h3>Cadastro</h3><p>Nome, e-mail, WhatsApp, CPF ou CNPJ e cidade. Leva um minuto.</p></li>
+      <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
+      <li><h3>Uso</h3><p>Acesso aos recursos do plano: simuladores avançados, selo, mentorias.</p></li>
+      <li><h3>Apadrinhamento</h3><p>O Vanguardista fica disponível para que seja apadrinhado na plataforma.</p></li>
+    </ol>
+  <div class="signup" id="apoiar-vanguardista">
+    <form class="fields-form" data-form="vg" novalidate>
+      <div class="fields two">
+        <label for="vg-nome"><span>Nome completo</span><input id="vg-nome" type="text" required autocomplete="name"></label>
+        <label for="vg-email"><span>E-mail</span><input id="vg-email" type="email" required autocomplete="email" inputmode="email"></label>
+        <label for="vg-whats"><span>WhatsApp</span><input id="vg-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000"></label>
+        <label for="vg-doc"><span>CPF ou CNPJ</span><input id="vg-doc" type="text" required inputmode="numeric"></label>
+        <label for="vg-cidade" class="wide"><span>Cidade e estado</span><input id="vg-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
+      </div>
+      <p class="err" id="vg-err" hidden>Preencha todos os campos para continuar.</p>
+      <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
+      <button class="btn go" type="submit">Registrar interesse</button>
+      <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
+    </form>
+    <div class="aside">
+      <div class="done" id="vg-done" hidden>
+        <h3>Interesse registrado aqui</h3>
+        <p>Envie pelo WhatsApp para entrar na lista. Avisaremos quando os pagamentos e as notas fiscais começarem.</p>
+        <pre id="vg-resumo"></pre>
+        <a class="btn go" id="vg-wa" href="https://wa.me/5551992910038" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
+        <p>Prefere e-mail? Copie o resumo e envie para comercial@decisaochave.com.br.</p>
+      </div>
+      <div class="people" id="vg-help">
+        <h3>Como funciona</h3>
+        <p>Depois do lançamento: 1. Cadastro. 2. Link de pagamento. 3. Uso dos recursos do plano. 4. Você fica disponível para ser apadrinhado. Por enquanto, o cadastro só registra seu interesse.</p>
         <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
       </div>
     </div>
@@ -612,84 +682,6 @@ footer .notice{flex-basis:100%}
   </div>
 </div></section>
 </div>
-<div data-view="empresas">
-<section class="pagehead"><div class="in">
-  <p class="eyebrow">Empresas · pagantes</p>
-  <h1>Patrocine pequenos negócios e mostre o impacto</h1>
-  <p class="lede">Selos ligados a resultados medidos, prontos para o relatório de ESG. Contrato simples e nota fiscal automática.</p>
-</div></section>
-<section class="band" id="selos"><div class="in">
-  <div class="seals">
-      <p class="subhead">Selos de impacto social</p>
-      <div class="seal amber"><span class="mark">500</span><b>Empresa Madrinha · Bronze</b><p>Mantém o acesso gratuito de 500 microempresários.</p></div>
-      <div class="seal amber"><span class="mark">2 mil</span><b>Empresa Madrinha · Prata</b><p>Mantém o acesso gratuito de 2.000 microempresários.</p></div>
-      <div class="seal amber"><span class="mark">5 mil+</span><b>Empresa Madrinha · Ouro</b><p>Mantém o acesso gratuito de 5.000 ou mais microempresários.</p></div>
-      <div class="seal"><span class="mark">EDU</span><b>Investidora em Educação Empreendedora</b><p>Financia novas trilhas e novos simuladores para comunidades vulneráveis.</p></div>
-      <div class="seal"><span class="mark">PER</span><b>Aceleradora de Negócios Periféricos</b><p>Direciona o apoio a empreendedores de favelas e regiões vulneráveis.</p></div>
-      <div class="seal"><span class="mark">PWR</span><b>Powered by sua empresa</b><p>Cota master: sua marca no rodapé de um simulador de alta demanda.</p></div>
-      <p class="subhead">Selos alinhados aos ODS da ONU</p>
-      <div class="seal"><span class="mark">ODS 4</span><b>Educação de Qualidade</b><p>Acesso gratuito e democrático a simulação econômica de ponta.</p></div>
-      <div class="seal"><span class="mark">ODS 8</span><b>Trabalho Decente e Crescimento</b><p>Investimento direto na emancipação financeira de pequenos negócios.</p></div>
-      <div class="seal"><span class="mark">ODS 10</span><b>Redução das Desigualdades</b><p>Ferramentas de gestão de grande empresa para o comércio de bairro.</p></div>
-    </div>
-  <div class="proof">
-    <div><h3>Selo verificável</h3><p>Quem clica no selo no site da empresa chega a uma página pública com o histórico de empreendedores apoiados: <code>/selo/nome-da-empresa</code></p></div>
-    <div><h3>Kit de mídia pronto</h3><p>Selo em alta resolução e vetor, modelos de post para LinkedIn e Instagram e um texto sugerido para o relatório anual de ESG.</p></div>
-    <div><h3>Tecnologia para o Bem</h3><p>Selo para empresas de tecnologia e startups que querem apoiar ferramentas gratuitas e abertas.</p></div>
-</div></section>
-<section class="band" id="territorio"><div class="in">
-  <div class="head">
-    <p class="eyebrow">Para empresas do território</p>
-    <h2>Fornecedores e talentos locais, conectados a quem contrata</h2>
-    <p class="lede">Empresas com operação na região encontram no portal fornecedores e profissionais qualificados da própria comunidade. Não é caridade: é menos rotatividade, cadeia local mais forte e menos risco de reputação.</p>
-  </div>
-  <div class="terr">
-    <div><h3>Conexão por resultado</h3><p>Taxa por contratação ou fornecedor conectado, ou mensalidade flexível por território atendido.</p></div>
-    <div><h3>Licença social para operar</h3><p>Indústrias, agronegócio e mineração investem no desenvolvimento da cadeia local com contrato direto, sem lei de incentivo.</p></div>
-    <div><h3>Patrocinador Fundador</h3><p>Duas cotas corporativas de R$ 8.000 por mês colocam a marca na nova interface dos simuladores e cobrem todo o time.</p></div>
-  </div>
-</div></section>
-<section class="band"><div class="in">
-  <div class="head"><p class="eyebrow">Cadastro de interesse da empresa</p><h2>Escolha o selo ou a cota e receba a proposta</h2></div>
-  <ol class="steps">
-      <li><h3>Cadastro</h3><p>Nome, e-mail, WhatsApp, CPF ou CNPJ e cidade. Leva um minuto.</p></li>
-      <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
-      <li><h3>Uso</h3><p>Acesso aos recursos do plano: simuladores avançados, selo, mentorias.</p></li>
-      <li><h3>Nota fiscal</h3><p>A NFS-e é emitida e enviada para o seu e-mail a cada pagamento.</p></li>
-    </ol>
-  <div class="signup" id="empresa-cadastro">
-    <form class="fields-form" data-form="em" novalidate>
-      <div class="fields two">
-        <label for="em-plano" class="wide"><span>Plano escolhido</span><select id="em-plano"><option selected>Empresa Madrinha · Bronze</option><option>Empresa Madrinha · Prata</option><option>Empresa Madrinha · Ouro</option><option>Powered by · cota master</option><option>Patrocinador Fundador · R$ 8.000/mês</option><option>Conexão territorial</option><option>Ainda não sei, quero conversar</option></select></label>
-        <label for="em-empresa" class="wide"><span>Empresa</span><input id="em-empresa" type="text" required autocomplete="organization"></label>
-        <label for="em-nome"><span>Nome completo</span><input id="em-nome" type="text" required autocomplete="name"></label>
-        <label for="em-email"><span>E-mail</span><input id="em-email" type="email" required autocomplete="email" inputmode="email"></label>
-        <label for="em-whats"><span>WhatsApp</span><input id="em-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000"></label>
-        <label for="em-doc"><span>CNPJ (para a nota fiscal)</span><input id="em-doc" type="text" required inputmode="numeric"></label>
-        <label for="em-cidade" class="wide"><span>Cidade e estado</span><input id="em-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
-      </div>
-      <p class="err" id="em-err" hidden>Preencha todos os campos para continuar.</p>
-      <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-      <button class="btn go" type="submit">Registrar interesse</button>
-      <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
-    </form>
-    <div class="aside">
-      <div class="done" id="em-done" hidden>
-        <h3>Interesse registrado aqui</h3>
-        <p>Envie pelo WhatsApp para entrar na lista. Avisaremos quando os pagamentos e as notas fiscais começarem.</p>
-        <pre id="em-resumo"></pre>
-        <a class="btn go" id="em-wa" href="https://wa.me/5551992910038" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
-        <p>Prefere e-mail? Copie o resumo e envie para comercial@decisaochave.com.br.</p>
-      </div>
-      <div class="people" id="em-help">
-        <h3>Como funciona</h3>
-        <p>Depois do lançamento: 1. Cadastro. 2. Link de pagamento. 3. Uso. 4. Nota fiscal no e-mail. Por enquanto, o cadastro só registra seu interesse.</p>
-        <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
-      </div>
-    </div>
-  </div>
-</div></section>
-</div>
 <div data-view="sobre">
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Sobre</p>
@@ -699,26 +691,20 @@ footer .notice{flex-basis:100%}
   <div class="head">
     <p class="eyebrow">Como o portal se sustenta</p>
     <h2>Acesso aberto para todos, pago por quem pode</h2>
-    <p class="lede">Funcionamos como um negócio de impacto social: a causa de um instituto com a agilidade de uma empresa. Três fontes de receita mantêm o conteúdo gratuito.</p>
+    <p class="lede">Funcionamos como um negócio de impacto social: a causa de um instituto com a agilidade de uma empresa. Duas fontes de receita mantêm o conteúdo gratuito.</p>
   </div>
   <div class="models">
     <article class="model rec">
       <span class="tag">Base do modelo</span>
       <h3>Freemium + apadrinhamento</h3>
-      <p>Conteúdo e simuladores básicos são livres. Padrinhos, empresas ou empreendedores que prosperaram, assinam um apoio mensal e recebem selos de impacto, recursos avançados nos simuladores e mentorias.</p>
+      <p>Conteúdo e simuladores básicos são livres. Apoiadores apadrinham vanguardistas pelo período que escolherem, a partir de 1 mês, e custeiam recursos avançados nos simuladores e mentorias.</p>
       <p class="who">Quem paga: padrinhos recorrentes</p>
     </article>
     <article class="model">
       <span class="tag">Comunidade</span>
       <h3>Financiamento coletivo recorrente</h3>
       <p>Microdoações mensais de quem acredita na causa. O foco sai da venda de um produto e vai para o apoio a uma ideia: ferramentas de gestão para quem nunca teve acesso.</p>
-      <p class="who">Quem paga: apoiadores, a partir de R$ 10/mês</p>
-    </article>
-    <article class="model">
-      <span class="tag">Parceiros</span>
-      <h3>Plataforma multilateral</h3>
-      <p>O empreendedor não paga nada. Bancos, fintechs e instituições que querem chegar a esse público financiam cotas de patrocínio e integrações nos simuladores.</p>
-      <p class="who">Quem paga: empresas estabelecidas que acreditam na causa</p>
+      <p class="who">Quem paga: apoiadores, a partir de 1 mês de apoio</p>
     </article>
   </div>
 </div></section>
@@ -778,7 +764,7 @@ footer .notice{flex-basis:100%}
 
 <footer><div class="in">
   <p class="notice" id="aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-  <nav class="footnav" aria-label="Rodapé"><a href="#simuladores">Simuladores</a><a href="#apoiar">Apoiar</a><a href="#empresas">Empresas</a><a href="#sobre">Sobre</a></nav>
+  <nav class="footnav" aria-label="Rodapé"><a href="#simuladores">Simuladores</a><a href="#apoiar">Apoiar</a><a href="#sobre">Sobre</a></nav>
   <span>WhatsApp (51) 99291-0038 · comercial@decisaochave.com.br</span>
 </div></footer>
 
@@ -818,6 +804,30 @@ footer .notice{flex-basis:100%}
   ids.forEach(function(k){document.getElementById('c-'+k).addEventListener('input',custos);});
   custos();
 
+  /* como vai funcionar: números e apoio */
+  var VG={total:0,custeados:0}; /* atualizar com os números reais */
+  var CUSTO_MEDIO=228; /* custo médio mensal de cada vanguardista apadrinhado, em R$ */
+  document.querySelectorAll('[data-vg]').forEach(function(el){el.textContent=VG[el.dataset.vg].toLocaleString('pt-BR');});
+  /* escala: começa em 0–100; quando um número passa do limite, o limite sobe para o próximo valor redondo (1, 2 ou 5 × 10^k) e as duas barras usam a mesma escala */
+  function escala(v){var m=100;while(v>m){var k=Math.pow(10,Math.floor(Math.log10(m))),d=m/k;m=(d<2?2:d<5?5:10)*k;}return m;}
+  var vgMax=escala(Math.max(VG.total,VG.custeados));
+  document.querySelectorAll('[data-vg-max]').forEach(function(el){el.textContent=vgMax.toLocaleString('pt-BR');});
+  document.querySelectorAll('[data-vgbar]').forEach(function(el){el.style.width=(VG[el.dataset.vgbar]/vgMax*100)+'%';});
+  document.querySelectorAll('[data-vg-empty]').forEach(function(el){el.hidden=VG.total>0;});
+  document.querySelectorAll('[data-custo]').forEach(function(el){el.textContent=fmt.format(CUSTO_MEDIO);});
+  function int(el,d){var n=parseInt(el.value,10);return n>0?n:d;}
+  function meses(p,m){return p==='N'?int(m,1):parseInt(p,10);}
+  var simN=document.getElementById('sim-n'),simM=document.getElementById('sim-m'),simNM=simM.closest('label');
+  function simP(){return document.querySelector('input[name="sim-p"]:checked').value;}
+  function sim(){simNM.hidden=simP()!=='N';document.getElementById('sim-total').textContent=fmt.format(int(simN,1)*meses(simP(),simM)*CUSTO_MEDIO);}
+  simN.addEventListener('input',sim);simM.addEventListener('input',sim);
+  document.querySelectorAll('input[name="sim-p"]').forEach(function(r){r.addEventListener('change',sim);});
+  sim();
+  var apN=document.getElementById('ap-n'),apP=document.getElementById('ap-periodo'),apM=document.getElementById('ap-meses');
+  function ap(){apM.closest('label').hidden=apP.value!=='N';document.getElementById('ap-total').textContent=fmt.format(int(apN,1)*meses(apP.value,apM)*CUSTO_MEDIO);}
+  [apN,apM].forEach(function(el){el.addEventListener('input',ap);});apP.addEventListener('change',ap);
+  document.getElementById('sim-go').addEventListener('click',function(){apN.value=int(simN,1);var p=simP();apP.value=p;if(p==='N')apM.value=int(simM,1);ap();});
+  ap();
   /* páginas */
   var views=[].slice.call(document.querySelectorAll('[data-view]'));
   function show(){
@@ -831,8 +841,6 @@ footer .notice{flex-basis:100%}
     if(target)target.scrollIntoView({block:'start'});else window.scrollTo(0,0);
   }
   window.addEventListener('hashchange',show);show();
-  /* escolher plano */
-  document.querySelectorAll('[data-pick]').forEach(function(a){a.addEventListener('click',function(){var s=document.getElementById(a.dataset.pick);if(s)s.value=a.dataset.value;});});
   /* cadastro */
   document.querySelectorAll('[data-form]').forEach(function(f){
     var p=f.dataset.form;
@@ -841,7 +849,9 @@ footer .notice{flex-basis:100%}
       var ok=true;f.querySelectorAll('input[required]').forEach(function(i){if(!i.value.trim())ok=false;});
       var em=document.getElementById(p+'-email');if(em&&em.value&&!/^\S+@\S+\.\S+$/.test(em.value))ok=false;
       document.getElementById(p+'-err').hidden=ok;if(!ok)return;
-      var lines=[];f.querySelectorAll('label').forEach(function(l){var i=l.querySelector('input,select');if(i)lines.push(l.querySelector('span').textContent.replace(/ \(.*\)/,'')+': '+i.value.trim());});
+      var lines=[];f.querySelectorAll('.fields label').forEach(function(l){if(l.hidden)return;var i=l.querySelector('input,select');if(i)lines.push(l.querySelector('span').textContent.replace(/ \(.*\)/,'')+': '+(i.tagName==='SELECT'?i.options[i.selectedIndex].text:i.value.trim()));});
+      if(p==='ap'){lines.push('Total em recursos: '+document.getElementById('ap-total').textContent);}
+      if(p==='vg')lines.unshift('Perfil: Vanguardista');
       var txt='Olá! Tenho interesse no Portal Vanguarda.\n'+lines.join('\n');
       document.getElementById(p+'-resumo').textContent=txt;
       document.getElementById(p+'-wa').href='https://wa.me/5551992910038?text='+encodeURIComponent(txt);
