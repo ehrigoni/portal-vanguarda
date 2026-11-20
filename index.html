@@ -718,7 +718,7 @@ footer .notice{flex-basis:100%}
         <label for="cd-doc" class="wide"><span>CPF ou CNPJ</span><input id="cd-doc" type="text" required inputmode="numeric" placeholder="000.000.000-00" data-mask="doc"></label>
         <label for="cd-cidade"><span>Cidade</span><input id="cd-cidade" type="text" required autocomplete="address-level2"></label>
         <label for="cd-uf"><span>Estado</span><select id="cd-uf" required autocomplete="address-level1"><option value="" selected disabled>Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
-        <label for="cd-cep"><span>CEP<i data-ap-opc> (opcional)</i></span><input id="cd-cep" type="text" autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9" data-mask="cep"><small class="hint" id="cd-cep-msg" aria-live="polite"></small></label>
+        <label for="cd-cep"><span>CEP<i data-ap-opc> (opcional)</i></span><input id="cd-cep" type="text" autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9"><small class="hint" id="cd-cep-msg" aria-live="polite"></small></label>
         <label for="cd-end"><span>Endereço<i data-ap-opc> (opcional)</i></span><input id="cd-end" type="text" autocomplete="street-address" placeholder="Rua, número, complemento e bairro"></label>
         <label for="cd-senha" class="wide"><span>Senha (mínimo de 6 caracteres)</span><input id="cd-senha" type="password" required minlength="6" autocomplete="new-password"></label>
       </div>
@@ -843,8 +843,7 @@ footer .notice{flex-basis:100%}
     if(d.length<=11)return d.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
     return d.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1/$2').replace(/(\d{4})(\d)/,'$1-$2');}
   function maskEmail(v){return String(v).replace(/\s+/g,'').toLowerCase();}
-  function maskCep(v){var d=dig(v).slice(0,8);return d.length>5?d.slice(0,5)+'-'+d.slice(5):d;}
-  var MASK={fone:maskFone,doc:maskDoc,email:maskEmail,cep:maskCep};
+  var MASK={fone:maskFone,doc:maskDoc,email:maskEmail};
   document.querySelectorAll('[data-mask]').forEach(function(i){i.addEventListener('input',function(){var f=MASK[i.dataset.mask],v=f(i.value);if(v!==i.value)i.value=v;});});
   function foneOk(v){var d=dig(v);return d.length===10||d.length===11;}
   function emailOk(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);}
@@ -887,6 +886,8 @@ footer .notice{flex-basis:100%}
   document.querySelectorAll('[data-tipo]').forEach(function(a){a.addEventListener('click',function(){var r=document.querySelector('input[name="cd-tipo"][value="'+a.dataset.tipo+'"]');if(r)r.checked=true;});});
 
   /* CEP e endereço: obrigatórios para apoiador; o CEP é conferido no ViaCEP */
+  function maskCep(v){var d=dig(v).slice(0,8);return d.length>5?d.slice(0,5)+'-'+d.slice(5):d;}
+  (function(i){i.addEventListener('input',function(){var v=maskCep(i.value);if(v!==i.value)i.value=v;});})(document.getElementById('cd-cep'));
   function cepFormatoOk(v){var d=dig(v);return d.length===8&&!/^(\d)\1{7}$/.test(d);}
   var cepCache={};
   /* devolve {ok:true,dados}, {ok:false} (CEP não existe) ou {ok:null} (sem resposta: aceita só pelo formato) */
