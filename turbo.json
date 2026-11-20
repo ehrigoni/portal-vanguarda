@@ -1,0 +1,10 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "tasks": {
+    "check": {
+      "inputs": ["index.html", "api/**", "scripts/check.mjs"],
+      "outputs": [],
+      "tags": ["ci"]
+    }
+  }
+}
