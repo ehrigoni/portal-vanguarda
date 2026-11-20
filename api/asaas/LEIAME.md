@@ -2,7 +2,7 @@
 
 O formulário **Apoiar** chama `POST /api/asaas/cobranca` (função da Vercel em `cobranca.js`). A função recalcula o valor (apadrinhados × meses × R$ 1,00), cria ou atualiza o cliente no Asaas pelo CPF/CNPJ, cria uma cobrança única com PIX, boleto ou cartão à escolha do apoiador e devolve o link da fatura, que o site abre.
 
-Sem a chave configurada, o site continua no modo "Registrar interesse" pelo WhatsApp.
+Sem a chave configurada, o botão Apoiar continua registrando interesse pelo WhatsApp.
 
 ## Onde colocar a chave
 
@@ -24,7 +24,7 @@ Opcionais: `ASAAS_VALOR_MINIMO` (padrão 5, o mínimo que o Asaas aceita por cob
 ## Testar no sandbox
 
 1. Configure a chave do sandbox como acima e faça o redeploy.
-2. No site, Apoiar > preencha > **Ir para o pagamento (teste)**.
+2. No site, Apoiar > preencha > **Apoiar (teste)**.
 3. Na fatura do sandbox, pague com o PIX de teste ou com o cartão de teste do Asaas.
 4. A cobrança aparece em **Cobranças** no painel do sandbox, com a referência `apoio:<apadrinhados>x<meses>m`.
 
