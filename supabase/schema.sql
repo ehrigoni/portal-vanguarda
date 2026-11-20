@@ -14,20 +14,6 @@ create table if not exists public.perfis (
   criado_em  timestamptz not null default now()
 );
 
--- 1b. Endereço e CEP (obrigatórios para apoiador; vão na nota fiscal)
---      Seguro rodar de novo em um banco que já tem a tabela.
-alter table public.perfis add column if not exists cep      char(8);
-alter table public.perfis add column if not exists endereco text;
-
-alter table public.perfis drop constraint if exists perfis_cep_formato;
-alter table public.perfis add constraint perfis_cep_formato
-  check (cep is null or cep ~ '^[0-9]{8}$');
-
--- "not valid": não barra apoiadores cadastrados antes desta mudança, só os novos
-alter table public.perfis drop constraint if exists perfis_apoiador_endereco;
-alter table public.perfis add constraint perfis_apoiador_endereco
-  check (tipo <> 'apoiador' or (cep is not null and length(trim(coalesce(endereco, ''))) > 0)) not valid;
-
 alter table public.perfis enable row level security;
 
 drop policy if exists "ver o proprio perfil" on public.perfis;
@@ -46,7 +32,7 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.perfis (id, tipo, nome, fone, email, doc, cep, endereco, cidade, uf)
+  insert into public.perfis (id, tipo, nome, fone, email, doc, cidade, uf)
   values (
     new.id,
     new.raw_user_meta_data ->> 'tipo',
@@ -54,8 +40,6 @@ begin
     regexp_replace(coalesce(new.raw_user_meta_data ->> 'fone', ''), '[^0-9]', '', 'g'),
     nullif(lower(trim(coalesce(new.raw_user_meta_data ->> 'email_contato', ''))), ''),
     regexp_replace(coalesce(new.raw_user_meta_data ->> 'doc', ''), '[^0-9]', '', 'g'),
-    nullif(regexp_replace(coalesce(new.raw_user_meta_data ->> 'cep', ''), '[^0-9]', '', 'g'), ''),
-    nullif(trim(coalesce(new.raw_user_meta_data ->> 'endereco', '')), ''),
     trim(new.raw_user_meta_data ->> 'cidade'),
     upper(new.raw_user_meta_data ->> 'uf')
   );

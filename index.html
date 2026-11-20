@@ -237,9 +237,6 @@ footer .notice{flex-basis:100%}
 .signup .fields label select{width:100%;background:transparent;border:0;color:var(--fg);font-family:var(--body);font-size:16px;padding:0;outline:none}
 .signup .fields label select option{background:var(--panel);color:var(--fg)}
 .signup .fields input{font-family:var(--body);font-weight:500;font-size:16px}
-.signup .fields label > span i{font-style:normal}
-.signup .fields .hint:empty{display:none}
-.signup .fields .hint.bad{color:var(--amber)}
 .signup .wide{grid-column:1/-1}
 .signup .note{font-size:13px;color:var(--muted)}
 .done{border:1px solid var(--glow);border-radius:12px;padding:18px 20px;display:grid;gap:10px;background:var(--panel)}
@@ -614,7 +611,7 @@ footer .notice{flex-basis:100%}
 <section class="band" id="apoiadores"><div class="in">
   <div class="head"><p class="eyebrow">Como funciona para Apoiadores</p><h2>Do cadastro à nota fiscal em quatro passos</h2></div>
   <ol class="steps">
-      <li><h3>Cadastro</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ, endereço, CEP, cidade, estado e senha. Leva um minuto.</p></li>
+      <li><h3>Cadastro</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ, cidade, estado e senha. Leva um minuto.</p></li>
       <li><h3>Apadrinhamento</h3><p>Escolha do número de apadrinhados e período.</p></li>
       <li><h3>Pagamento</h3><p>Você recebe o link e apoia por PIX, boleto ou cartão. O pagamento compensa e o sistema de cobrança registra o valor.</p></li>
       <li><h3>Nota fiscal sem burocracia</h3><p>A NFS-e é emitida direto com a prefeitura, por integração, e chega no seu e-mail a cada pagamento, sem ninguém abrir sistema do governo.</p></li>
@@ -718,8 +715,6 @@ footer .notice{flex-basis:100%}
         <label for="cd-doc" class="wide"><span>CPF ou CNPJ</span><input id="cd-doc" type="text" required inputmode="numeric" placeholder="000.000.000-00" data-mask="doc"></label>
         <label for="cd-cidade"><span>Cidade</span><input id="cd-cidade" type="text" required autocomplete="address-level2"></label>
         <label for="cd-uf"><span>Estado</span><select id="cd-uf" required autocomplete="address-level1"><option value="" selected disabled>Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
-        <label for="cd-cep"><span>CEP<i data-ap-opc> (opcional)</i></span><input id="cd-cep" type="text" autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9"><small class="hint" id="cd-cep-msg" aria-live="polite"></small></label>
-        <label for="cd-end"><span>Endereço<i data-ap-opc> (opcional)</i></span><input id="cd-end" type="text" autocomplete="street-address" placeholder="Rua, número, complemento e bairro"></label>
         <label for="cd-senha" class="wide"><span>Senha (mínimo de 6 caracteres)</span><input id="cd-senha" type="password" required minlength="6" autocomplete="new-password"></label>
       </div>
       <p class="err" id="cd-err" hidden></p>
@@ -730,7 +725,7 @@ footer .notice{flex-basis:100%}
     <div class="aside">
       <div class="people">
         <h3>Por que pedimos esses dados</h3>
-        <p>O celular ou WhatsApp é o seu login e o canal para falarmos com você. O CPF ou CNPJ vai na nota fiscal. Para apoiadores, endereço e CEP são obrigatórios porque também vão na nota fiscal; o CEP preenche o endereço, a cidade e o estado. O e-mail é opcional: se você informar, também pode usá-lo para entrar e a nota fiscal chega nele.</p>
+        <p>O celular ou WhatsApp é o seu login e o canal para falarmos com você. O CPF ou CNPJ vai na nota fiscal. O e-mail é opcional: se você informar, também pode usá-lo para entrar e a nota fiscal chega nele.</p>
         <p>Seus dados ficam guardados no banco de dados do portal e são usados só para o Portal Vanguarda.</p>
         <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
       </div>
@@ -885,54 +880,6 @@ footer .notice{flex-basis:100%}
   function ocupado(form,on){var b=form.querySelector('button[type=submit]');b.disabled=on;b.style.opacity=on?.6:'';}
   document.querySelectorAll('[data-tipo]').forEach(function(a){a.addEventListener('click',function(){var r=document.querySelector('input[name="cd-tipo"][value="'+a.dataset.tipo+'"]');if(r)r.checked=true;});});
 
-  /* CEP e endereço: obrigatórios para apoiador; o CEP é conferido no ViaCEP */
-  function maskCep(v){var d=dig(v).slice(0,8);return d.length>5?d.slice(0,5)+'-'+d.slice(5):d;}
-  (function(i){i.addEventListener('input',function(){var v=maskCep(i.value);if(v!==i.value)i.value=v;});})(document.getElementById('cd-cep'));
-  function cepFormatoOk(v){var d=dig(v);return d.length===8&&!/^(\d)\1{7}$/.test(d);}
-  var cepCache={};
-  /* devolve {ok:true,dados}, {ok:false} (CEP não existe) ou {ok:null} (sem resposta: aceita só pelo formato) */
-  function consultaCep(d){
-    if(cepCache[d])return cepCache[d];
-    var ctl=window.AbortController?new AbortController():null,t=setTimeout(function(){if(ctl)ctl.abort();},5000);
-    var pr=fetch('https://viacep.com.br/ws/'+d+'/json/',ctl?{signal:ctl.signal}:{}).then(function(r){if(!r.ok)throw r;return r.json();})
-      .then(function(j){return j&&!j.erro&&j.cep?{ok:true,dados:j}:{ok:false};},function(){delete cepCache[d];return {ok:null};})
-      .then(function(r){clearTimeout(t);return r;});
-    cepCache[d]=pr;return pr;
-  }
-  function apoiadorSel(){var t=document.querySelector('input[name="cd-tipo"]:checked');return !!t&&t.value==='apoiador';}
-  function tipoCadastro(){var ap=apoiadorSel();
-    ['cd-cep','cd-end'].forEach(function(id){document.getElementById(id).required=ap;});
-    document.querySelectorAll('[data-ap-opc]').forEach(function(el){el.hidden=ap;});}
-  document.querySelectorAll('input[name="cd-tipo"]').forEach(function(r){r.addEventListener('change',tipoCadastro);});
-  document.querySelectorAll('[data-tipo]').forEach(function(a){a.addEventListener('click',function(){setTimeout(tipoCadastro,0);});});
-  document.getElementById('form-cadastro').addEventListener('reset',function(){setTimeout(function(){tipoCadastro();cepMsg('');},0);});
-  tipoCadastro();
-  function cepMsg(t,ruim){var m=document.getElementById('cd-cep-msg');m.textContent=t;m.classList.toggle('bad',!!ruim);}
-  function conferirCep(preencher){
-    var i=document.getElementById('cd-cep'),d=dig(i.value);
-    if(!d){cepMsg('');return Promise.resolve({ok:true,vazio:true});}
-    if(!cepFormatoOk(d)){cepMsg(d.length<8?'':'CEP inválido.',d.length===8);return Promise.resolve({ok:false});}
-    cepMsg('Conferindo o CEP…');
-    return consultaCep(d).then(function(r){
-      if(dig(i.value)!==d)return r;
-      if(r.ok===false){cepMsg('CEP não encontrado. Confira os números.',true);return r;}
-      if(r.ok===null){cepMsg('Não foi possível conferir o CEP agora; confira os números.');return r;}
-      var j=r.dados,g=function(id){return document.getElementById(id);};
-      cepMsg([j.logradouro,j.bairro,j.localidade+'/'+j.uf].filter(Boolean).join(', '));
-      if(preencher){
-        if(!g('cd-cidade').value.trim())g('cd-cidade').value=j.localidade||'';
-        if(!g('cd-uf').value&&j.uf)g('cd-uf').value=j.uf;
-        var en=g('cd-end');if(!en.value.trim()&&j.logradouro){en.value=j.logradouro+', '+(j.bairro?' - '+j.bairro:'');try{en.setSelectionRange(j.logradouro.length+2,j.logradouro.length+2);}catch(x){}}
-        g('form-cadastro').dispatchEvent(new Event('input',{bubbles:true}));
-      }
-      return r;
-    });
-  }
-  (function(){var i=document.getElementById('cd-cep'),ult='';
-    i.addEventListener('input',function(){var d=dig(i.value);if(d.length===8&&d!==ult){ult=d;conferirCep(true);}else if(d.length<8){ult='';cepMsg('');}});
-    i.addEventListener('blur',function(){if(dig(i.value).length&&dig(i.value).length<8)cepMsg('O CEP tem 8 números.',true);});
-  })();
-
   document.getElementById('form-cadastro').addEventListener('submit',function(e){
     e.preventDefault();var form=e.target;
     function g(id){return document.getElementById(id);}
@@ -944,19 +891,12 @@ footer .notice{flex-basis:100%}
     if(!docOk(g('cd-doc').value))return erro('cd-err','Confira o CPF ou CNPJ.',g('cd-doc'));
     if(!g('cd-cidade').value.trim())return erro('cd-err','Informe sua cidade.',g('cd-cidade'));
     if(!g('cd-uf').value)return erro('cd-err','Escolha o estado.',g('cd-uf'));
-    var ap=tipo.value==='apoiador',cep=dig(g('cd-cep').value),endereco=g('cd-end').value.trim();
-    if((ap||cep)&&!cepFormatoOk(cep))return erro('cd-err',cep?'Confira o CEP: são 8 números, no formato 00000-000.':'Informe o CEP.',g('cd-cep'));
-    if(ap&&endereco.replace(/[\s,-]/g,'').length<5)return erro('cd-err','Informe o endereço com rua e número.',g('cd-end'));
     if(g('cd-senha').value.length<6)return erro('cd-err','A senha precisa ter pelo menos 6 caracteres.',g('cd-senha'));
     if(!sb)return erro('cd-err',FORA);
     var fone=dig(g('cd-fone').value);
-    var dados={tipo:tipo.value,nome:g('cd-nome').value.trim(),fone:fone,email_contato:email,doc:dig(g('cd-doc').value),cep:cep,endereco:endereco,cidade:g('cd-cidade').value.trim(),uf:g('cd-uf').value};
+    var dados={tipo:tipo.value,nome:g('cd-nome').value.trim(),fone:fone,email_contato:email,doc:dig(g('cd-doc').value),cidade:g('cd-cidade').value.trim(),uf:g('cd-uf').value};
     erro('cd-err','');ocupado(form,true);
-    conferirCep(false).then(function(rc){
-      if(rc.ok===false){erro('cd-err','CEP não encontrado. Confira os números.',g('cd-cep'));return {parar:true};}
-      return sb.rpc('contato_em_uso',{p_fone:fone,p_email:email||null});
-    }).then(function(r){
-      if(r.parar)return;
+    sb.rpc('contato_em_uso',{p_fone:fone,p_email:email||null}).then(function(r){
       if(r.error)throw r.error;
       if(r.data==='fone'){erro('cd-err','Já existe uma conta com esse número. Use Entrar.',g('cd-fone'));return;}
       if(r.data==='email'){erro('cd-err','Já existe uma conta com esse e-mail. Use Entrar.',g('cd-email'));return;}
@@ -997,7 +937,6 @@ footer .notice{flex-basis:100%}
     var v=document.querySelector('[data-view="'+h+'"]'),target=null;
     if(!v){target=document.getElementById(h);v=target&&target.closest('[data-view]');}
     if(!v)v=views[0];
-    if(!target&&h==='cadastro')target=document.getElementById('form-cadastro');
     views.forEach(function(x){x.hidden=(x!==v);});
     var name=v.getAttribute('data-view');
     document.querySelectorAll('[data-nav]').forEach(function(a){if(a.dataset.nav===name)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
