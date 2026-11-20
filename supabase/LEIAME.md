@@ -10,9 +10,13 @@ O site guarda as contas de vanguardistas e apoiadores no Supabase. Enquanto as c
 4. Em **Project Settings > API**, copie a **Project URL** e a chave **anon public**.
 5. No `index.html`, preencha `SUPABASE_URL` e `SUPABASE_ANON_KEY` (a chave anon é pública, pode ficar no site).
 
+## Atualizar um banco que já existe
+
+Se o `schema.sql` já foi rodado antes, rode o arquivo inteiro de novo no **SQL Editor**: ele só acrescenta as colunas `cep` e `endereco` e atualiza a função que cria o perfil, sem apagar nada. Até isso ser feito, os cadastros continuam funcionando, mas o CEP e o endereço não são gravados na tabela.
+
 ## Onde ficam os dados
 
-- Tabela `perfis`: tipo (vanguardista ou apoiador), nome, celular, e-mail (opcional), CPF ou CNPJ, cidade e estado. Cada pessoa só lê e altera o próprio perfil.
+- Tabela `perfis`: tipo (vanguardista ou apoiador), nome, celular, e-mail (opcional), CPF ou CNPJ, CEP e endereço (obrigatórios para apoiador), cidade e estado. Cada pessoa só lê e altera o próprio perfil.
 - As senhas ficam no Supabase Auth, nunca na tabela.
 - Para ver os cadastros: **Table Editor > perfis**.
 
