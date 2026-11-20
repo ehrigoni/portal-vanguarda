@@ -98,8 +98,14 @@ module.exports = async function handler(req, res) {
     res.setHeader("Allow", "POST");
     return res.status(405).send("método não permitido");
   }
-  const token = process.env.ASAAS_WEBHOOK_TOKEN;
-  if (!token || req.headers["asaas-access-token"] !== token) return res.status(401).send("token inválido");
+  // tolera colchetes, aspas ou espaços colados nas pontas, dos dois lados
+  const limpa = (v) => String(v || "").trim().replace(/^[\[\s"'<]+|[\]\s"'>]+$/g, "");
+  const token = limpa(process.env.ASAAS_WEBHOOK_TOKEN);
+  const recebido = limpa(req.headers["asaas-access-token"]);
+  if (!token || recebido !== token) {
+    console.error("nfse token recusado", "recebido:", recebido ? recebido.length + " caracteres" : "nenhum", "esperado:", token.length + " caracteres");
+    return res.status(401).send("token inválido");
+  }
   if (!process.env.ASAAS_API_KEY) return res.status(503).send("sem chave");
 
   let corpo = req.body;
