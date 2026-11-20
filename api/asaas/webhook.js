@@ -45,7 +45,8 @@ function servicoDoPagamento(ref) {
 }
 
 function apiUrl() {
-  const url = (process.env.ASAAS_API_URL || "").trim().replace(/\/+$/, "");
+  // tolera o valor colado com colchetes, aspas ou espaços: [https://...], "https://..."
+  const url = (process.env.ASAAS_API_URL || "").trim().replace(/^[\[\s"'<]+|[\]\s"'>]+$/g, "").replace(/\/+$/, "");
   if (url) return url;
   return (process.env.ASAAS_AMBIENTE || "").trim().toLowerCase() === "producao"
     ? "https://api.asaas.com/v3" : "https://api-sandbox.asaas.com/v3";
@@ -58,7 +59,7 @@ function hojeEmPortoAlegre() {
 async function asaas(method, path, body) {
   const r = await fetch(apiUrl() + path, {
     method,
-    headers: { "Content-Type": "application/json", access_token: process.env.ASAAS_API_KEY, "User-Agent": "portal-vanguarda" },
+    headers: { "Content-Type": "application/json", access_token: String(process.env.ASAAS_API_KEY || "").trim().replace(/^["']|["']$/g, ""), "User-Agent": "portal-vanguarda" },
     body: body ? JSON.stringify(body) : undefined,
   });
   const json = await r.json().catch(() => ({}));

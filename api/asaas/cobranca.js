@@ -26,7 +26,8 @@ const URL_SANDBOX = "https://api-sandbox.asaas.com/v3";
 
 function apiUrl() {
   // ASAAS_API_URL, quando existe, manda (é a mesma variável do webhook de notas fiscais)
-  const url = (process.env.ASAAS_API_URL || "").trim().replace(/\/+$/, "");
+  // tolera o valor colado com colchetes, aspas ou espaços: [https://...], "https://..."
+  const url = (process.env.ASAAS_API_URL || "").trim().replace(/^[\[\s"'<]+|[\]\s"'>]+$/g, "").replace(/\/+$/, "");
   if (url) return url;
   return (process.env.ASAAS_AMBIENTE || "").trim().toLowerCase() === "producao" ? URL_PRODUCAO : URL_SANDBOX;
 }
@@ -76,7 +77,7 @@ async function asaas(method, path, body) {
     method,
     headers: {
       "Content-Type": "application/json",
-      access_token: process.env.ASAAS_API_KEY,
+      access_token: String(process.env.ASAAS_API_KEY || "").trim().replace(/^["']|["']$/g, ""),
       "User-Agent": "portal-vanguarda",
     },
     body: body ? JSON.stringify(body) : undefined,
