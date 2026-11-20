@@ -1,0 +1,5 @@
+node_modules/
+.turbo/
+.vercel/
+.env*.local
+.env

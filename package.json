@@ -1,0 +1,11 @@
+{
+  "name": "portal-vanguarda",
+  "private": true,
+  "packageManager": "npm@10.9.9",
+  "scripts": {
+    "check": "node scripts/check.mjs"
+  },
+  "devDependencies": {
+    "turbo": "^2.11.13"
+  }
+}
