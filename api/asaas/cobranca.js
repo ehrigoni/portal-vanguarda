@@ -157,7 +157,8 @@ module.exports = async function handler(req, res) {
   if (d.cep.length !== 8) faltando.push("CEP");
   if (!d.endereco) faltando.push("endereço");
   if (!d.numero) faltando.push("número");
-  if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) faltando.push("e-mail");
+  // o Asaas só emite a NFS-e se o cliente tiver e-mail
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) faltando.push("e-mail");
   if (faltando.length) return res.status(400).json({ erro: "Confira: " + faltando.join(", ") + "." });
 
   const valor = Math.round(n * meses * CUSTO_MEDIO * 100) / 100;
