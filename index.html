@@ -241,6 +241,7 @@ footer .notice{flex-basis:100%}
 .signup .fields .hint.bad{color:var(--amber)}
 .signup .wide{grid-column:1/-1}
 .signup .note{font-size:13px;color:var(--muted)}
+#cd-btn{justify-self:center}
 .done{border:1px solid var(--glow);border-radius:12px;padding:18px 20px;display:grid;gap:10px;background:var(--panel)}
 .done p{color:var(--muted);font-size:14px}
 .done pre{margin:0;white-space:pre-wrap;font-family:var(--mono);font-size:12.5px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-wrap:anywhere}
@@ -638,7 +639,7 @@ footer .notice{flex-basis:100%}
       <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira celular, CPF ou CNPJ, CEP e número.</p>
       <p class="notice" id="ap-aviso-pag" hidden><b>Pagamento</b><span>Ao continuar, você vai para a fatura do Asaas, nosso sistema de cobrança, e escolhe PIX, boleto ou cartão. A nota fiscal chega no seu e-mail depois que o pagamento compensa. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-      <button class="btn go" type="submit" id="ap-btn">Registrar interesse</button>
+      <button class="btn go" type="submit" id="ap-btn">Apoiar</button>
       <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
     </form>
     <div class="aside">
@@ -726,7 +727,7 @@ footer .notice{flex-basis:100%}
       </div>
       <p class="err" id="cd-err" hidden></p>
       <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. O cadastro cria sua conta e registra seu interesse, sem criar contrato.</span></p>
-      <button class="btn go" type="submit">Cadastrar</button>
+      <button class="btn go" type="submit" id="cd-btn">Cadastrar</button>
       <p class="note">Já tem conta? <a href="#entrar">Entrar</a></p>
     </form>
     <div class="aside">
@@ -990,7 +991,7 @@ footer .notice{flex-basis:100%}
   var cobranca={ativo:false,ambiente:''},apBtn=document.getElementById('ap-btn');
   fetch('/api/asaas/cobranca',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.ativo)return;cobranca=j;
-    apBtn.textContent='Ir para o pagamento'+(j.ambiente==='sandbox'?' (teste)':'');
+    apBtn.textContent='Apoiar'+(j.ambiente==='sandbox'?' (teste)':'');
     document.getElementById('ap-aviso').hidden=true;document.getElementById('ap-aviso-pag').hidden=false;
   }).catch(function(){});
   function pagar(errEl,semCobranca){
@@ -1003,7 +1004,7 @@ footer .notice{flex-basis:100%}
     .then(function(j){
       apBtn.disabled=false;apBtn.textContent=txtBtn;
       if(j.ok&&j.link){location.href=j.link;return;}
-      if(j.codigo==='sem_chave'){cobranca.ativo=false;apBtn.textContent='Registrar interesse';document.getElementById('ap-aviso').hidden=false;document.getElementById('ap-aviso-pag').hidden=true;semCobranca();return;}
+      if(j.codigo==='sem_chave'){cobranca.ativo=false;apBtn.textContent='Apoiar';document.getElementById('ap-aviso').hidden=false;document.getElementById('ap-aviso-pag').hidden=true;semCobranca();return;}
       errEl.textContent=j.erro||'Não foi possível gerar o pagamento agora. Tente de novo em instantes.';errEl.hidden=false;
     },function(){apBtn.disabled=false;apBtn.textContent=txtBtn;errEl.textContent='Sem conexão com o servidor. Tente de novo em instantes.';errEl.hidden=false;});
   }
