@@ -610,7 +610,7 @@ footer .notice{flex-basis:100%}
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Apoiar · apoiadores e vanguardistas</p>
   <h1>Apoie vanguardistas a partir de 1 mês</h1>
-  <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Registre seu interesse agora; os pagamentos começam no lançamento oficial.</p>
+  <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Apoiar.</p>
 </div></section>
 <section class="band" id="apoiadores"><div class="in">
   <div class="head"><p class="eyebrow">Como funciona para Apoiadores</p><h2>Do cadastro à nota fiscal em quatro passos</h2></div>
@@ -639,13 +639,13 @@ footer .notice{flex-basis:100%}
       </div>
       <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira celular, CPF ou CNPJ, CEP e número.</p>
       <p class="notice" id="ap-aviso-pag" hidden><b>Pagamento</b><span>Ao continuar, você vai para a fatura do Asaas, nosso sistema de cobrança, e escolhe PIX, boleto ou cartão. A nota fiscal chega no seu e-mail depois que o pagamento compensa. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-      <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
+      <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. Ao clicar em Apoiar, você registra seu apoio, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <button class="btn go" type="submit" id="ap-btn">Apoiar</button>
       <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
     </form>
     <div class="aside">
       <div class="done" id="ap-done" hidden>
-        <h3>Interesse registrado aqui</h3>
+        <h3>Apoio registrado</h3>
         <p>Envie pelo WhatsApp para entrar na lista. Avisaremos quando os pagamentos e as notas fiscais começarem.</p>
         <pre id="ap-resumo"></pre>
         <a class="btn go" id="ap-wa" href="https://wa.me/5551992910038" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
@@ -653,7 +653,7 @@ footer .notice{flex-basis:100%}
       </div>
       <div class="people" id="ap-help">
         <h3>Como funciona</h3>
-        <p>Depois do lançamento: 1. Cadastro. 2. Escolha dos apadrinhados e do período. 3. Link de pagamento. 4. Nota fiscal no e-mail. Por enquanto, o cadastro só registra seu interesse.</p>
+        <p>Depois do lançamento: 1. Cadastro. 2. Escolha dos apadrinhados e do período. 3. Link de pagamento. 4. Nota fiscal no e-mail. Por enquanto, o botão Apoiar registra seu apoio e falamos com você pelo WhatsApp.</p>
         <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
       </div>
     </div>
@@ -876,9 +876,21 @@ footer .notice{flex-basis:100%}
     document.querySelectorAll('[data-guest]').forEach(function(el){el.hidden=!!c;});
     document.querySelectorAll('[data-user]').forEach(function(el){el.hidden=!c;});
     if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];
-      if(c.tipo==='apoiador'){var pre={'ap-nome':c.nome,'ap-email':c.email,'ap-whats':maskFone(c.fone||''),'ap-doc':maskDoc(c.doc||''),'ap-cidade':(c.cidade||'')+(c.uf?', '+c.uf:'')};
-        Object.keys(pre).forEach(function(id){var i=document.getElementById(id);if(i&&!i.value)i.value=pre[id]||'';});}}
+      preencherApoio();}
   }
+  /* logado: o formulário Apoiar já vem com os dados do cadastro; só falta o que o cadastro não tem (CEP, endereço, número) */
+  function preencherApoio(){
+    var c=perfil;if(!c)return;
+    var pre={'ap-nome':c.nome,'ap-email':c.email,'ap-whats':maskFone(c.fone||''),'ap-doc':maskDoc(c.doc||''),'ap-cidade':c.cidade?c.cidade+(c.uf?', '+c.uf:''):''};
+    Object.keys(pre).forEach(function(id){var i=document.getElementById(id);if(i&&!i.value.trim()&&pre[id])i.value=pre[id];});
+  }
+  function focarFaltando(){
+    if(!perfil)return;
+    var f=document.querySelector('[data-form="ap"]');if(!f)return;
+    var vazio=[].slice.call(f.querySelectorAll('.fields input[required]')).filter(function(i){return !i.closest('label').hidden&&!i.value.trim();})[0];
+    if(vazio)setTimeout(function(){vazio.focus({preventScroll:true});},0);
+  }
+  window.addEventListener('hashchange',function(){var h=location.hash.slice(1);if(h==='apoiar'||h==='apoiar-cadastro'){preencherApoio();if(h==='apoiar-cadastro')focarFaltando();}});
   function entrou(user,txt){return carregarPerfil(user).then(function(c){perfil=c;cabecalho();if(c){ola(txt.replace('{n}',(c.nome||'').split(' ')[0]));location.hash=destino(c);}return c;});}
   function ola(txt){var h=document.getElementById('hello');document.getElementById('hello-txt').textContent=txt;h.hidden=false;}
   document.getElementById('hello-x').addEventListener('click',function(){document.getElementById('hello').hidden=true;});
