@@ -636,8 +636,9 @@ footer .notice{flex-basis:100%}
         <label for="ap-cidade" class="wide"><span>Cidade e estado</span><input id="ap-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
       </div>
       <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira celular, CPF ou CNPJ, CEP e número.</p>
-      <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-      <button class="btn go" type="submit">Registrar interesse</button>
+      <p class="notice" id="ap-aviso-pag" hidden><b>Pagamento</b><span>Ao continuar, você vai para a fatura do Asaas, nosso sistema de cobrança, e escolhe PIX, boleto ou cartão. A nota fiscal chega no seu e-mail depois que o pagamento compensa. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
+      <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
+      <button class="btn go" type="submit" id="ap-btn">Registrar interesse</button>
       <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
     </form>
     <div class="aside">
@@ -985,6 +986,27 @@ footer .notice{flex-basis:100%}
     apCep.addEventListener('input',function(){var v=maskCep(apCep.value);if(v!==apCep.value)apCep.value=v;var d=dig(v);if(d.length===8&&d!==ult){ult=d;conferirCep(true);}else if(d.length<8){ult='';cepMsg('');}});
     apCep.addEventListener('blur',function(){var n=dig(apCep.value).length;if(n&&n<8)cepMsg('O CEP tem 8 números.',true);});
   })();
+  /* cobrança do apoio pelo Asaas: a chave fica só no servidor (api/asaas/cobranca.js) */
+  var cobranca={ativo:false,ambiente:''},apBtn=document.getElementById('ap-btn');
+  fetch('/api/asaas/cobranca',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+    if(!j||!j.ativo)return;cobranca=j;
+    apBtn.textContent='Ir para o pagamento'+(j.ambiente==='sandbox'?' (teste)':'');
+    document.getElementById('ap-aviso').hidden=true;document.getElementById('ap-aviso-pag').hidden=false;
+  }).catch(function(){});
+  function pagar(errEl,semCobranca){
+    var v=function(id){return document.getElementById(id).value.trim();};
+    var txtBtn=apBtn.textContent;apBtn.disabled=true;apBtn.textContent='Gerando o pagamento…';
+    fetch('/api/asaas/cobranca',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      vanguardistas:int(apN,1),meses:meses(apP.value,apM),nome:v('ap-nome'),email:v('ap-email'),fone:v('ap-whats'),doc:v('ap-doc'),
+      cep:v('ap-cep'),endereco:v('ap-end'),numero:v('ap-num'),complemento:v('ap-comp')})})
+    .then(function(r){return r.json().catch(function(){return {};});})
+    .then(function(j){
+      apBtn.disabled=false;apBtn.textContent=txtBtn;
+      if(j.ok&&j.link){location.href=j.link;return;}
+      if(j.codigo==='sem_chave'){cobranca.ativo=false;apBtn.textContent='Registrar interesse';document.getElementById('ap-aviso').hidden=false;document.getElementById('ap-aviso-pag').hidden=true;semCobranca();return;}
+      errEl.textContent=j.erro||'Não foi possível gerar o pagamento agora. Tente de novo em instantes.';errEl.hidden=false;
+    },function(){apBtn.disabled=false;apBtn.textContent=txtBtn;errEl.textContent='Sem conexão com o servidor. Tente de novo em instantes.';errEl.hidden=false;});
+  }
   /* cadastro */
   document.querySelectorAll('[data-form]').forEach(function(f){
     var p=f.dataset.form;
@@ -996,8 +1018,9 @@ footer .notice{flex-basis:100%}
       var nm=document.getElementById(p+'-num');if(nm&&!/\d|s\/?n/i.test(nm.value))ok=false; /* número ou s/n */
       var errEl=document.getElementById(p+'-err');errEl.textContent=errEl.dataset.msg||(errEl.dataset.msg=errEl.textContent);
       errEl.hidden=ok;if(!ok)return;
-      if(ce){conferirCep(false).then(function(r){if(r.ok===false){errEl.textContent='CEP não encontrado. Confira os números.';errEl.hidden=false;ce.focus();return;}concluir();});return;}
-      concluir();
+      if(ce){conferirCep(false).then(function(r){if(r.ok===false){errEl.textContent='CEP não encontrado. Confira os números.';errEl.hidden=false;ce.focus();return;}seguir();});return;}
+      seguir();
+      function seguir(){if(p==='ap'&&cobranca.ativo)pagar(errEl,concluir);else concluir();}
       function concluir(){
       var lines=[];f.querySelectorAll('.fields label').forEach(function(l){if(l.hidden)return;var i=l.querySelector('input,select');if(i)lines.push(l.querySelector('span').textContent.replace(/ \(.*\)/,'')+': '+(i.tagName==='SELECT'?i.options[i.selectedIndex].text:i.value.trim()));});
       if(p==='ap'){lines.push('Total em recursos: '+document.getElementById('ap-total').textContent);}
