@@ -12,7 +12,8 @@
 //
 // Variáveis de ambiente (Vercel > Project > Settings > Environment Variables):
 //   ASAAS_API_KEY       chave de API do Asaas. Nunca vai para o código nem para o navegador.
-//   ASAAS_AMBIENTE      "producao" para cobrar de verdade. Qualquer outro valor, ou vazio, usa o sandbox.
+//   ASAAS_API_URL       https://api-sandbox.asaas.com/v3 (teste) ou https://api.asaas.com/v3 (cobra de verdade).
+//                       Se não existir, vale ASAAS_AMBIENTE: "producao" cobra de verdade; outro valor ou vazio usa o sandbox.
 //   ASAAS_VALOR_MINIMO  opcional; menor cobrança aceita, padrão 5 (mínimo do Asaas por cobrança).
 //   ASAAS_VENCIMENTO_DIAS opcional; dias até o vencimento, padrão 3.
 
@@ -20,12 +21,18 @@ const CUSTO_MEDIO = 1; // R$ por vanguardista por mês; igual a CUSTO_MEDIO no i
 const MAX_VANGUARDISTAS = 1000;
 const MAX_MESES = 120;
 
-function ambiente() {
-  return (process.env.ASAAS_AMBIENTE || "").trim().toLowerCase() === "producao" ? "producao" : "sandbox";
-}
+const URL_PRODUCAO = "https://api.asaas.com/v3";
+const URL_SANDBOX = "https://api-sandbox.asaas.com/v3";
 
 function apiUrl() {
-  return ambiente() === "producao" ? "https://api.asaas.com/v3" : "https://api-sandbox.asaas.com/v3";
+  // ASAAS_API_URL, quando existe, manda (é a mesma variável do webhook de notas fiscais)
+  const url = (process.env.ASAAS_API_URL || "").trim().replace(/\/+$/, "");
+  if (url) return url;
+  return (process.env.ASAAS_AMBIENTE || "").trim().toLowerCase() === "producao" ? URL_PRODUCAO : URL_SANDBOX;
+}
+
+function ambiente() {
+  return /sandbox/i.test(apiUrl()) ? "sandbox" : "producao";
 }
 
 const dig = (v) => String(v ?? "").replace(/\D/g, "");
