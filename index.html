@@ -237,6 +237,8 @@ footer .notice{flex-basis:100%}
 .signup .fields label select{width:100%;background:transparent;border:0;color:var(--fg);font-family:var(--body);font-size:16px;padding:0;outline:none}
 .signup .fields label select option{background:var(--panel);color:var(--fg)}
 .signup .fields input{font-family:var(--body);font-weight:500;font-size:16px}
+.signup .fields .hint:empty{display:none}
+.signup .fields .hint.bad{color:var(--amber)}
 .signup .wide{grid-column:1/-1}
 .signup .note{font-size:13px;color:var(--muted)}
 .done{border:1px solid var(--glow);border-radius:12px;padding:18px 20px;display:grid;gap:10px;background:var(--panel)}
@@ -627,9 +629,11 @@ footer .notice{flex-basis:100%}
         <label for="ap-email"><span>E-mail (opcional)</span><input id="ap-email" type="email" autocomplete="email" inputmode="email" data-mask="email"></label>
         <label for="ap-whats"><span>Celular ou WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
         <label for="ap-doc"><span>CPF ou CNPJ (para a nota fiscal)</span><input id="ap-doc" type="text" required inputmode="numeric" data-mask="doc"></label>
+        <label for="ap-cep"><span>CEP</span><input id="ap-cep" type="text" required autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9"><small class="hint" id="ap-cep-msg" aria-live="polite"></small></label>
+        <label for="ap-end"><span>Endereço</span><input id="ap-end" type="text" required autocomplete="street-address" placeholder="Rua, número, complemento e bairro"></label>
         <label for="ap-cidade" class="wide"><span>Cidade e estado</span><input id="ap-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
       </div>
-      <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira celular e CPF ou CNPJ.</p>
+      <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira celular, CPF ou CNPJ, CEP e o número do endereço.</p>
       <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <button class="btn go" type="submit">Registrar interesse</button>
       <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
@@ -943,6 +947,41 @@ footer .notice{flex-basis:100%}
     if(target)target.scrollIntoView({block:'start'});else window.scrollTo(0,0);
   }
   window.addEventListener('hashchange',show);show();
+  /* CEP do apoio: máscara 00000-000, conferido no ViaCEP; sem resposta, vale só o formato */
+  function maskCep(v){var d=dig(v).slice(0,8);return d.length>5?d.slice(0,5)+'-'+d.slice(5):d;}
+  function cepFormatoOk(v){var d=dig(v);return d.length===8&&!/^(\d)\1{7}$/.test(d);}
+  var cepCache={};
+  function consultaCep(d){ /* {ok:true,dados} | {ok:false} CEP não existe | {ok:null} sem resposta */
+    if(cepCache[d])return cepCache[d];
+    var ctl=window.AbortController?new AbortController():null,t=setTimeout(function(){if(ctl)ctl.abort();},5000);
+    var pr=fetch('https://viacep.com.br/ws/'+d+'/json/',ctl?{signal:ctl.signal}:{}).then(function(r){if(!r.ok)throw r;return r.json();})
+      .then(function(j){return j&&!j.erro&&j.cep?{ok:true,dados:j}:{ok:false};},function(){delete cepCache[d];return {ok:null};})
+      .then(function(r){clearTimeout(t);return r;});
+    cepCache[d]=pr;return pr;
+  }
+  var apCep=document.getElementById('ap-cep'),apCepMsg=document.getElementById('ap-cep-msg');
+  function cepMsg(t,ruim){apCepMsg.textContent=t;apCepMsg.classList.toggle('bad',!!ruim);}
+  function conferirCep(preencher){
+    var d=dig(apCep.value);
+    if(!cepFormatoOk(d)){cepMsg(d.length===8?'CEP inválido.':'',d.length===8);return Promise.resolve({ok:false});}
+    cepMsg('Conferindo o CEP…');
+    return consultaCep(d).then(function(r){
+      if(dig(apCep.value)!==d)return r;
+      if(r.ok===false){cepMsg('CEP não encontrado. Confira os números.',true);return r;}
+      if(r.ok===null){cepMsg('Não foi possível conferir o CEP agora; confira os números.');return r;}
+      var j=r.dados;cepMsg([j.logradouro,j.bairro,j.localidade+'/'+j.uf].filter(Boolean).join(', '));
+      if(preencher){
+        var ci=document.getElementById('ap-cidade'),en=document.getElementById('ap-end');
+        if(!ci.value.trim()&&j.localidade)ci.value=j.localidade+(j.uf?', '+j.uf:'');
+        if(!en.value.trim()&&j.logradouro){en.value=j.logradouro+', '+(j.bairro?' - '+j.bairro:'');try{en.setSelectionRange(j.logradouro.length+2,j.logradouro.length+2);}catch(x){}}
+      }
+      return r;
+    });
+  }
+  (function(){var ult='';
+    apCep.addEventListener('input',function(){var v=maskCep(apCep.value);if(v!==apCep.value)apCep.value=v;var d=dig(v);if(d.length===8&&d!==ult){ult=d;conferirCep(true);}else if(d.length<8){ult='';cepMsg('');}});
+    apCep.addEventListener('blur',function(){var n=dig(apCep.value).length;if(n&&n<8)cepMsg('O CEP tem 8 números.',true);});
+  })();
   /* cadastro */
   document.querySelectorAll('[data-form]').forEach(function(f){
     var p=f.dataset.form;
@@ -950,7 +989,13 @@ footer .notice{flex-basis:100%}
       e.preventDefault();
       var ok=true;f.querySelectorAll('input[required]').forEach(function(i){if(!i.value.trim())ok=false;});
       var em=document.getElementById(p+'-email');if(em&&em.value&&!emailOk(em.value))ok=false;var wh=document.getElementById(p+'-whats');if(wh&&!foneOk(wh.value))ok=false;var dc=document.getElementById(p+'-doc');if(dc&&!docOk(dc.value))ok=false;
-      document.getElementById(p+'-err').hidden=ok;if(!ok)return;
+      var ce=document.getElementById(p+'-cep');if(ce&&!cepFormatoOk(ce.value))ok=false;
+      var ed=document.getElementById(p+'-end');if(ed&&!/\d|s\/?n/i.test(ed.value))ok=false; /* endereço com número (ou s/n) */
+      var errEl=document.getElementById(p+'-err');errEl.textContent=errEl.dataset.msg||(errEl.dataset.msg=errEl.textContent);
+      errEl.hidden=ok;if(!ok)return;
+      if(ce){conferirCep(false).then(function(r){if(r.ok===false){errEl.textContent='CEP não encontrado. Confira os números.';errEl.hidden=false;ce.focus();return;}concluir();});return;}
+      concluir();
+      function concluir(){
       var lines=[];f.querySelectorAll('.fields label').forEach(function(l){if(l.hidden)return;var i=l.querySelector('input,select');if(i)lines.push(l.querySelector('span').textContent.replace(/ \(.*\)/,'')+': '+(i.tagName==='SELECT'?i.options[i.selectedIndex].text:i.value.trim()));});
       if(p==='ap'){lines.push('Total em recursos: '+document.getElementById('ap-total').textContent);}
       if(p==='vg')lines.unshift('Perfil: Vanguardista');
@@ -959,6 +1004,7 @@ footer .notice{flex-basis:100%}
       document.getElementById(p+'-wa').href='https://wa.me/5551992910038?text='+encodeURIComponent(txt);
       document.getElementById(p+'-done').hidden=false;document.getElementById(p+'-help').hidden=true;
       document.getElementById(p+'-done').scrollIntoView({block:'nearest'});
+      }
     });
   });
   render(15);
