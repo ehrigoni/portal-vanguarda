@@ -630,10 +630,12 @@ footer .notice{flex-basis:100%}
         <label for="ap-whats"><span>Celular ou WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
         <label for="ap-doc"><span>CPF ou CNPJ (para a nota fiscal)</span><input id="ap-doc" type="text" required inputmode="numeric" data-mask="doc"></label>
         <label for="ap-cep"><span>CEP</span><input id="ap-cep" type="text" required autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9"><small class="hint" id="ap-cep-msg" aria-live="polite"></small></label>
-        <label for="ap-end"><span>Endereço</span><input id="ap-end" type="text" required autocomplete="street-address" placeholder="Rua, número, complemento e bairro"></label>
+        <label for="ap-end"><span>Endereço</span><input id="ap-end" type="text" required autocomplete="street-address" placeholder="Rua e bairro"></label>
+        <label for="ap-num"><span>Número</span><input id="ap-num" type="text" required inputmode="numeric" placeholder="123 ou s/n" maxlength="10"></label>
+        <label for="ap-comp"><span>Complemento (opcional)</span><input id="ap-comp" type="text" autocomplete="address-line2" placeholder="Apto, sala, bloco"></label>
         <label for="ap-cidade" class="wide"><span>Cidade e estado</span><input id="ap-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
       </div>
-      <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira celular, CPF ou CNPJ, CEP e o número do endereço.</p>
+      <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira celular, CPF ou CNPJ, CEP e número.</p>
       <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <button class="btn go" type="submit">Registrar interesse</button>
       <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
@@ -968,12 +970,13 @@ footer .notice{flex-basis:100%}
     return consultaCep(d).then(function(r){
       if(dig(apCep.value)!==d)return r;
       if(r.ok===false){cepMsg('CEP não encontrado. Confira os números.',true);return r;}
-      if(r.ok===null){cepMsg('Não foi possível conferir o CEP agora; confira os números.');return r;}
-      var j=r.dados;cepMsg([j.logradouro,j.bairro,j.localidade+'/'+j.uf].filter(Boolean).join(', '));
+      if(r.ok===null){cepMsg('');return r;}
+      var j=r.dados;cepMsg('');
       if(preencher){
         var ci=document.getElementById('ap-cidade'),en=document.getElementById('ap-end');
         if(!ci.value.trim()&&j.localidade)ci.value=j.localidade+(j.uf?', '+j.uf:'');
-        if(!en.value.trim()&&j.logradouro){en.value=j.logradouro+', '+(j.bairro?' - '+j.bairro:'');try{en.setSelectionRange(j.logradouro.length+2,j.logradouro.length+2);}catch(x){}}
+        if(!en.value.trim()&&(j.logradouro||j.bairro))en.value=[j.logradouro,j.bairro].filter(Boolean).join(' - ');
+        var nu=document.getElementById('ap-num');if(!nu.value.trim()&&en.value.trim())nu.focus();
       }
       return r;
     });
@@ -990,7 +993,7 @@ footer .notice{flex-basis:100%}
       var ok=true;f.querySelectorAll('input[required]').forEach(function(i){if(!i.value.trim())ok=false;});
       var em=document.getElementById(p+'-email');if(em&&em.value&&!emailOk(em.value))ok=false;var wh=document.getElementById(p+'-whats');if(wh&&!foneOk(wh.value))ok=false;var dc=document.getElementById(p+'-doc');if(dc&&!docOk(dc.value))ok=false;
       var ce=document.getElementById(p+'-cep');if(ce&&!cepFormatoOk(ce.value))ok=false;
-      var ed=document.getElementById(p+'-end');if(ed&&!/\d|s\/?n/i.test(ed.value))ok=false; /* endereço com número (ou s/n) */
+      var nm=document.getElementById(p+'-num');if(nm&&!/\d|s\/?n/i.test(nm.value))ok=false; /* número ou s/n */
       var errEl=document.getElementById(p+'-err');errEl.textContent=errEl.dataset.msg||(errEl.dataset.msg=errEl.textContent);
       errEl.hidden=ok;if(!ok)return;
       if(ce){conferirCep(false).then(function(r){if(r.ok===false){errEl.textContent='CEP não encontrado. Confira os números.';errEl.hidden=false;ce.focus();return;}concluir();});return;}
