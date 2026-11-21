@@ -226,6 +226,12 @@ footer .notice{flex-basis:100%}
 .steps li{counter-increment:st;border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:6px;align-content:start}
 .steps li::before{content:counter(st);font-family:var(--mono);font-weight:600;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--glow);color:var(--glow);font-size:13px}
 .steps li:last-child::before{border-color:var(--amber);color:var(--amber)}
+/* Apoiar: destaque crescente do passo 1 ao 4 */
+#apoiadores .steps li:nth-child(1){--hl:var(--glow);border-color:color-mix(in srgb,var(--line) 85%,var(--hl))}
+#apoiadores .steps li:nth-child(2){--hl:color-mix(in srgb,var(--amber) 33%,var(--glow));border-color:color-mix(in srgb,var(--line) 70%,var(--hl))}
+#apoiadores .steps li:nth-child(3){--hl:color-mix(in srgb,var(--amber) 67%,var(--glow));border-color:color-mix(in srgb,var(--line) 50%,var(--hl))}
+#apoiadores .steps li:nth-child(4){--hl:var(--amber);border-color:var(--hl);background:color-mix(in srgb,var(--amber) 8%,transparent)}
+#apoiadores .steps li::before{border-color:var(--hl);color:var(--hl)}
 .steps p{color:var(--muted);font-size:14px}
 .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
 .plan{border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:10px;align-content:start}
