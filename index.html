@@ -246,6 +246,9 @@ section.band#apoiadores > .in{padding-top:48px}
 #apoiadores .steps li:nth-child(4){--hl:var(--amber);border-color:var(--hl);background:color-mix(in srgb,var(--amber) 8%,transparent)}
 #apoiadores .steps li::before{border-color:var(--hl);color:var(--hl)}
 .steps p{color:var(--muted);font-size:14px}
+.steps .checks{list-style:decimal;font-size:14px;color:var(--muted)}
+.steps .checks li{display:list-item;border:0;border-radius:0;padding:0;counter-increment:none;background:none}
+.steps .checks li::before{content:none}
 .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
 .plan{border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:10px;align-content:start}
 .plan.feat{border-color:var(--amber);background:var(--panel)}
@@ -688,7 +691,7 @@ section.band#apoiadores > .in{padding-top:48px}
 <section class="band" id="como-funciona-vanguardistas"><div class="in">
   <div class="head"><p class="eyebrow">Como funciona para Vanguardistas</p><h2>Cadastre seu negócio e fique disponível para ser apadrinhado</h2></div>
   <ol class="steps">
-      <li><h3>Cadastro</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ, cidade, estado e senha. Leva um minuto.</p></li>
+      <li><h3>Cadastro</h3><ol class="checks"><li>Acesso ilimitado e gratuito aos simuladores básicos.</li><li>Todo vanguardista pode se tornar um apoiador do portal, dispensando o apadrinhamento de outro vanguardista.</li><li>Caso deseje armazenar o histórico das simulações, é necessário que seja realizado um cadastro. Depois é necessário tornar-se um apoiador ou pedir para que um outro apoiador lhe apadrinhe no portal.</li></ol></li>
       <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
       <li><h3>Uso</h3><p>Acesso aos recursos do plano: simuladores avançados e selo.</p></li>
       <li><h3>Apadrinhamento</h3><p>O Vanguardista fica disponível para que seja apadrinhado na plataforma.</p></li>
