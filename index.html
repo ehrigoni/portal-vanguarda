@@ -369,6 +369,9 @@ footer .notice{flex-basis:100%}
 .fields-one textarea{width:100%;background:transparent;border:0;color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;resize:vertical;outline:none}
 .mat-prev{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--film);display:grid;place-items:center}
 .mat-prev canvas{display:block;width:100%;height:auto;max-height:70vh;object-fit:contain;border-radius:6px}
+.impacto{border:1px solid var(--glow);border-radius:12px;padding:18px;display:grid;gap:12px;background:var(--panel)}
+.impacto-top{display:flex;gap:12px;align-items:baseline;justify-content:space-between;flex-wrap:wrap}
+.impacto .note{color:var(--muted);font-size:13.5px}
 .grupos{display:grid;gap:14px}
 .grupo{border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:14px;background:var(--panel)}
 .grupo-top{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
@@ -377,6 +380,7 @@ footer .notice{flex-basis:100%}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .kpi{background:var(--bg);padding:12px 14px;display:grid;gap:2px}
 .kpi b{font-family:var(--mono);font-size:22px;font-variant-numeric:tabular-nums}
+.kpi.txt b{font-size:16px;line-height:1.35;padding-top:4px}
 .kpi small{color:var(--muted);font-size:12.5px;line-height:1.35}
 .spark{display:grid;gap:6px}
 .spark small{color:var(--muted);font-size:12.5px}
@@ -779,8 +783,7 @@ footer .notice{flex-basis:100%}
   <div class="head"><p class="eyebrow">1 · Seu negócio</p><h2>Conte um pouco sobre a sua empresa</h2><p class="lede">Com essas respostas o portal indica os selos mais adequados para você. Leva menos de um minuto e dá para mudar quando quiser.</p></div>
   <form class="pn-form" id="pn-form-perfil" novalidate>
     <div class="fields two">
-      <label for="pn-marca"><span>Nome da empresa ou marca (aparece no material)</span><input id="pn-marca" type="text" maxlength="80" autocomplete="organization"></label>
-      <label for="pn-apad"><span>Quantos vanguardistas você apadrinha</span><input id="pn-apad" type="number" min="0" step="1" inputmode="numeric" placeholder="0"></label>
+      <label for="pn-marca" class="wide"><span>Nome da empresa ou marca (aparece no material)</span><input id="pn-marca" type="text" maxlength="80" autocomplete="organization"></label>
       <fieldset class="chips wide" id="pn-porte"><legend>Porte</legend>
         <label><input type="radio" name="pn-porte" value="autonomo"><span>Autônomo</span></label>
         <label><input type="radio" name="pn-porte" value="mei"><span>MEI</span></label>
@@ -807,7 +810,12 @@ footer .notice{flex-basis:100%}
   <div class="pn-acts"><span class="note" id="pn-selos-msg" aria-live="polite"></span></div>
 </div></section>
 <section class="band" id="pn-material"><div class="in">
-  <div class="head"><p class="eyebrow">3 · Material de divulgação</p><h2>Divulgue no LinkedIn, Instagram ou WhatsApp</h2><p class="lede">Escolha um dos selos selecionados e o canal. O portal gera a imagem e o texto prontos para publicar.</p></div>
+  <div class="head"><p class="eyebrow">3 · Material de divulgação</p><h2>Divulgue no LinkedIn, Instagram ou WhatsApp</h2><p class="lede">Escolha um dos selos selecionados e o canal. O portal gera a imagem e o texto com os números do seu impacto, que mudam a cada novo apadrinhamento e conforme o desempenho dos vanguardistas, e com o convite para www.vanguarda.social.br.</p></div>
+  <div class="impacto" id="pn-impacto">
+    <div class="impacto-top"><h3>Seu impacto, atualizado a cada apoio</h3><button type="button" class="copy" id="pn-imp-atualizar">Atualizar</button></div>
+    <div class="kpis" id="pn-imp-kpis"><div class="kpi"><b>…</b><small>carregando</small></div></div>
+    <p class="note" id="pn-imp-nota"></p>
+  </div>
   <p class="notice" id="pn-mat-vazio"><b>Selos</b><span>Selecione pelo menos um selo acima para gerar o material.</span></p>
   <div class="mat" id="pn-mat" hidden>
     <div class="mat-ctl">
@@ -1331,7 +1339,7 @@ footer .notice{flex-basis:100%}
   }
 
   /* estado */
-  var st={perfil:null,ap:{marca:'',apadrinhados:0,porte:'',setor:'',objetivos:[],selos:[]},db:true,grupos:true};
+  var st={perfil:null,ap:{marca:'',porte:'',setor:'',objetivos:[],selos:[]},db:true,grupos:true,fin:null,reg:null};
   var LS='vg-painel-';
   function lsGet(){try{return JSON.parse(localStorage.getItem(LS+(st.perfil&&st.perfil.id||'x'))||'null');}catch(e){return null;}}
   function lsSet(){try{localStorage.setItem(LS+(st.perfil&&st.perfil.id||'x'),JSON.stringify(st.ap));}catch(e){}}
@@ -1342,7 +1350,7 @@ footer .notice{flex-basis:100%}
     var local=lsGet();if(local)st.ap=Object.assign(st.ap,local);
     if(!st.ap.marca)st.ap.marca=st.perfil.nome||'';
     if(!sb){st.db=false;return Promise.resolve();}
-    return sb.from('apoiador_perfil').select('marca,apadrinhados,porte,setor,objetivos,selos').eq('id',st.perfil.id).maybeSingle().then(function(r){
+    return sb.from('apoiador_perfil').select('marca,porte,setor,objetivos,selos').eq('id',st.perfil.id).maybeSingle().then(function(r){
       if(r.error){if(semTabela(r.error))st.db=false;return;}
       if(r.data){Object.keys(r.data).forEach(function(k){if(r.data[k]!=null)st.ap[k]=r.data[k];});}
     },function(){st.db=false;});
@@ -1351,19 +1359,19 @@ footer .notice{flex-basis:100%}
     lsSet();
     if(!st.db||!VG.sb)return Promise.resolve({ok:true,local:true});
     var a=st.ap;
-    return VG.sb.from('apoiador_perfil').upsert({id:st.perfil.id,marca:a.marca||null,apadrinhados:a.apadrinhados||0,porte:a.porte||null,setor:a.setor||null,objetivos:a.objetivos||[],selos:a.selos||[],atualizado_em:new Date().toISOString()})
+    return VG.sb.from('apoiador_perfil').upsert({id:st.perfil.id,marca:a.marca||null,porte:a.porte||null,setor:a.setor||null,objetivos:a.objetivos||[],selos:a.selos||[],atualizado_em:new Date().toISOString()})
       .then(function(r){if(r.error){if(semTabela(r.error)){st.db=false;return {ok:true,local:true};}return {ok:false};}return {ok:true};},function(){return {ok:false};});
   }
 
   /* 1. perfil */
   function preencherPerfil(){
-    var a=st.ap;$('pn-marca').value=a.marca||'';$('pn-apad').value=a.apadrinhados||'';
+    var a=st.ap;$('pn-marca').value=a.marca||'';
     document.querySelectorAll('input[name="pn-porte"]').forEach(function(r){r.checked=r.value===a.porte;});
     $('pn-setor').value=a.setor||'';
     document.querySelectorAll('#pn-obj input').forEach(function(c){c.checked=(a.objetivos||[]).indexOf(c.value)>=0;});
   }
   function lerPerfil(){
-    var a=st.ap;a.marca=$('pn-marca').value.trim();var n=parseInt($('pn-apad').value,10);a.apadrinhados=n>0?n:0;
+    var a=st.ap;a.marca=$('pn-marca').value.trim();
     var pr=document.querySelector('input[name="pn-porte"]:checked');a.porte=pr?pr.value:'';a.setor=$('pn-setor').value;
     a.objetivos=[].slice.call(document.querySelectorAll('#pn-obj input:checked')).map(function(c){return c.value;});
   }
@@ -1397,6 +1405,44 @@ footer .notice{flex-basis:100%}
     salvar().then(function(r){$('pn-selos-msg').textContent=r.ok?(s.length?s.length+(s.length>1?' selos selecionados.':' selo selecionado.'):'Nenhum selo selecionado.'):'Não foi possível salvar agora.';});
   });
 
+  /* impacto: apoios pagos (api/apoiador/impacto.js, Asaas) + regiões e desempenho agregados (impacto_apoiador no Supabase) */
+  var moeda=function(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:v%1?2:0});};
+  var SITE_TXT='www.vanguarda.social.br';
+  function listaUfs(r){var u=(r.regioes||[]).map(function(x){return x.uf;});if(!u.length)return '';if(r.outras_regioes)return u.join(', ')+' e outras regiões';return u.length>1?u.slice(0,-1).join(', ')+' e '+u[u.length-1]:u[0];}
+  function impacto(){
+    var f=st.fin||{},r=st.reg||{},i={};
+    if(f.vanguardistas_total>0){i.n=f.vanguardistas_ativos||f.vanguardistas_total;i.ativos=!!f.vanguardistas_ativos;i.valor=f.valor_total;i.meses=f.meses_vanguardista;}
+    if(r.suficiente){i.regioes=listaUfs(r);i.cidades=r.cidades;i.base=r.base;if(r.vanguardistas)i.pct=Math.round(r.ativos_30d/r.vanguardistas*100);i.sim=r.simulacoes_30d;}
+    return i;
+  }
+  function vg(n){return n===1?'1 vanguardista':n.toLocaleString('pt-BR')+' vanguardistas';}
+  function desenharImpacto(){
+    var i=impacto(),k=[];
+    k.push('<div class="kpi"><b>'+(i.n?i.n.toLocaleString('pt-BR'):'0')+'</b><small>vanguardistas apadrinhados'+(i.n&&i.ativos?' agora':'')+'</small></div>');
+    k.push('<div class="kpi"><b>'+moeda(i.valor||0)+'</b><small>investidos em apadrinhamento</small></div>');
+    k.push('<div class="kpi"><b>'+(i.meses||0).toLocaleString('pt-BR')+'</b><small>meses de acesso garantidos a vanguardistas</small></div>');
+    k.push('<div class="kpi txt"><b>'+esc(i.regioes||'–')+'</b><small>regiões impactadas'+(i.cidades?' ('+i.cidades+(i.cidades>1?' cidades':' cidade')+')':'')+'</small></div>');
+    if(i.pct!=null)k.push('<div class="kpi"><b>'+i.pct+'%</b><small>dos vanguardistas '+(i.base==='grupos'?'dos seus grupos':'do portal')+' ativos em 30 dias</small></div>');
+    $('pn-imp-kpis').innerHTML=k.join('');
+    var nota=[];
+    if(st.fin===false)nota.push('Não foi possível consultar seus apoios agora.');
+    else if(st.fin&&!st.fin.vanguardistas_total)nota.push('Seus números aparecem aqui assim que o primeiro apadrinhamento for pago. Os apoios são encontrados pelo CPF ou CNPJ do seu cadastro.');
+    if(st.reg&&st.reg.suficiente)nota.push('Regiões e desempenho '+(st.reg.base==='grupos'?'dos grupos que você acompanha':'de todos os vanguardistas do portal')+', sempre somados e sem dados individuais.');
+    else if(st.reg===false||(st.reg&&!st.reg.suficiente))nota.push('Regiões e desempenho aparecem quando houver pelo menos 5 vanguardistas na base.');
+    if(st.fin&&st.fin.ambiente==='sandbox')nota.push('Ambiente de teste: os apoios são do sandbox do Asaas.');
+    $('pn-imp-nota').textContent=nota.join(' ');
+  }
+  function carregarImpacto(){
+    var sb=VG.sb;if(!sb)return;
+    $('pn-imp-atualizar').disabled=true;
+    var fin=sb.auth.getSession().then(function(r){
+      var t=r&&r.data&&r.data.session&&r.data.session.access_token;if(!t)return false;
+      return fetch('/api/apoiador/impacto',{headers:{Authorization:'Bearer '+t},cache:'no-store'}).then(function(x){return x.ok?x.json():false;});
+    }).catch(function(){return false;});
+    var reg=sb.rpc('impacto_apoiador').then(function(r){return r.error?false:r.data;},function(){return false;});
+    return Promise.all([fin,reg]).then(function(v){st.fin=v[0];st.reg=v[1];$('pn-imp-atualizar').disabled=false;desenharImpacto();$('pn-mat-txt').value='';material();});
+  }
+  $('pn-imp-atualizar').addEventListener('click',carregarImpacto);
   /* 3. material */
   var CANAIS={
     linkedin:{w:1200,h:627,arq:'linkedin',acao:'Abrir no LinkedIn',dica:'No LinkedIn, crie a publicação, cole o texto e anexe a imagem baixada.'},
@@ -1406,19 +1452,27 @@ footer .notice{flex-basis:100%}
   function canal(){var r=document.querySelector('input[name="pn-canal"]:checked');return r?r.value:'linkedin';}
   function marca(){return st.ap.marca||(st.perfil&&st.perfil.nome)||'Nossa empresa';}
   function textoPara(s,c){
-    var m=marca(),n=st.ap.apadrinhados||0,q=n?(n===1?'1 vanguardista':n+' vanguardistas'):'vanguardistas';
-    var tagsOds=s.id.indexOf('ods')===0?' #'+s.sigla.replace(' ',''):'';
+    var m=marca(),i=impacto(),tagsOds=s.id.indexOf('ods')===0?' #'+s.sigla.replace(' ',''):'';
+    var nums=[];
+    if(i.n)nums.push(vg(i.n)+' apadrinhados');
+    if(i.valor)nums.push(moeda(i.valor)+' investidos');
+    if(i.meses)nums.push(i.meses.toLocaleString('pt-BR')+(i.meses===1?' mês':' meses')+' de acesso a ferramentas de gestão');
+    if(i.regioes)nums.push('regiões impactadas: '+i.regioes);
+    var desemp=i.pct!=null&&i.pct>0?'Nos últimos 30 dias, '+i.pct+'% dos vanguardistas '+(i.base==='grupos'?'que acompanhamos':'do portal')+' usaram as ferramentas'+(i.sim?' ('+i.sim.toLocaleString('pt-BR')+' dias de uso de simuladores)':'')+'.':'';
+    var bloco=nums.length?(c==='linkedin'?'Nosso impacto até agora: ':'📊 Nosso impacto até agora: ')+nums.join(' · ')+'.'+(desemp?'\n'+desemp:''):desemp;
     if(c==='linkedin')return m+' recebeu o selo "'+s.nome+'" do Portal Vanguarda.\n\n'+
-      'Apadrinhamos '+q+': pequenos empreendedores, MEIs e autônomos que usam simuladores gratuitos para precificar, planejar metas e entender o próprio negócio. Com o nosso apoio, o portal '+s.frase+'.\n\n'+
-      'Acreditamos que negócio pequeno bem gerido fortalece a economia de todo mundo.\n\n'+
-      'Quer apoiar também? '+SITE+'\n\n#ImpactoSocial #Empreendedorismo #ESG #PequenosNegocios'+tagsOds;
+      'Apadrinhamos pequenos empreendedores, MEIs e autônomos que usam simuladores gratuitos para precificar, planejar metas e entender o próprio negócio. Com o nosso apoio, o portal '+s.frase+'.\n\n'+
+      (bloco?bloco+'\n\n':'')+
+      'Acreditamos que negócio pequeno bem gerido fortalece a economia de todo mundo. Convido você a fazer parte: '+SITE_TXT+'\n\n#ImpactoSocial #Empreendedorismo #ESG #PequenosNegocios'+tagsOds;
     if(c==='instagram')return m+' agora tem o selo "'+s.curto+'" do Portal Vanguarda! 🚀\n\n'+
-      'A gente apadrinha '+q+'. Com isso, o Portal Vanguarda '+s.frase+'.\n\n'+
+      'A gente apadrinha vanguardistas e, com isso, o portal '+s.frase+'.\n\n'+
+      (bloco?bloco+'\n\n':'')+
       'Pequeno negócio forte faz a cidade inteira crescer. 💛\n\n'+
-      'Apoie também: vanguarda.social.br\n\n#ImpactoSocial #Empreendedorismo #MEI #PequenosNegocios #Vanguarda'+tagsOds;
+      'Faça parte você também: '+SITE_TXT+' (link na bio)\n\n#ImpactoSocial #Empreendedorismo #MEI #PequenosNegocios #Vanguarda'+tagsOds;
     return 'Oi! '+m+' recebeu o selo "'+s.curto+'" do Portal Vanguarda. 🙌\n\n'+
-      'Apadrinhamos '+q+'. Com isso, o Portal Vanguarda '+s.frase+'.\n\n'+
-      'Se você empreende, os simuladores são gratuitos. Se quiser apoiar, também dá: '+SITE;
+      'Apadrinhamos vanguardistas e, com isso, o portal '+s.frase+'.\n\n'+
+      (bloco?bloco+'\n\n':'')+
+      'Se você empreende, os simuladores são gratuitos. Se quiser apoiar também, entre em '+SITE_TXT;
   }
   function quebra(ctx,txt,max){var ws=String(txt).split(' '),ls=[],l='';ws.forEach(function(w){var t=l?l+' '+w:w;if(ctx.measureText(t).width>max&&l){ls.push(l);l=w;}else l=t;});if(l)ls.push(l);return ls;}
   function desenhar(s,c){
@@ -1426,29 +1480,43 @@ footer .notice{flex-basis:100%}
     var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0b1b2c');g.addColorStop(1,'#123a55');x.fillStyle=g;x.fillRect(0,0,W,H);
     x.strokeStyle='rgba(127,211,240,.10)';x.lineWidth=1;for(var i=0;i<W;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke();}for(var j=0;j<H;j+=40){x.beginPath();x.moveTo(0,j);x.lineTo(W,j);x.stroke();}
     var land=W>H,u=Math.min(W,H)/1080;
-    var r=land?200:(H>W*1.4?300:250),cx=land?W*0.27:W/2,cy=land?H/2:(H>W*1.4?H*0.34:H*0.36);
+    var alto=H>W*1.4,r=land?200:(alto?300:180),cx=land?W*0.27:W/2,cy=land?H/2:(alto?H*0.34:230);
     /* selo */
     x.save();x.shadowColor='rgba(127,211,240,.55)';x.shadowBlur=40*u;x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.fillStyle='#0e2436';x.fill();x.restore();
     x.lineWidth=10*u;x.strokeStyle='#7fd3f0';x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.stroke();
     x.lineWidth=3*u;x.strokeStyle='#f2b84b';x.beginPath();x.arc(cx,cy,r-26*u,0,Math.PI*2);x.stroke();
     x.textAlign='center';x.textBaseline='middle';x.fillStyle='#f2b84b';
-    x.font='600 '+Math.round(22*u+(land?2:4))+'px "IBM Plex Mono", monospace';x.fillText('SELO SOCIAL · '+ANO,cx,cy-r*0.52);
+    x.font='600 '+Math.round(r*0.105)+'px "IBM Plex Mono", monospace';x.fillText('SELO SOCIAL · '+ANO,cx,cy-r*0.52);
     x.fillStyle='#e8f2f8';var fs=Math.round(r*(s.sigla.length>3?0.42:0.56));x.font='700 '+fs+'px "Space Grotesk", sans-serif';x.fillText(s.sigla,cx,cy-r*0.08);
     x.fillStyle='#7fd3f0';x.font='500 '+Math.round(r*0.11)+'px "Space Grotesk", sans-serif';
     quebra(x,s.curto,r*1.5).slice(0,2).forEach(function(l,k,arr){x.fillText(l,cx,cy+r*(0.3+k*0.14)-(arr.length>1?r*0.05:0));});
     x.fillStyle='#9fb7c8';x.font='500 '+Math.round(r*0.085)+'px "IBM Plex Mono", monospace';x.fillText('PORTAL VANGUARDA',cx,cy+r*0.66);
     /* texto */
-    var tx=land?W*0.52:W*0.08,tw=land?W*0.42:W*0.84,ty=land?H*0.2:cy+r+90*u;
+    var tx=land?W*0.52:W*0.08,tw=land?W*0.42:W*0.84,ty=land?H*0.2:cy+r+(alto?90:66)*u;
     x.textAlign=land?'left':'center';x.textBaseline='alphabetic';if(!land)tx=W/2;
     x.fillStyle='#7fd3f0';x.font='600 '+Math.round(26*u+(land?4:0))+'px "IBM Plex Mono", monospace';x.fillText(s.cat.toUpperCase(),tx,ty);ty+=land?66:Math.round(64*u);
     x.fillStyle='#e8f2f8';var t1=Math.round(land?52:62*u);x.font='700 '+t1+'px "Space Grotesk", sans-serif';
     quebra(x,marca(),tw).slice(0,2).forEach(function(l){x.fillText(l,tx,ty);ty+=t1*1.12;});
     x.fillStyle='#9fb7c8';var t2=Math.round(land?28:34*u);x.font='400 '+t2+'px "IBM Plex Sans", sans-serif';
-    var n=st.ap.apadrinhados||0,linha=(n?'apadrinha '+n+(n===1?' vanguardista':' vanguardistas')+' e ':'')+s.frase+'.';
-    ty+=t2*0.3;quebra(x,linha.charAt(0).toUpperCase()+linha.slice(1),tw).slice(0,land?4:5).forEach(function(l){x.fillText(l,tx,ty);ty+=t2*1.35;});
+    var i=impacto(),linha=s.frase+'.';
+    ty+=t2*0.3;quebra(x,linha.charAt(0).toUpperCase()+linha.slice(1),tw).slice(0,land||alto?3:2).forEach(function(l){x.fillText(l,tx,ty);ty+=t2*1.35;});
+    /* números de impacto (mudam a cada apoio e com o desempenho dos vanguardistas) */
+    var stats=[];
+    if(i.n)stats.push([i.n.toLocaleString('pt-BR'),i.n===1?'vanguardista apadrinhado':'vanguardistas apadrinhados']);
+    if(i.valor)stats.push([moeda(i.valor),'investidos']);
+    if(i.regioes)stats.push([(st.reg.regioes||[]).map(function(z){return z.uf;}).slice(0,3).join(' · ')+(st.reg.outras_regioes||(st.reg.regioes||[]).length>3?' +':''),'regiões impactadas']);
+    else if(i.meses)stats.push([i.meses.toLocaleString('pt-BR'),'meses de acesso']);
+    if(i.pct!=null&&i.pct>0&&stats.length<3)stats.push([i.pct+'%','ativos em 30 dias']);
+    if(stats.length){
+      ty+=t2*0.6;var cw=tw/stats.length,x0=land?tx:W/2-tw/2,big=Math.round(land?40:56*u),sm=Math.round(land?17:24*u);
+      x.strokeStyle='rgba(242,184,75,.6)';x.lineWidth=2*u;x.beginPath();x.moveTo(x0,ty-big*0.2);x.lineTo(x0+tw,ty-big*0.2);x.stroke();ty+=big*1.05;
+      stats.forEach(function(st2,k){var c0=land?x0+k*cw:x0+k*cw+cw/2;x.textAlign=land?'left':'center';
+        x.fillStyle='#f2b84b';var fz=big;x.font='700 '+fz+'px "Space Grotesk", sans-serif';while(x.measureText(st2[0]).width>cw-12&&fz>16){fz-=2;x.font='700 '+fz+'px "Space Grotesk", sans-serif';}x.fillText(st2[0],c0,ty);
+        x.fillStyle='#9fb7c8';x.font='500 '+sm+'px "IBM Plex Sans", sans-serif';quebra(x,st2[1],cw-12).slice(0,2).forEach(function(l,j){x.fillText(l,c0,ty+sm*1.5+j*sm*1.25);});});
+    }
     /* rodapé */
     x.fillStyle='#f2b84b';x.fillRect(0,H-12*u,W,12*u);
-    x.fillStyle='#e8f2f8';x.font='600 '+Math.round(land?24:30*u)+'px "IBM Plex Mono", monospace';x.textAlign='center';x.fillText('vanguarda.social.br',W/2,H-(land?34:60*u));
+    x.fillStyle='#e8f2f8';x.font='600 '+Math.round(land?24:30*u)+'px "IBM Plex Mono", monospace';x.textAlign='center';x.fillText('Faça parte: www.vanguarda.social.br',W/2,H-(land?34:60*u));
   }
   var ultimoTexto='';
   function material(){
@@ -1514,7 +1582,7 @@ footer .notice{flex-basis:100%}
     btn.disabled=true;msg.textContent='Salvando o grupo…';
     VG.sb.from('grupos').insert({nome:nome.slice(0,60),uf:f.uf,cidade:f.cidade,tipo_doc:f.tipo_doc}).then(function(r){
       if(r.error){msg.textContent=/row-level|policy/i.test(r.error.message||'')?'Limite de 20 grupos atingido ou conta sem permissão de apoiador.':'Não foi possível salvar o grupo agora.';btn.disabled=false;return;}
-      $('pn-g-nome').value='';msg.textContent='Grupo salvo.';listarGrupos();
+      $('pn-g-nome').value='';msg.textContent='Grupo salvo.';listarGrupos();carregarImpacto();
     });
   });
   function pct(a,n){return n?Math.round(a/n*100)+'%':'–';}
@@ -1554,7 +1622,7 @@ footer .notice{flex-basis:100%}
   }
   $('pn-lista-grupos').addEventListener('click',function(e){
     var b=e.target.closest('[data-apagar]');if(!b)return;
-    b.disabled=true;VG.sb.from('grupos').delete().eq('id',b.dataset.apagar).then(function(){listarGrupos();});
+    b.disabled=true;VG.sb.from('grupos').delete().eq('id',b.dataset.apagar).then(function(){listarGrupos();carregarImpacto();});
   });
 
   /* entrada no painel */
@@ -1565,7 +1633,7 @@ footer .notice{flex-basis:100%}
     if(!ok){st.perfil=null;pronto=null;return;}
     if(pronto===p.id)return;pronto=p.id;st.perfil=p;
     $('pn-titulo').textContent='Olá, '+String(p.nome||'').split(' ')[0]+'. Este é o seu painel de impacto';
-    carregar().then(function(){preencherPerfil();desenharSelos();material();listarGrupos();conferirGrupo();});
+    carregar().then(function(){preencherPerfil();desenharSelos();material();listarGrupos();conferirGrupo();carregarImpacto();});
   }
   function naTela(){return (decodeURIComponent(location.hash.slice(1))||'').indexOf('painel')===0||location.hash.indexOf('#pn-')===0;}
   window.addEventListener('hashchange',function(){if(naTela())abrir();});

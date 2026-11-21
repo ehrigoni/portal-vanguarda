@@ -18,6 +18,8 @@ O site guarda as contas de vanguardistas e apoiadores no Supabase. Enquanto as c
 - Tabela `apoiador_perfil`: marca, número de apadrinhados, porte, setor, objetivos e selos escolhidos pelo apoiador (usados na recomendação de selos e no material de divulgação). Cada apoiador só lê e altera o próprio.
 - Tabela `atividades`: um registro por dia e por tipo quando o vanguardista logado usa um simulador ou clica em Indique. É a base do desempenho agregado.
 - Tabela `grupos`: filtros (estado, cidade, CPF ou CNPJ) que o apoiador escolheu acompanhar. Nunca guarda uma lista de pessoas.
+- Função `impacto_apoiador`: regiões (só estados com pelo menos 5 vanguardistas; os demais viram "outras regiões") e desempenho somado, usados nos números do material de divulgação. A base são os grupos que o apoiador acompanha; sem grupos, todo o portal.
+- O impacto financeiro (vanguardistas apadrinhados, valor investido, meses de acesso) vem dos pagamentos recebidos no Asaas pelo CPF/CNPJ do apoiador, consultados em `api/apoiador/impacto.js`. Nada disso fica guardado no Supabase.
 - Funções `contar_grupo` e `painel_grupo`: devolvem só totais e percentuais do grupo. Nada sai quando o grupo tem menos de 5 vanguardistas, ou quando, tirando um filtro, a diferença entre os grupos isolaria de 1 a 4 pessoas. O apoiador não tem acesso de leitura a `perfis` nem a `atividades` de vanguardistas.
 - Para ver os cadastros: **Table Editor > perfis**.
 

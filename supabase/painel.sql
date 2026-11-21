@@ -9,7 +9,6 @@
 create table if not exists public.apoiador_perfil (
   id            uuid primary key references public.perfis (id) on delete cascade,
   marca         text check (length(marca) <= 80),
-  apadrinhados  integer check (apadrinhados between 0 and 100000),
   porte         text check (porte in ('autonomo', 'mei', 'me', 'epp', 'media')),
   setor         text check (length(setor) <= 40),
   objetivos     text[] not null default '{}',
@@ -18,7 +17,6 @@ create table if not exists public.apoiador_perfil (
 );
 
 alter table public.apoiador_perfil add column if not exists marca text check (length(marca) <= 80);
-alter table public.apoiador_perfil add column if not exists apadrinhados integer check (apadrinhados between 0 and 100000);
 
 alter table public.apoiador_perfil enable row level security;
 
@@ -229,9 +227,75 @@ begin
 end;
 $$;
 
+-- 7. Impacto do apoiador para o material de divulgação: regiões e desempenho, sempre agregados.
+--    Base: a soma dos grupos que o apoiador acompanha; sem grupos, todos os vanguardistas do portal.
+--    Só entram estados com pelo menos 5 vanguardistas; os demais viram "outras regiões", sem número.
+create or replace function public.impacto_apoiador()
+returns jsonb
+language plpgsql
+stable
+security definer
+set search_path = public
+as $$
+declare
+  MIN_GRUPO constant integer := 5;
+  hoje date := (now() at time zone 'America/Sao_Paulo')::date;
+  tem_grupos boolean;
+  n integer;
+  r jsonb;
+begin
+  if not exists (select 1 from public.perfis where id = auth.uid() and tipo = 'apoiador') then
+    raise exception 'apenas apoiadores';
+  end if;
+  select exists (select 1 from public.grupos where apoiador_id = auth.uid()) into tem_grupos;
+
+  with m as (
+    select distinct mg.id
+    from public.grupos g
+    cross join lateral public._membros_grupo(g.uf, g.cidade, g.tipo_doc) mg
+    where tem_grupos and g.apoiador_id = auth.uid()
+      and public._grupo_seguro(g.uf, g.cidade, g.tipo_doc, MIN_GRUPO) is not null
+    union
+    select p.id from public.perfis p where not tem_grupos and p.tipo = 'vanguardista'
+  )
+  select count(*) into n from m;
+
+  if n < MIN_GRUPO then
+    return jsonb_build_object('suficiente', false, 'base', case when tem_grupos then 'grupos' else 'portal' end, 'minimo', MIN_GRUPO);
+  end if;
+
+  with m as (
+    select distinct mg.id
+    from public.grupos g
+    cross join lateral public._membros_grupo(g.uf, g.cidade, g.tipo_doc) mg
+    where tem_grupos and g.apoiador_id = auth.uid()
+      and public._grupo_seguro(g.uf, g.cidade, g.tipo_doc, MIN_GRUPO) is not null
+    union
+    select p.id from public.perfis p where not tem_grupos and p.tipo = 'vanguardista'
+  ),
+  mp as (select p.* from public.perfis p join m on m.id = p.id),
+  ufs as (select uf, count(*) as q from mp group by uf),
+  a as (select a.* from public.atividades a join m on m.id = a.vanguardista_id where a.dia > hoje - 30)
+  select jsonb_build_object(
+    'suficiente', true,
+    'base', case when tem_grupos then 'grupos' else 'portal' end,
+    'vanguardistas', n,
+    'regioes', coalesce((select jsonb_agg(jsonb_build_object('uf', uf, 'vanguardistas', q) order by q desc, uf) from ufs where q >= MIN_GRUPO), '[]'::jsonb),
+    'outras_regioes', exists (select 1 from ufs where q < MIN_GRUPO),
+    'cidades', (select count(distinct lower(public.unaccent_safe(cidade)) || uf) from mp),
+    'ativos_30d', (select count(distinct vanguardista_id) from a),
+    'simulacoes_30d', (select count(*) from a where tipo like 'simulador%'),
+    'indicacoes_30d', (select count(*) from a where tipo = 'indicacao')
+  ) into r;
+  return r;
+end;
+$$;
+
 revoke all on function public._membros_grupo(text, text, text) from public, anon, authenticated;
 revoke all on function public._grupo_seguro(text, text, text, integer) from public, anon, authenticated;
 revoke all on function public.contar_grupo(text, text, text) from public;
 revoke all on function public.painel_grupo(uuid) from public;
 grant execute on function public.contar_grupo(text, text, text) to authenticated;
 grant execute on function public.painel_grupo(uuid) to authenticated;
+revoke all on function public.impacto_apoiador() from public;
+grant execute on function public.impacto_apoiador() to authenticated;
