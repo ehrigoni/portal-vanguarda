@@ -211,8 +211,11 @@ footer .notice{flex-basis:100%}
   .top nav a{white-space:nowrap}
 }
 .pagehead .in{padding-block:48px 8px;display:grid;gap:12px}
-.pagehead h1{font-size:clamp(30px,4.6vw,48px);line-height:1.08;font-weight:700;max-width:22ch}
-[data-view="apoiar"] .pagehead h1,[data-view="apoiar"] .pagehead .lede{max-width:none}
+.pagehead h1,.apoiar-topo h1{font-size:clamp(30px,4.6vw,48px);line-height:1.08;font-weight:700;max-width:22ch}
+[data-view="apoiar"] .pagehead h1,[data-view="apoiar"] .pagehead .lede,.apoiar-topo h1,.apoiar-topo .lede{max-width:none}
+/* Apoiar: topo da página e "Como funciona para Apoiadores" num só painel */
+section.band#apoiadores{border-top:0}
+section.band#apoiadores > .in{padding-top:48px}
 #como-funciona .head h2,#como-funciona .head .lede{max-width:none}
 .hero h1,.hero .lede{max-width:none}
 @media (min-width:861px){.hero h1{font-size:clamp(28px,3.4vw,44px)}}
@@ -623,13 +626,12 @@ footer .notice{flex-basis:100%}
 </div></section>
 </div>
 <div data-view="apoiar">
-<section class="pagehead"><div class="in">
-  <p class="eyebrow">Apoiar · apoiadores e vanguardistas</p>
-  <h1>Apoie vanguardistas a partir de 1 mês</h1>
-  <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Cadastrar e Apoiar ou em Apenas Apoiar.</p>
-</div></section>
 <section class="band" id="apoiadores"><div class="in">
-  <div class="head"><p class="eyebrow">Como funciona para Apoiadores</p><h2>Do apadrinhamento à nota fiscal em quatro passos</h2></div>
+  <div class="head apoiar-topo">
+    <p class="eyebrow">Apoiar · apoiadores e vanguardistas</p>
+    <h1>Apoie vanguardistas a partir de 1 mês</h1>
+    <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Cadastrar e Apoiar ou em Apenas Apoiar.</p>
+  </div>
   <ol class="steps">
       <li><h3>Apadrinhamento</h3><p>Escolha do número de apadrinhados e período.</p></li>
       <li><h3>Informações para a nota fiscal</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ e endereço. Se quiser guardar seu cadastro, crie uma senha. Leva um minuto.</p></li>
