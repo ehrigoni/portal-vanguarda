@@ -242,6 +242,7 @@ footer .notice{flex-basis:100%}
 .signup .fields .hint.bad{color:var(--amber)}
 .signup .wide{grid-column:1/-1}
 .signup .note{font-size:13px;color:var(--muted)}
+.signup .btn-nota{margin:-6px 0 4px;text-align:center}
 #cd-btn{justify-self:center}
 #cd-entrar{text-align:center}
 .done{border:1px solid var(--glow);border-radius:12px;padding:18px 20px;display:grid;gap:10px;background:var(--panel)}
@@ -607,7 +608,7 @@ footer .notice{flex-basis:100%}
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Apoiar · apoiadores e vanguardistas</p>
   <h1>Apoie vanguardistas a partir de 1 mês</h1>
-  <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Apoiar.</p>
+  <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Cadastrar e Apoiar ou em Apenas Apoiar.</p>
 </div></section>
 <section class="band" id="apoiadores"><div class="in">
   <div class="head"><p class="eyebrow">Como funciona para Apoiadores</p><h2>Do apadrinhamento à nota fiscal em quatro passos</h2></div>
@@ -645,7 +646,9 @@ footer .notice{flex-basis:100%}
       <p class="notice" id="ap-aviso-pag" hidden><b>Pagamento</b><span>Ao continuar, você vai para a fatura do Asaas, nosso sistema de cobrança, e escolhe PIX, boleto ou cartão. A nota fiscal chega no seu e-mail depois que o pagamento compensa. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. Ao clicar em Cadastrar e Apoiar ou em Apenas Apoiar, você registra seu apoio, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <button class="btn go" type="submit" id="ap-btn" data-acao="cadastrar" data-guest>Cadastrar e Apoiar</button>
+      <p class="note btn-nota" data-guest>Suas informações ficam guardadas na sua conta para os próximos apoios.</p>
       <button class="btn" type="submit" id="ap-btn-so" data-acao="apoiar">Apenas Apoiar</button>
+      <p class="note btn-nota" data-guest>Nenhuma informação fica guardada no portal. Os dados servem só para este apoio e a nota fiscal.</p>
       <p class="note">Dúvidas: WhatsApp <a href="https://wa.me/5551992910038" target="_blank" rel="noopener">(51) 99291-0038</a></p>
       <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
     </form>
