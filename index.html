@@ -329,6 +329,30 @@ footer .notice{flex-basis:100%}
 .footnav{display:flex;gap:16px;flex-wrap:wrap}
 .footnav a{color:var(--muted);text-decoration:none}
 .footnav a:hover{color:var(--fg)}
+/* painel do apoiador: selos sociais */
+.pn-perfil{display:grid;gap:12px}
+.pn-perfil .chips{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--panel)}
+.pn-res{color:var(--muted);font-size:14px}
+.pn-res b{color:var(--fg)}
+.selos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:960px){.selos{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.selos{grid-template-columns:1fr}}
+.selo{border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:10px;align-content:start;background:var(--bg);min-width:0}
+.selo.rec{border-color:var(--amber);background:var(--panel)}
+.selo.sel{box-shadow:inset 0 0 0 1px var(--glow);border-color:var(--glow)}
+.selo-top{display:flex;gap:12px;align-items:center}
+.selo-ic{flex:none;width:52px;height:52px;border-radius:50%;border:2px solid var(--glow);display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:13px;color:var(--glow);text-align:center;line-height:1.1}
+.selo.rec .selo-ic{border-color:var(--amber);color:var(--amber)}
+.selo h3{font-size:17px}
+.selo p{color:var(--muted);font-size:14px}
+.selo .por{font-size:13px;color:var(--fg);border-left:2px solid var(--amber);padding-left:10px}
+.selo .tags{display:flex;gap:6px;flex-wrap:wrap}
+.selo .tag.rec{border-color:var(--amber);color:var(--amber)}
+.selo .btn{justify-self:start;padding:8px 14px;font-size:14px}
+.selo .btn[aria-pressed="true"]{border-color:var(--glow);color:var(--glow)}
+.me .pn-link{display:none}
+@media (max-width:760px){.me .pn-link{display:inline}}
+.pn-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
 </style>
 <style>body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
 </head>
@@ -338,12 +362,12 @@ footer .notice{flex-basis:100%}
 <header class="top"><div class="in">
   <a class="brand" href="#inicio">Portal <span>Vanguarda</span></a>
   <nav aria-label="Páginas">
-    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#sobre" data-nav="sobre">Sobre</a>
+    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#sobre" data-nav="sobre">Sobre</a><a href="#painel" data-nav="painel" data-apoiador hidden>Meu painel</a>
   </nav>
   <div class="acc-top">
     <a class="enter" href="#entrar" data-guest>Entrar</a>
     <a class="btn go" href="#cadastro" data-guest>Cadastre-se</a>
-    <span class="me" data-user hidden>Olá, <b id="me-nome"></b> <button type="button" class="copy" id="sair">Sair</button></span>
+    <span class="me" data-user hidden>Olá, <b id="me-nome"></b> <a class="pn-link" href="#painel" data-apoiador hidden>Meu painel</a> <button type="button" class="copy" id="sair">Sair</button></span>
   </div>
 </div></header>
 <div class="hello" id="hello" hidden><div class="in"><p id="hello-txt"></p><button type="button" class="copy" id="hello-x" aria-label="Fechar aviso">Fechar</button></div></div>
@@ -675,6 +699,7 @@ footer .notice{flex-basis:100%}
       <div class="done" id="ap-done" hidden>
         <h3>Apoio registrado</h3>
         <p id="ap-conta" hidden></p>
+        <p data-apoiador hidden><a href="#painel">Ver meu painel de selos sociais</a></p>
         <p>Envie pelo WhatsApp para entrar na lista. Avisaremos quando os pagamentos e as notas fiscais começarem.</p>
         <pre id="ap-resumo"></pre>
         <a class="btn go" id="ap-wa" href="https://wa.me/5551992910038" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
@@ -710,6 +735,50 @@ footer .notice{flex-basis:100%}
     <p><b>Cada padrinho veio da trilha ou abre espaço para ela.</b> O portal cresce pelo boca a boca dos próprios empreendedores, sem depender de anúncios.</p>
   </div>
 </div></section>
+</div>
+<div data-view="painel">
+<section class="pagehead"><div class="in">
+  <p class="eyebrow">Painel do apoiador</p>
+  <h1>Seus selos sociais</h1>
+  <p class="lede">Os selos mostram o impacto do seu apoio aos vanguardistas. Conte um pouco sobre você e o painel indica os selos mais adequados ao seu perfil.</p>
+</div></section>
+<section class="band" id="painel-fora" hidden><div class="in">
+  <div class="loop"><span class="eyebrow">Acesso</span><p id="painel-fora-txt"><b>O painel é para apoiadores cadastrados.</b> Entre com sua conta de apoiador ou cadastre-se ao apadrinhar vanguardistas.</p><div class="loop-acts" data-guest><a class="btn" href="#entrar">Entrar</a><a class="btn go" href="#apoiar-cadastro">Cadastrar e Apoiar</a></div></div>
+</div></section>
+<div id="painel-dentro" hidden>
+<section class="band" id="painel-perfil"><div class="in">
+  <div class="head"><p class="eyebrow">Seu perfil</p><h2>Três perguntas para recomendar seus selos</h2><p class="lede">As respostas ficam guardadas só neste aparelho e servem apenas para a recomendação.</p></div>
+  <form class="pn-perfil" id="pn-form" onsubmit="return false">
+    <fieldset class="chips" id="pn-porte"><legend>Como você atua</legend>
+      <label><input type="radio" name="pn-porte" value="mei"><span>MEI</span></label>
+      <label><input type="radio" name="pn-porte" value="autonomo"><span>Autônomo(a)</span></label>
+      <label><input type="radio" name="pn-porte" value="pequena"><span>Pequena empresa</span></label>
+      <label><input type="radio" name="pn-porte" value="maior"><span>Média ou grande empresa</span></label>
+    </fieldset>
+    <fieldset class="chips" id="pn-ramo"><legend>Seu ramo</legend>
+      <label><input type="radio" name="pn-ramo" value="comercio"><span>Comércio</span></label>
+      <label><input type="radio" name="pn-ramo" value="servicos"><span>Serviços</span></label>
+      <label><input type="radio" name="pn-ramo" value="tecnologia"><span>Tecnologia</span></label>
+      <label><input type="radio" name="pn-ramo" value="educacao"><span>Educação</span></label>
+      <label><input type="radio" name="pn-ramo" value="industria"><span>Indústria</span></label>
+      <label><input type="radio" name="pn-ramo" value="outro"><span>Outro</span></label>
+    </fieldset>
+    <fieldset class="chips" id="pn-foco"><legend>O que mais importa no seu apoio</legend>
+      <label><input type="radio" name="pn-foco" value="local"><span>Fortalecer negócios da minha região</span></label>
+      <label><input type="radio" name="pn-foco" value="educacao"><span>Educação empreendedora</span></label>
+      <label><input type="radio" name="pn-foco" value="desigualdade"><span>Reduzir desigualdades</span></label>
+      <label><input type="radio" name="pn-foco" value="esg"><span>Mostrar compromisso com ODS e ESG</span></label>
+    </fieldset>
+    <p class="pn-res" id="pn-res" aria-live="polite">Responda as três perguntas para ver os selos recomendados.</p>
+  </form>
+</div></section>
+<section class="band" id="painel-selos"><div class="in">
+  <div class="head"><p class="eyebrow">Selos disponíveis</p><h2>Escolha os selos que combinam com o seu apoio</h2><p class="lede">Os selos recomendados aparecem primeiro, com o motivo da indicação. Você pode selecionar qualquer selo.</p></div>
+  <ul class="selos" id="pn-selos"></ul>
+  <div class="pn-bar"><p class="pn-res" id="pn-sel" aria-live="polite">Nenhum selo selecionado.</p></div>
+  <p class="notice"><b>Em breve</b><span>Com os selos selecionados, o painel vai gerar material para divulgar no LinkedIn, no Instagram e no WhatsApp, e você vai poder acompanhar um grupo de vanguardistas cadastrados, sempre com dados agrupados, nunca de uma pessoa só. O selo passa a valer depois que o apoio é confirmado.</span></p>
+</div></section>
+</div>
 </div>
 <div data-view="entrar">
 <section class="pagehead"><div class="in">
@@ -881,10 +950,11 @@ footer .notice{flex-basis:100%}
   var sb=null;
   try{if(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){sb=null;}
   var FORA='O cadastro está sendo ligado e volta em breve. Enquanto isso, fale com a gente pelo WhatsApp (51) 99291-0038.';
-  var perfil=null,cobranca={ativo:false,ambiente:''};
+  var perfil=null,uid=null,cobranca={ativo:false,ambiente:''};
   function destino(c){return c.tipo==='vanguardista'?'simuladores':'apoiadores';}
   function emailInterno(){var r='';try{r=crypto.randomUUID().replace(/-/g,'');}catch(e){r=Date.now().toString(36)+Math.random().toString(36).slice(2);}return 'cadastro+'+r+'@'+LOGIN_DOMINIO;}
   function carregarPerfil(user){
+    uid=user?user.id:null;
     if(!user)return Promise.resolve(null);
     return sb.from('perfis').select('tipo,nome,fone,email,doc,cidade,uf').eq('id',user.id).maybeSingle().then(function(r){
       var m=user.user_metadata||{};return r.data||(m.tipo?{tipo:m.tipo,nome:m.nome,fone:m.fone,email:m.email_contato,doc:m.doc,cidade:m.cidade,uf:m.uf}:null);
@@ -894,6 +964,8 @@ footer .notice{flex-basis:100%}
     var c=perfil;
     document.querySelectorAll('[data-guest]').forEach(function(el){el.hidden=!!c;});
     document.querySelectorAll('[data-user]').forEach(function(el){el.hidden=!c;});
+    document.querySelectorAll('[data-apoiador]').forEach(function(el){el.hidden=!(c&&c.tipo==='apoiador');});
+    if(SELOS)painel();
     document.getElementById('ap-btn-so').textContent=(c?'Apoiar':'Apenas Apoiar')+(cobranca.ambiente==='sandbox'?' (teste)':'');
     if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];
       preencherApoio();}
@@ -914,7 +986,7 @@ footer .notice{flex-basis:100%}
   function entrou(user,txt){return carregarPerfil(user).then(function(c){perfil=c;cabecalho();if(c){ola(txt.replace('{n}',(c.nome||'').split(' ')[0]));location.hash=destino(c);}return c;});}
   function ola(txt){var h=document.getElementById('hello');document.getElementById('hello-txt').textContent=txt;h.hidden=false;}
   document.getElementById('hello-x').addEventListener('click',function(){document.getElementById('hello').hidden=true;});
-  document.getElementById('sair').addEventListener('click',function(){var done=function(){perfil=null;document.getElementById('hello').hidden=true;cabecalho();location.hash='inicio';};if(sb)sb.auth.signOut().then(done,done);else done();});
+  document.getElementById('sair').addEventListener('click',function(){var done=function(){perfil=null;uid=null;document.getElementById('hello').hidden=true;cabecalho();location.hash='inicio';};if(sb)sb.auth.signOut().then(done,done);else done();});
   function erro(id,msg,campo){var e=document.getElementById(id);e.textContent=msg;e.hidden=!msg;
     document.querySelectorAll('.fields label.bad').forEach(function(l){l.classList.remove('bad');});
     if(campo){var l=campo.closest('label');if(l)l.classList.add('bad');campo.focus();}}
@@ -971,6 +1043,79 @@ footer .notice{flex-basis:100%}
   });
   if(sb)sb.auth.getSession().then(function(r){var u=r.data&&r.data.session&&r.data.session.user;return carregarPerfil(u).then(function(c){perfil=c;cabecalho();});});
   cabecalho();
+  /* painel do apoiador: catálogo de selos sociais (docs/ModeloDeNegociosPortalVanguarda.docx) e recomendação pelo perfil.
+     Cada regra soma pontos ao selo quando a resposta bate; os 3 selos com mais pontos (acima de zero) são os recomendados. */
+  var SELOS=[
+    {id:'madrinha',ic:'♥',nome:'Empresa Madrinha · Impacto Direto',cat:'Meta social',desc:'Seu apoio mantém os simuladores gratuitos para vanguardistas. Níveis Bronze, Prata e Ouro conforme o número de apadrinhados.',
+      base:1,regras:[['foco','local',2,'você quer fortalecer negócios da sua região'],['porte','mei',1,'é o selo de entrada para quem apoia como MEI'],['porte','autonomo',1,'é o selo de entrada para quem apoia como autônomo(a)'],['porte','pequena',1,'combina com o apoio de pequenas empresas']]},
+    {id:'educacao',ic:'EDU',nome:'Investidora em Educação Empreendedora',cat:'Meta social',desc:'Certifica que você ajuda a financiar trilhas educativas e novos simuladores para quem empreende.',
+      regras:[['foco','educacao',3,'você escolheu educação empreendedora'],['ramo','educacao',2,'seu ramo é educação']]},
+    {id:'periferia',ic:'↗',nome:'Aceleradora de Negócios Periféricos',cat:'Meta social',desc:'Direciona o apadrinhamento para empreendedores de periferias e regiões de vulnerabilidade social.',
+      regras:[['foco','desigualdade',3,'você quer reduzir desigualdades'],['foco','local',1,'seu apoio chega a negócios de bairro'],['ramo','comercio',1,'o comércio de bairro é o público desse selo']]},
+    {id:'ods8',ic:'ODS 8',nome:'Parceiro ODS 8 · Trabalho decente e crescimento econômico',cat:'Agenda ODS da ONU',desc:'Mostra que você investe na emancipação financeira e na sustentabilidade de pequenos negócios.',
+      regras:[['foco','esg',2,'você quer mostrar compromisso com ODS e ESG'],['foco','local',1,'o ODS 8 trata do crescimento de negócios locais'],['ramo','comercio',1,'combina com o comércio'],['ramo','servicos',1,'combina com serviços'],['ramo','industria',1,'combina com a indústria']]},
+    {id:'ods4',ic:'ODS 4',nome:'Parceiro ODS 4 · Educação de qualidade',cat:'Agenda ODS da ONU',desc:'Mostra que você apoia o acesso gratuito a ferramentas de simulação econômica.',
+      regras:[['foco','esg',2,'você quer mostrar compromisso com ODS e ESG'],['foco','educacao',1,'você escolheu educação empreendedora'],['ramo','educacao',1,'seu ramo é educação']]},
+    {id:'ods10',ic:'ODS 10',nome:'Parceiro ODS 10 · Redução das desigualdades',cat:'Agenda ODS da ONU',desc:'Leva ao pequeno comerciante ferramentas de gestão que antes só grandes empresas podiam pagar.',
+      regras:[['foco','esg',2,'você quer mostrar compromisso com ODS e ESG'],['foco','desigualdade',2,'você quer reduzir desigualdades']]},
+    {id:'tech',ic:'</>',nome:'Tecnologia para o Bem',cat:'Visibilidade digital',desc:'Posiciona você como apoiador de ferramentas gratuitas e abertas para quem empreende.',
+      regras:[['ramo','tecnologia',3,'seu ramo é tecnologia']]},
+    {id:'powered',ic:'PWR',nome:'Powered by [sua marca]',cat:'Visibilidade digital',desc:'Cota master: sua marca aparece no rodapé de um simulador de alta procura. Sob consulta.',
+      regras:[['porte','maior',3,'é a cota indicada para empresas de maior porte'],['porte','mei',-3,''],['porte','autonomo',-3,'']]}
+  ];
+
+  function chave(k){return 'vg-painel-'+k+'-'+(uid||'anon');}
+  function ler(k,d){try{var v=localStorage.getItem(chave(k));return v?JSON.parse(v):d;}catch(e){return d;}}
+  function gravar(k,v){try{localStorage.setItem(chave(k),JSON.stringify(v));}catch(e){}}
+  function respostas(){var r={};['porte','ramo','foco'].forEach(function(k){var i=document.querySelector('input[name="pn-'+k+'"]:checked');if(i)r[k]=i.value;});return r;}
+  function recomendar(r){
+    return SELOS.map(function(s,ordem){var pts=s.base||0,por=[];
+      s.regras.forEach(function(g){if(r[g[0]]===g[1]){pts+=g[2];if(g[2]>0&&g[3])por.push(g[3]);}});
+      return {s:s,pts:pts,por:por,ordem:ordem};
+    });
+  }
+  function painel(){
+    var fora=document.getElementById('painel-fora'),dentro=document.getElementById('painel-dentro');
+    var ok=!!(perfil&&perfil.tipo==='apoiador');
+    fora.hidden=ok;dentro.hidden=!ok;
+    if(!perfil)document.getElementById('painel-fora-txt').innerHTML='<b>O painel é para apoiadores cadastrados.</b> Entre com sua conta de apoiador ou cadastre-se ao apadrinhar vanguardistas.';
+    else if(!ok)document.getElementById('painel-fora-txt').innerHTML='<b>O painel de selos é para apoiadores.</b> Sua conta é de vanguardista: seus recursos estão na área de <a href="#simuladores">simuladores</a>.';
+    if(!ok)return;
+    var r=ler('perfil',{});
+    if(!r.porte&&perfil.doc&&String(perfil.doc).length===11)r.porte='autonomo'; /* CPF: sugere autônomo(a) até a pessoa escolher */
+    ['porte','ramo','foco'].forEach(function(k){document.querySelectorAll('input[name="pn-'+k+'"]').forEach(function(i){i.checked=(i.value===r[k]);});});
+    selos();
+  }
+  function selos(){
+    var r=respostas(),completo=!!(r.porte&&r.ramo&&r.foco),sel=ler('selos',[]);
+    var lista=recomendar(r),top=[];
+    if(completo)top=lista.filter(function(x){return x.pts>0;}).sort(function(a,b){return b.pts-a.pts||a.ordem-b.ordem;}).slice(0,3);
+    var recIds=top.map(function(x){return x.s.id;});
+    var ord=top.concat(lista.filter(function(x){return recIds.indexOf(x.s.id)<0;}));
+    var ul=document.getElementById('pn-selos');ul.textContent='';
+    ord.forEach(function(x){
+      var s=x.s,rec=recIds.indexOf(s.id)>=0,on=sel.indexOf(s.id)>=0;
+      var li=document.createElement('li');li.className='selo'+(rec?' rec':'')+(on?' sel':'');
+      var top_=document.createElement('div');top_.className='selo-top';
+      var ic=document.createElement('span');ic.className='selo-ic';ic.setAttribute('aria-hidden','true');ic.textContent=s.ic;
+      var h=document.createElement('h3');h.textContent=s.nome;top_.append(ic,h);
+      var tags=document.createElement('div');tags.className='tags';
+      var t1=document.createElement('span');t1.className='tag';t1.textContent=s.cat;tags.append(t1);
+      if(rec){var t2=document.createElement('span');t2.className='tag rec';t2.textContent='Recomendado para você';tags.append(t2);}
+      var p=document.createElement('p');p.textContent=s.desc;
+      li.append(top_,tags,p);
+      if(rec&&x.por.length){var por=document.createElement('p');por.className='por';por.textContent='Por quê: '+x.por.join('; ')+'.';li.append(por);}
+      var b=document.createElement('button');b.type='button';b.className='btn';b.setAttribute('aria-pressed',on?'true':'false');b.textContent=on?'Selecionado':'Selecionar';
+      b.addEventListener('click',function(){var atual=ler('selos',[]),i=atual.indexOf(s.id);if(i<0)atual.push(s.id);else atual.splice(i,1);gravar('selos',atual);selos();});
+      li.append(b);ul.append(li);
+    });
+    var res=document.getElementById('pn-res');
+    res.textContent=completo?(top.length?'Recomendados para você: '+top.map(function(x){return x.s.nome;}).join(', ')+'.':'Nenhum selo se destacou para esse perfil. Todos continuam disponíveis abaixo.'):'Responda as três perguntas para ver os selos recomendados.';
+    var n=sel.filter(function(id){return SELOS.some(function(s){return s.id===id;});}).length;
+    document.getElementById('pn-sel').textContent=n?(n===1?'1 selo selecionado.':n+' selos selecionados.'):'Nenhum selo selecionado.';
+  }
+  document.getElementById('pn-form').addEventListener('change',function(){gravar('perfil',respostas());selos();});
+  painel();
   /* páginas */
   var views=[].slice.call(document.querySelectorAll('[data-view]'));
   function show(){
