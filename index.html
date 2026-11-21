@@ -329,6 +329,11 @@ section.band#apoiadores > .in{padding-top:48px}
 .acc .wide{grid-column:1/-1}
 .acc .note{font-size:14px;color:var(--muted)}
 .acc .btn[type=submit]{justify-self:start}
+.entrar-band .in{padding-block:48px 64px}
+.entrar-painel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px;margin-inline:auto;width:100%}
+.entrar-head{display:grid;gap:8px;margin-bottom:6px}
+.entrar-head h1{font-size:clamp(26px,4vw,36px);line-height:1.1;font-weight:700}
+@media (max-width:560px){.entrar-painel{padding:20px}}
 .fields label.bad{border-color:var(--amber)}
 .footnav{display:flex;gap:16px;flex-wrap:wrap}
 .footnav a{color:var(--muted);text-decoration:none}
@@ -715,12 +720,12 @@ section.band#apoiadores > .in{padding-top:48px}
 </div></section>
 </div>
 <div data-view="entrar">
-<section class="pagehead"><div class="in">
-  <p class="eyebrow">Entrar</p>
-  <h1>Acesse sua conta</h1>
-</div></section>
-<section class="band"><div class="in">
-  <form class="acc" id="form-entrar" novalidate>
+<section class="entrar-band"><div class="in">
+  <form class="acc entrar-painel" id="form-entrar" novalidate>
+    <div class="entrar-head">
+      <p class="eyebrow">Entrar</p>
+      <h1>Acesse sua conta</h1>
+    </div>
     <div class="fields">
       <label for="en-login"><span>Celular, WhatsApp ou e-mail</span><input id="en-login" type="text" required autocomplete="username" data-mask="login"></label>
       <label for="en-senha"><span>Senha</span><input id="en-senha" type="password" required autocomplete="current-password"></label>
