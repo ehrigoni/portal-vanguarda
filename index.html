@@ -276,6 +276,7 @@ footer .notice{flex-basis:100%}
 .chips input[type=radio]:checked+span{border-color:var(--amber);color:var(--amber)}
 .chips input[type=radio]:focus-visible+span{outline:2px solid var(--amber);outline-offset:2px}
 .chips .nmeses span{color:var(--muted);font-size:14px}
+.fields .chips label,.fields .chips label:focus-within{display:inline-flex;border:0;padding:0;background:none}
 .sum{display:grid;gap:4px;border-top:1px dashed var(--line);padding-top:14px}
 .sum small{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber)}
 .sum > b{font-size:32px;color:var(--amber);font-weight:600}
@@ -624,8 +625,14 @@ footer .notice{flex-basis:100%}
     <form class="fields-form" data-form="ap" novalidate>
       <div class="fields two">
         <label for="ap-n"><span>Número de apadrinhados</span><input id="ap-n" type="number" min="1" step="1" value="1" required inputmode="numeric"></label>
-        <label for="ap-periodo"><span>Período</span><select id="ap-periodo"><option value="1">1 mês</option><option value="3">3 meses</option><option value="6">6 meses</option><option value="12" selected>12 meses</option><option value="N">N meses</option></select></label>
-        <label for="ap-meses" class="wide" hidden><span>Quantos meses</span><input id="ap-meses" type="number" min="1" step="1" value="24" inputmode="numeric"></label>
+        <fieldset class="chips wide" id="ap-periodo"><legend>Durante</legend>
+          <label><input type="radio" name="ap-p" value="1"><span>1 mês</span></label>
+          <label><input type="radio" name="ap-p" value="3"><span>3 meses</span></label>
+          <label><input type="radio" name="ap-p" value="6"><span>6 meses</span></label>
+          <label><input type="radio" name="ap-p" value="12" checked><span>12 meses</span></label>
+          <label><input type="radio" name="ap-p" value="N"><span>N meses</span></label>
+          <label class="nmeses" hidden><input id="ap-meses" type="number" min="1" step="1" value="24" inputmode="numeric" aria-label="Número de meses"><span>meses</span></label>
+        </fieldset>
         <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 12,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 1,00</b> por mês.</p></div>
         <label for="ap-nome"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
         <label for="ap-email"><span>E-mail (opcional)</span><input id="ap-email" type="email" autocomplete="email" inputmode="email" data-mask="email"></label>
@@ -834,10 +841,12 @@ footer .notice{flex-basis:100%}
   simN.addEventListener('input',sim);simM.addEventListener('input',sim);
   document.querySelectorAll('input[name="sim-p"]').forEach(function(r){r.addEventListener('change',sim);});
   sim();
-  var apN=document.getElementById('ap-n'),apP=document.getElementById('ap-periodo'),apM=document.getElementById('ap-meses');
-  function ap(){apM.closest('label').hidden=apP.value!=='N';document.getElementById('ap-total').textContent=fmt.format(int(apN,1)*meses(apP.value,apM)*CUSTO_MEDIO);}
-  [apN,apM].forEach(function(el){el.addEventListener('input',ap);});apP.addEventListener('change',ap);
-  document.getElementById('sim-go').addEventListener('click',function(){apN.value=int(simN,1);var p=simP();apP.value=p;if(p==='N')apM.value=int(simM,1);ap();});
+  var apN=document.getElementById('ap-n'),apM=document.getElementById('ap-meses');
+  function apP(){return document.querySelector('input[name="ap-p"]:checked').value;}
+  function ap(){apM.closest('label').hidden=apP()!=='N';document.getElementById('ap-total').textContent=fmt.format(int(apN,1)*meses(apP(),apM)*CUSTO_MEDIO);}
+  [apN,apM].forEach(function(el){el.addEventListener('input',ap);});
+  document.querySelectorAll('input[name="ap-p"]').forEach(function(r){r.addEventListener('change',ap);});
+  document.getElementById('sim-go').addEventListener('click',function(){apN.value=int(simN,1);var p=simP();document.querySelector('input[name="ap-p"][value="'+p+'"]').checked=true;if(p==='N')apM.value=int(simM,1);ap();});
   ap();
   /* máscaras */
   function dig(v){return String(v).replace(/\D/g,'');}
@@ -1011,7 +1020,7 @@ footer .notice{flex-basis:100%}
     var v=function(id){return document.getElementById(id).value.trim();};
     var txtBtn=apBtn.textContent;apBtn.disabled=true;apBtn.textContent='Gerando o pagamento…';
     fetch('/api/asaas/cobranca',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      vanguardistas:int(apN,1),meses:meses(apP.value,apM),nome:v('ap-nome'),email:v('ap-email'),fone:v('ap-whats'),doc:v('ap-doc'),
+      vanguardistas:int(apN,1),meses:meses(apP(),apM),nome:v('ap-nome'),email:v('ap-email'),fone:v('ap-whats'),doc:v('ap-doc'),
       cep:v('ap-cep'),endereco:v('ap-end'),numero:v('ap-num'),complemento:v('ap-comp')})})
     .then(function(r){return r.json().catch(function(){return {};});})
     .then(function(j){
