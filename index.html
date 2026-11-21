@@ -136,6 +136,8 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 .loop{border:1px dashed var(--glow);border-radius:12px;padding:18px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .loop p{color:var(--muted);flex:1 1 300px;min-width:0}
 .loop b{color:var(--fg)}
+.loop-acts{display:flex;gap:10px;flex-wrap:wrap}
+.loop-acts .btn{white-space:normal}
 
 /* padrinhos */
 .sponsor{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:24px}
@@ -601,7 +603,7 @@ footer .notice{flex-basis:100%}
   </div>
 </div></section>
 <section class="band"><div class="in">
-  <div class="loop"><span class="eyebrow">Gostou?</span><p><b>Os simuladores continuam gratuitos porque alguém apoia.</b> Indique para 3 empreendedores ou apadrinhe vanguardistas a partir de 1 mês.</p><a class="btn go" href="#apoiar">Apoiar</a></div>
+  <div class="loop"><span class="eyebrow">Gostou?</span><p><b>Os simuladores continuam gratuitos porque alguém apoia.</b></p><div class="loop-acts"><a class="btn" id="indicar" href="https://wa.me/" target="_blank" rel="noopener">Indique para 3 empreendedores</a><a class="btn go" href="#apoiar">Apadrinhe vanguardistas a partir de 1 mês</a></div></div>
 </div></section>
 </div>
 <div data-view="apoiar">
@@ -1080,6 +1082,13 @@ footer .notice{flex-basis:100%}
       }
     });
   });
+  /* Indique para 3 empreendedores: compartilha o site (menu do celular ou WhatsApp) */
+  (function(){var a=document.getElementById('indicar');if(!a)return;
+    var url=location.href.split('#')[0];
+    var txt='Conheci o Portal Vanguarda: simuladores gratuitos para quem empreende, como o raio X da venda e o raio X do preço. Vale testar: '+url;
+    a.href='https://wa.me/?text='+encodeURIComponent(txt);
+    a.addEventListener('click',function(e){if(navigator.share&&matchMedia('(pointer:coarse)').matches){e.preventDefault();navigator.share({title:'Portal Vanguarda',text:txt}).catch(function(){});}});
+  })();
   render(15);
 })();
 </script>
