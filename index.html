@@ -610,13 +610,13 @@ footer .notice{flex-basis:100%}
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Apoiar · apoiadores e vanguardistas</p>
   <h1>Apoie vanguardistas a partir de 1 mês</h1>
-  <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Cadastrar e Apoiar ou em Apenas Apoiar.</p>
+  <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Cadastrar e Apoiar.</p>
 </div></section>
 <section class="band" id="apoiadores"><div class="in">
   <div class="head"><p class="eyebrow">Como funciona para Apoiadores</p><h2>Do apadrinhamento à nota fiscal em quatro passos</h2></div>
   <ol class="steps">
       <li><h3>Apadrinhamento</h3><p>Escolha do número de apadrinhados e período.</p></li>
-      <li><h3>Informações para a nota fiscal</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ e endereço. Se quiser guardar seu cadastro, crie uma senha. Leva um minuto.</p></li>
+      <li><h3>Informações para a nota fiscal</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ, endereço e uma senha para o seu cadastro. Leva um minuto.</p></li>
       <li><h3>Pagamento</h3><p>Você recebe o link e apoia por PIX, boleto ou cartão. O pagamento compensa e o sistema de cobrança registra o valor.</p></li>
       <li><h3>Nota fiscal sem burocracia</h3><p>A NFS-e é emitida direto com a prefeitura, por integração, e chega no seu e-mail a cada pagamento, sem ninguém abrir sistema do governo.</p></li>
     </ol>
@@ -642,15 +642,14 @@ footer .notice{flex-basis:100%}
         <label for="ap-num"><span>Número</span><input id="ap-num" type="text" required inputmode="numeric" placeholder="123 ou s/n" maxlength="10"></label>
         <label for="ap-comp"><span>Complemento (opcional)</span><input id="ap-comp" type="text" autocomplete="address-line2" placeholder="Apto, sala, bloco"></label>
         <label for="ap-cidade" class="wide"><span>Cidade e estado</span><input id="ap-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
-        <label for="ap-senha" class="wide" data-guest><span>Senha para o seu cadastro (mínimo de 6 caracteres, só para Cadastrar e Apoiar)</span><input id="ap-senha" type="password" minlength="6" autocomplete="new-password"></label>
+        <label for="ap-senha" class="wide" data-guest><span>Senha para o seu cadastro (mínimo de 6 caracteres)</span><input id="ap-senha" type="password" minlength="6" autocomplete="new-password"></label>
       </div>
       <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira celular, CPF ou CNPJ, CEP e número.</p>
       <p class="notice" id="ap-aviso-pag" hidden><b>Pagamento</b><span>Ao continuar, você vai para a fatura do Asaas, nosso sistema de cobrança, e escolhe PIX, boleto ou cartão. A nota fiscal chega no seu e-mail depois que o pagamento compensa. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-      <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. Ao clicar em Cadastrar e Apoiar ou em Apenas Apoiar, você registra seu apoio, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
+      <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. Ao clicar em Cadastrar e Apoiar, você registra seu apoio, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <button class="btn go" type="submit" id="ap-btn" data-acao="cadastrar" data-guest>Cadastrar e Apoiar</button>
       <p class="note btn-nota" data-guest>Suas informações ficam guardadas na sua conta para os próximos apoios.</p>
-      <button class="btn" type="submit" id="ap-btn-so" data-acao="apoiar">Apenas Apoiar</button>
-      <p class="note btn-nota" data-guest>Nenhuma informação fica guardada no portal. Os dados servem só para este apoio e a nota fiscal.</p>
+      <button class="btn go" type="submit" id="ap-btn-so" data-acao="apoiar" data-user hidden>Apoiar</button>
       <p class="note">Dúvidas: WhatsApp <a href="https://wa.me/5551992910038" target="_blank" rel="noopener">(51) 99291-0038</a></p>
       <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
     </form>
@@ -877,7 +876,6 @@ footer .notice{flex-basis:100%}
     var c=perfil;
     document.querySelectorAll('[data-guest]').forEach(function(el){el.hidden=!!c;});
     document.querySelectorAll('[data-user]').forEach(function(el){el.hidden=!c;});
-    document.getElementById('ap-btn-so').textContent=(c?'Apoiar':'Apenas Apoiar')+(cobranca.ambiente==='sandbox'?' (teste)':'');
     if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];
       preencherApoio();}
   }
@@ -1037,8 +1035,8 @@ footer .notice{flex-basis:100%}
     function solta(){apBtns.forEach(function(b){b.disabled=false;});btn.textContent=txt;}
     return sb.rpc('contato_em_uso',{p_fone:fone,p_email:email||null}).then(function(r){
       if(r.error)throw r.error;
-      if(r.data==='fone')return falha('Já existe uma conta com esse celular. Use Entrar ou clique em Apenas Apoiar.',g('ap-whats'));
-      if(r.data==='email')return falha('Já existe uma conta com esse e-mail. Use Entrar ou clique em Apenas Apoiar.',g('ap-email'));
+      if(r.data==='fone')return falha('Já existe uma conta com esse celular. Use Entrar para apoiar com a sua conta.',g('ap-whats'));
+      if(r.data==='email')return falha('Já existe uma conta com esse e-mail. Use Entrar para apoiar com a sua conta.',g('ap-email'));
       return sb.auth.signUp({email:emailInterno(),password:g('ap-senha').value,options:{data:dados}}).then(function(res){
         if(res.error)throw res.error;
         g('ap-senha').value='';
@@ -1047,7 +1045,7 @@ footer .notice{flex-basis:100%}
       });
     }).catch(function(err){
       var m=String(err&&err.message||'');
-      return falha(/password/i.test(m)?'Escolha uma senha mais forte, com pelo menos 6 caracteres.':/database|duplicate|unique/i.test(m)?'Já existe uma conta com esse celular ou e-mail. Use Entrar ou clique em Apenas Apoiar.':'Não foi possível criar o cadastro agora. Tente de novo em instantes ou use Apenas Apoiar.');
+      return falha(/password/i.test(m)?'Escolha uma senha mais forte, com pelo menos 6 caracteres.':/database|duplicate|unique/i.test(m)?'Já existe uma conta com esse celular ou e-mail. Use Entrar para apoiar com a sua conta.':'Não foi possível criar o cadastro agora. Tente de novo em instantes.');
     }).then(function(r){solta();return r;});
   }
   /* cadastro */
@@ -1061,9 +1059,9 @@ footer .notice{flex-basis:100%}
       var nm=document.getElementById(p+'-num');if(nm&&!/\d|s\/?n/i.test(nm.value))ok=false; /* número ou s/n */
       var errEl=document.getElementById(p+'-err');errEl.textContent=errEl.dataset.msg||(errEl.dataset.msg=errEl.textContent);
       errEl.hidden=ok;if(!ok)return;
-      var btn=p==='ap'?(e.submitter&&e.submitter.dataset.acao?e.submitter:apBtns[1]):null,contaMsg='';
+      var btn=p==='ap'?(e.submitter&&e.submitter.dataset.acao?e.submitter:(perfil?apBtns[1]:apBtns[0])):null,contaMsg='';
       var comConta=!!(btn&&btn.dataset.acao==='cadastrar'&&!perfil);
-      if(comConta){var se=document.getElementById('ap-senha');if(se.value.length<6){errEl.textContent='Para Cadastrar e Apoiar, crie uma senha com pelo menos 6 caracteres. Ou use Apenas Apoiar.';errEl.hidden=false;se.focus();return;}
+      if(comConta){var se=document.getElementById('ap-senha');if(se.value.length<6){errEl.textContent='Para Cadastrar e Apoiar, crie uma senha com pelo menos 6 caracteres.';errEl.hidden=false;se.focus();return;}
         if(!cidadeUf(document.getElementById('ap-cidade').value)){errEl.textContent='Escreva a cidade e a sigla do estado, como Porto Alegre, RS.';errEl.hidden=false;document.getElementById('ap-cidade').focus();return;}}
       if(ce){conferirCep(false).then(function(r){if(r.ok===false){errEl.textContent='CEP não encontrado. Confira os números.';errEl.hidden=false;ce.focus();return;}cadastrar();});return;}
       cadastrar();
