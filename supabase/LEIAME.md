@@ -10,6 +10,7 @@ O site guarda as contas de vanguardistas e apoiadores no Supabase. Enquanto as c
 4. Em **Project Settings > API**, copie a **Project URL** e a chave **anon public**.
 5. No `index.html`, preencha `SUPABASE_URL` e `SUPABASE_ANON_KEY` (a chave anon é pública, pode ficar no site).
 6. Painel do apoiador: em **SQL Editor > New query**, cole o conteúdo de `painel.sql` e clique em **Run** (pode rodar de novo sem perder dados). Enquanto isso não for feito, o painel guarda perfil e selos só no navegador e mostra os grupos como "em breve".
+7. Registro dos apoios: em **Project Settings > API Keys**, copie a chave **service_role** (ou a **secret key**) e cole na Vercel como `SUPABASE_SERVICE_ROLE_KEY` (Production). Essa chave é secreta: só na Vercel, nunca no código. Depois, faça um redeploy.
 
 ## Onde ficam os dados
 
@@ -18,8 +19,10 @@ O site guarda as contas de vanguardistas e apoiadores no Supabase. Enquanto as c
 - Tabela `apoiador_perfil`: marca, número de apadrinhados, porte, setor, objetivos e selos escolhidos pelo apoiador (usados na recomendação de selos e no material de divulgação). Cada apoiador só lê e altera o próprio.
 - Tabela `atividades`: um registro por dia e por tipo quando o vanguardista logado usa um simulador ou clica em Indique. É a base do desempenho agregado.
 - Tabela `grupos`: filtros (estado, cidade, CPF ou CNPJ) que o apoiador escolheu acompanhar. Nunca guarda uma lista de pessoas.
-- Função `impacto_apoiador`: regiões (só estados com pelo menos 5 vanguardistas; os demais viram "outras regiões") e desempenho somado, usados nos números do material de divulgação. A base são os grupos que o apoiador acompanha; sem grupos, todo o portal.
-- O impacto financeiro (vanguardistas apadrinhados, valor investido, meses de acesso) vem dos pagamentos recebidos no Asaas pelo CPF/CNPJ do apoiador, consultados em `api/apoiador/impacto.js`. Nada disso fica guardado no Supabase.
+- Tabela `apoios`: um registro por pagamento de apoio confirmado no Asaas (CPF/CNPJ, vanguardistas, meses, valor, data, ambiente sandbox ou produção, estorno). Quem grava é o webhook `api/asaas/webhook.js`, com a chave de serviço; ninguém lê pelo site.
+- Tabela `apoio_vanguardistas`: liga cada apoio aos vanguardistas cadastrados que ele custeia. A função `alocar_apoios` distribui as vagas dando preferência a quem tem menos apoios, e roda a cada pagamento e a cada novo vanguardista.
+- Função `impacto_apoiador`: números do painel e do material, calculados a partir dos apoios do CPF/CNPJ do apoiador. Regiões vêm dos vanguardistas custeados: estado só com 5 ou mais vanguardistas, cidade só com 5 ou mais; o resto vira "outras regiões".
+- Página pública do selo: cada apoiador tem um `codigo` em `apoiador_perfil`. O link do material (`/?selo=codigo`) abre a página do selo com os números atuais (função `selo_publico`), conta visitas por dia (`selo_visitas`) e grava em `perfis.indicado_por` quem se cadastrou vindo dele.
 - Funções `contar_grupo` e `painel_grupo`: devolvem só totais e percentuais do grupo. Nada sai quando o grupo tem menos de 5 vanguardistas, ou quando, tirando um filtro, a diferença entre os grupos isolaria de 1 a 4 pessoas. O apoiador não tem acesso de leitura a `perfis` nem a `atividades` de vanguardistas.
 - Para ver os cadastros: **Table Editor > perfis**.
 

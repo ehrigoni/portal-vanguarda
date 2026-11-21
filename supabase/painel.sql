@@ -227,10 +227,136 @@ begin
 end;
 $$;
 
--- 7. Impacto do apoiador para o material de divulgação: regiões e desempenho, sempre agregados.
---    Base: a soma dos grupos que o apoiador acompanha; sem grupos, todos os vanguardistas do portal.
---    Só entram estados com pelo menos 5 vanguardistas; os demais viram "outras regiões", sem número.
-create or replace function public.impacto_apoiador()
+revoke all on function public._membros_grupo(text, text, text) from public, anon, authenticated;
+revoke all on function public._grupo_seguro(text, text, text, integer) from public, anon, authenticated;
+revoke all on function public.contar_grupo(text, text, text) from public;
+revoke all on function public.painel_grupo(uuid) from public;
+grant execute on function public.contar_grupo(text, text, text) to authenticated;
+grant execute on function public.painel_grupo(uuid) to authenticated;
+
+-- 7. Apoios pagos. Quem grava é o webhook do Asaas (api/asaas/webhook.js), com a chave de serviço do
+--    Supabase; o site não lê nem escreve nesta tabela. Conta só dinheiro que entrou.
+create table if not exists public.apoios (
+  pagamento_id  text primary key,
+  ambiente      text not null check (ambiente in ('sandbox', 'producao')),
+  doc           text not null check (doc ~ '^([0-9]{11}|[0-9]{14})$'),
+  vanguardistas integer not null check (vanguardistas between 1 and 1000),
+  meses         integer not null check (meses between 1 and 120),
+  valor         numeric(12, 2) not null check (valor >= 0),
+  pago_em       date not null,
+  estornado_em  timestamptz,
+  criado_em     timestamptz not null default now()
+);
+create index if not exists apoios_doc on public.apoios (doc, ambiente);
+alter table public.apoios enable row level security; -- sem políticas: ninguém do site acessa
+
+-- 8. Quais vanguardistas cadastrados cada apoio custeia (só o banco lê; o apoiador vê totais)
+create table if not exists public.apoio_vanguardistas (
+  pagamento_id    text not null references public.apoios (pagamento_id) on delete cascade,
+  vanguardista_id uuid not null references public.perfis (id) on delete cascade,
+  primary key (pagamento_id, vanguardista_id)
+);
+create index if not exists apoio_vanguardistas_vg on public.apoio_vanguardistas (vanguardista_id);
+alter table public.apoio_vanguardistas enable row level security; -- sem políticas
+
+-- Distribui os apoios ainda incompletos entre os vanguardistas cadastrados: primeiro quem tem menos
+-- apadrinhamentos vigentes no mesmo ambiente, depois quem se cadastrou antes. Roda a cada apoio novo
+-- e a cada vanguardista novo (quem se cadastra depois completa apoios que ficaram faltando).
+create or replace function public.alocar_apoios()
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  a record;
+  q integer;
+  total integer := 0;
+  hoje date := (now() at time zone 'America/Sao_Paulo')::date;
+begin
+  for a in
+    select ap.pagamento_id, ap.ambiente,
+           ap.vanguardistas - (select count(*) from public.apoio_vanguardistas av where av.pagamento_id = ap.pagamento_id) as falta
+    from public.apoios ap
+    where ap.estornado_em is null
+    order by ap.pago_em, ap.criado_em
+  loop
+    continue when a.falta <= 0;
+    insert into public.apoio_vanguardistas (pagamento_id, vanguardista_id)
+    select a.pagamento_id, p.id
+    from public.perfis p
+    where p.tipo = 'vanguardista'
+      and not exists (select 1 from public.apoio_vanguardistas x where x.pagamento_id = a.pagamento_id and x.vanguardista_id = p.id)
+    order by (select count(*) from public.apoio_vanguardistas y join public.apoios z on z.pagamento_id = y.pagamento_id
+              where y.vanguardista_id = p.id and z.ambiente = a.ambiente and z.estornado_em is null
+                and (z.pago_em + make_interval(months => z.meses))::date >= hoje),
+             p.criado_em, p.id
+    limit a.falta;
+    get diagnostics q = row_count;
+    total := total + q;
+  end loop;
+  return total;
+end;
+$$;
+
+create or replace function public._alocar_ao_cadastrar()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.tipo = 'vanguardista' then perform public.alocar_apoios(); end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists alocar_apoios_novo_vanguardista on public.perfis;
+create trigger alocar_apoios_novo_vanguardista
+  after insert on public.perfis
+  for each row execute function public._alocar_ao_cadastrar();
+
+-- 9. Código público do selo de cada apoiador (vai no link do material) e quem chegou por ele
+alter table public.apoiador_perfil add column if not exists codigo text unique
+  default substr(md5(random()::text || clock_timestamp()::text), 1, 8);
+update public.apoiador_perfil set codigo = substr(md5(random()::text || clock_timestamp()::text || id::text), 1, 8) where codigo is null;
+
+create table if not exists public.selo_visitas (
+  codigo  text not null,
+  dia     date not null default (now() at time zone 'America/Sao_Paulo')::date,
+  visitas integer not null default 1,
+  primary key (codigo, dia)
+);
+alter table public.selo_visitas enable row level security; -- sem políticas: só pelas funções abaixo
+
+alter table public.perfis add column if not exists indicado_por text;
+
+-- Quem se cadastra depois de abrir o link de um selo leva o código no cadastro (metadado "ref").
+-- Roda depois de ao_criar_usuario (gatilhos do mesmo evento rodam em ordem alfabética).
+create or replace function public._indicacao_ao_cadastrar()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  c text := lower(trim(coalesce(new.raw_user_meta_data ->> 'ref', '')));
+begin
+  if c <> '' and exists (select 1 from public.apoiador_perfil where codigo = c) then
+    update public.perfis set indicado_por = c where id = new.id;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists zz_indicacao_selo on auth.users;
+create trigger zz_indicacao_selo
+  after insert on auth.users
+  for each row execute function public._indicacao_ao_cadastrar();
+
+-- Números de um conjunto de apoios (uso interno): financeiro, vanguardistas custeados e regiões.
+-- Regiões e desempenho só saem com pelo menos 5 vanguardistas; estado ou cidade só aparecem com 5 ou mais.
+create or replace function public._impacto_dos_apoios(p_doc text, p_ambiente text)
 returns jsonb
 language plpgsql
 stable
@@ -240,62 +366,136 @@ as $$
 declare
   MIN_GRUPO constant integer := 5;
   hoje date := (now() at time zone 'America/Sao_Paulo')::date;
-  tem_grupos boolean;
+  fin jsonb;
   n integer;
-  r jsonb;
+  reg jsonb;
 begin
-  if not exists (select 1 from public.perfis where id = auth.uid() and tipo = 'apoiador') then
-    raise exception 'apenas apoiadores';
-  end if;
-  select exists (select 1 from public.grupos where apoiador_id = auth.uid()) into tem_grupos;
+  select jsonb_build_object(
+    'apoios', count(*),
+    'valor_total', coalesce(sum(valor), 0),
+    'vanguardistas_total', coalesce(sum(vanguardistas), 0),
+    'vanguardistas_ativos', coalesce(sum(vanguardistas) filter (where (pago_em + make_interval(months => meses))::date >= hoje), 0),
+    'meses_vanguardista', coalesce(sum(vanguardistas * meses), 0),
+    'desde', min(pago_em)
+  ) into fin
+  from public.apoios
+  where doc = p_doc and ambiente = p_ambiente and estornado_em is null;
 
   with m as (
-    select distinct mg.id
-    from public.grupos g
-    cross join lateral public._membros_grupo(g.uf, g.cidade, g.tipo_doc) mg
-    where tem_grupos and g.apoiador_id = auth.uid()
-      and public._grupo_seguro(g.uf, g.cidade, g.tipo_doc, MIN_GRUPO) is not null
-    union
-    select p.id from public.perfis p where not tem_grupos and p.tipo = 'vanguardista'
+    select distinct av.vanguardista_id as id
+    from public.apoio_vanguardistas av join public.apoios ap on ap.pagamento_id = av.pagamento_id
+    where ap.doc = p_doc and ap.ambiente = p_ambiente and ap.estornado_em is null
   )
   select count(*) into n from m;
 
   if n < MIN_GRUPO then
-    return jsonb_build_object('suficiente', false, 'base', case when tem_grupos then 'grupos' else 'portal' end, 'minimo', MIN_GRUPO);
+    reg := jsonb_build_object('suficiente', false, 'minimo', MIN_GRUPO);
+  else
+    with m as (
+      select distinct av.vanguardista_id as id
+      from public.apoio_vanguardistas av join public.apoios ap on ap.pagamento_id = av.pagamento_id
+      where ap.doc = p_doc and ap.ambiente = p_ambiente and ap.estornado_em is null
+    ),
+    mp as (select p.* from public.perfis p join m on m.id = p.id),
+    ufs as (select uf, count(*) as q from mp group by uf),
+    cids as (select min(cidade) as cidade, uf, count(*) as q from mp group by lower(public.unaccent_safe(cidade)), uf),
+    a as (select a.* from public.atividades a join m on m.id = a.vanguardista_id where a.dia > hoje - 30)
+    select jsonb_build_object(
+      'suficiente', true,
+      'base', 'apoios',
+      'vanguardistas', n,
+      'regioes', coalesce((select jsonb_agg(jsonb_build_object('uf', uf, 'vanguardistas', q) order by q desc, uf) from ufs where q >= MIN_GRUPO), '[]'::jsonb),
+      'cidades_lista', coalesce((select jsonb_agg(jsonb_build_object('cidade', cidade, 'uf', uf, 'vanguardistas', q) order by q desc, cidade) from cids where q >= MIN_GRUPO), '[]'::jsonb),
+      'outras_regioes', exists (select 1 from ufs where q < MIN_GRUPO),
+      'cidades', (select count(*) from cids),
+      'ativos_30d', (select count(distinct vanguardista_id) from a),
+      'simulacoes_30d', (select count(*) from a where tipo like 'simulador%'),
+      'indicacoes_30d', (select count(*) from a where tipo = 'indicacao')
+    ) into reg;
   end if;
 
-  with m as (
-    select distinct mg.id
-    from public.grupos g
-    cross join lateral public._membros_grupo(g.uf, g.cidade, g.tipo_doc) mg
-    where tem_grupos and g.apoiador_id = auth.uid()
-      and public._grupo_seguro(g.uf, g.cidade, g.tipo_doc, MIN_GRUPO) is not null
-    union
-    select p.id from public.perfis p where not tem_grupos and p.tipo = 'vanguardista'
-  ),
-  mp as (select p.* from public.perfis p join m on m.id = p.id),
-  ufs as (select uf, count(*) as q from mp group by uf),
-  a as (select a.* from public.atividades a join m on m.id = a.vanguardista_id where a.dia > hoje - 30)
-  select jsonb_build_object(
-    'suficiente', true,
-    'base', case when tem_grupos then 'grupos' else 'portal' end,
-    'vanguardistas', n,
-    'regioes', coalesce((select jsonb_agg(jsonb_build_object('uf', uf, 'vanguardistas', q) order by q desc, uf) from ufs where q >= MIN_GRUPO), '[]'::jsonb),
-    'outras_regioes', exists (select 1 from ufs where q < MIN_GRUPO),
-    'cidades', (select count(distinct lower(public.unaccent_safe(cidade)) || uf) from mp),
-    'ativos_30d', (select count(distinct vanguardista_id) from a),
-    'simulacoes_30d', (select count(*) from a where tipo like 'simulador%'),
-    'indicacoes_30d', (select count(*) from a where tipo = 'indicacao')
-  ) into r;
-  return r;
+  return jsonb_build_object('financeiro', fin, 'regioes', reg);
 end;
 $$;
 
-revoke all on function public._membros_grupo(text, text, text) from public, anon, authenticated;
-revoke all on function public._grupo_seguro(text, text, text, integer) from public, anon, authenticated;
-revoke all on function public.contar_grupo(text, text, text) from public;
-revoke all on function public.painel_grupo(uuid) from public;
-grant execute on function public.contar_grupo(text, text, text) to authenticated;
-grant execute on function public.painel_grupo(uuid) to authenticated;
-revoke all on function public.impacto_apoiador() from public;
-grant execute on function public.impacto_apoiador() to authenticated;
+-- 10. Impacto do apoiador logado, para o painel e o material. Cria o código do selo se ainda não existir.
+drop function if exists public.impacto_apoiador();
+create or replace function public.impacto_apoiador(p_ambiente text default 'producao')
+returns jsonb
+language plpgsql
+volatile
+security definer
+set search_path = public
+as $$
+declare
+  me public.perfis;
+  cod text;
+  r jsonb;
+begin
+  select * into me from public.perfis where id = auth.uid() and tipo = 'apoiador';
+  if not found then raise exception 'apenas apoiadores'; end if;
+  if p_ambiente not in ('sandbox', 'producao') then raise exception 'ambiente inválido'; end if;
+
+  insert into public.apoiador_perfil (id) values (me.id) on conflict (id) do nothing;
+  select codigo into cod from public.apoiador_perfil where id = me.id;
+
+  r := public._impacto_dos_apoios(me.doc, p_ambiente);
+  return r || jsonb_build_object(
+    'codigo', cod,
+    'visitas_selo', coalesce((select sum(visitas) from public.selo_visitas where codigo = cod), 0),
+    'cadastros_selo', (select count(*) from public.perfis where indicado_por = cod)
+  );
+end;
+$$;
+
+-- 11. Página pública do selo (sem login): marca, selos escolhidos e os números do momento.
+create or replace function public.selo_publico(p_codigo text, p_ambiente text default 'producao')
+returns jsonb
+language plpgsql
+stable
+security definer
+set search_path = public
+as $$
+declare
+  ap public.apoiador_perfil;
+  me public.perfis;
+begin
+  if p_ambiente not in ('sandbox', 'producao') then raise exception 'ambiente inválido'; end if;
+  select * into ap from public.apoiador_perfil where codigo = lower(trim(coalesce(p_codigo, '')));
+  if not found then return null; end if;
+  select * into me from public.perfis where id = ap.id;
+  return public._impacto_dos_apoios(me.doc, p_ambiente) || jsonb_build_object(
+    'marca', coalesce(nullif(trim(ap.marca), ''), split_part(me.nome, ' ', 1)),
+    'selos', to_jsonb(ap.selos)
+  );
+end;
+$$;
+
+-- Conta uma visita à página do selo (o navegador conta no máximo uma por dia por código).
+create or replace function public.registrar_visita_selo(p_codigo text)
+returns void
+language plpgsql
+volatile
+security definer
+set search_path = public
+as $$
+declare
+  c text := lower(trim(coalesce(p_codigo, '')));
+begin
+  if not exists (select 1 from public.apoiador_perfil where codigo = c) then return; end if;
+  insert into public.selo_visitas (codigo) values (c)
+  on conflict (codigo, dia) do update set visitas = least(public.selo_visitas.visitas + 1, 100000);
+end;
+$$;
+
+revoke all on function public.alocar_apoios() from public, anon, authenticated;
+grant execute on function public.alocar_apoios() to service_role;
+revoke all on function public._alocar_ao_cadastrar() from public, anon, authenticated;
+revoke all on function public._indicacao_ao_cadastrar() from public, anon, authenticated;
+revoke all on function public._impacto_dos_apoios(text, text) from public, anon, authenticated;
+revoke all on function public.impacto_apoiador(text) from public, anon;
+grant execute on function public.impacto_apoiador(text) to authenticated;
+revoke all on function public.selo_publico(text, text) from public;
+grant execute on function public.selo_publico(text, text) to anon, authenticated;
+revoke all on function public.registrar_visita_selo(text) from public;
+grant execute on function public.registrar_visita_selo(text) to anon, authenticated;

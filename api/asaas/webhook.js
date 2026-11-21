@@ -16,6 +16,8 @@
 //   ASAAS_API_URL        https://api-sandbox.asaas.com/v3 ou https://api.asaas.com/v3
 //   ASAAS_WEBHOOK_TOKEN  o mesmo token informado ao criar o webhook no painel do Asaas
 //   NFSE_ISS_APOIO / NFSE_ISS_COTA / NFSE_ISS_CURSO  opcionais; alíquota de ISS (padrão 2 / 5 / 5)
+//   SUPABASE_SERVICE_ROLE_KEY  chave de serviço do Supabase, para gravar o apoio na tabela apoios
+//                        (painel do apoiador). Sem ela, a nota sai normalmente e o registro é pulado.
 
 const SERVICOS = {
   apoio: {
@@ -93,6 +95,63 @@ async function emitirNota(p) {
   return { ja: false, nota: nota.id, status: nota.status };
 }
 
+// Registro do apoio no Supabase (tabela apoios), base dos números do painel do apoiador.
+// Usa a chave de serviço do Supabase, que fica só aqui no servidor. Sem ela, o registro é pulado.
+const SUPABASE_URL = (process.env.SUPABASE_URL || "https://ycqhjtlcczcypzdfeznf.supabase.co").trim().replace(/\/+$/, "");
+function chaveServico() {
+  return String(process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim().replace(/^["'\[]+|["'\]]+$/g, "");
+}
+
+async function supabase(method, path, body, prefer) {
+  const k = chaveServico();
+  const r = await fetch(SUPABASE_URL + path, {
+    method,
+    headers: { apikey: k, Authorization: "Bearer " + k, "Content-Type": "application/json", Prefer: prefer || "return=minimal" },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!r.ok) {
+    const t = await r.text().catch(() => "");
+    const e = new Error("Supabase " + r.status + ": " + t.slice(0, 300));
+    e.supabase = true;
+    throw e;
+  }
+}
+
+// "apoio:3x12m" -> { n: 3, meses: 12 }
+function apoioDaReferencia(ref) {
+  const m = /^apoio:(\d+)x(\d+)m$/i.exec(String(ref || "").trim());
+  return m ? { n: Number(m[1]), meses: Number(m[2]) } : null;
+}
+
+async function registrarApoio(p) {
+  const a = apoioDaReferencia(p.externalReference);
+  if (!a) return { pulado: "não é apoio" };
+  if (!chaveServico()) return { pulado: "sem SUPABASE_SERVICE_ROLE_KEY" };
+  const cliente = await asaas("GET", "/customers/" + encodeURIComponent(p.customer));
+  const doc = String((cliente && cliente.cpfCnpj) || "").replace(/\D/g, "");
+  if (doc.length !== 11 && doc.length !== 14) return { pulado: "cliente sem CPF/CNPJ" };
+  const pagoEm = String(p.clientPaymentDate || p.paymentDate || p.confirmedDate || hojeEmPortoAlegre()).slice(0, 10);
+  await supabase("POST", "/rest/v1/apoios", {
+    pagamento_id: p.id,
+    ambiente: /sandbox/i.test(apiUrl()) ? "sandbox" : "producao",
+    doc,
+    vanguardistas: a.n,
+    meses: a.meses,
+    valor: Number(p.value) || 0,
+    pago_em: pagoEm,
+  }, "resolution=ignore-duplicates,return=minimal");
+  await supabase("POST", "/rest/v1/rpc/alocar_apoios", {});
+  return { registrado: true };
+}
+
+async function estornarApoio(p) {
+  if (!apoioDaReferencia(p.externalReference) || !chaveServico()) return;
+  await supabase("PATCH", "/rest/v1/apoios?pagamento_id=eq." + encodeURIComponent(p.id) + "&estornado_em=is.null",
+    { estornado_em: new Date().toISOString() });
+}
+
+const ESTORNOS = ["PAYMENT_REFUNDED", "PAYMENT_CHARGEBACK_REQUESTED", "PAYMENT_DELETED"];
+
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -116,8 +175,23 @@ module.exports = async function handler(req, res) {
 
   try {
     if ((corpo.event === "PAYMENT_CONFIRMED" || corpo.event === "PAYMENT_RECEIVED") && corpo.payment) {
+      // Registro do apoio e nota são independentes: um erro num não impede o outro. Falha temporária
+      // do banco (rede ou 5xx) responde 500 no fim para o Asaas reenviar; os dois passos não duplicam.
+      let reenviar = false;
+      try {
+        const ap = await registrarApoio(corpo.payment);
+        console.log("apoio", corpo.event, corpo.payment.id, JSON.stringify(ap));
+      } catch (e) {
+        console.error("apoio", corpo.event, corpo.payment.id, String(e));
+        const st = Number((/Supabase (\d+)/.exec(String(e)) || [])[1]);
+        if (!st || st >= 500) reenviar = true;
+      }
       const r = await emitirNota(corpo.payment);
       console.log("nfse", corpo.event, corpo.payment.id, JSON.stringify(r));
+      if (reenviar) return res.status(500).send("apoio não registrado; tente de novo");
+    } else if (ESTORNOS.includes(corpo.event) && corpo.payment) {
+      await estornarApoio(corpo.payment);
+      console.log("apoio estornado", corpo.event, corpo.payment.id);
     } else if (String(corpo.event).startsWith("INVOICE_") && corpo.invoice) {
       const n = corpo.invoice;
       const log = corpo.event === "INVOICE_ERROR" ? console.error : console.log;

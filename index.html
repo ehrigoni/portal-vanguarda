@@ -343,6 +343,7 @@ footer .notice{flex-basis:100%}
 .chips input[type=checkbox]:focus-visible+span{outline:2px solid var(--amber);outline-offset:2px}
 .fields .wide{grid-column:1/-1}
 .selos{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+#sp-selos .selo{cursor:default}
 .selo{position:relative;border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:10px;align-content:start;cursor:pointer;background:transparent}
 .selo:hover{border-color:var(--glow)}
 .selo.rec{border-color:var(--glow);background:var(--panel)}
@@ -852,6 +853,24 @@ footer .notice{flex-basis:100%}
 </div></section>
 </div>
 </div>
+<div data-view="selo">
+<section class="pagehead"><div class="in">
+  <p class="eyebrow">Selo social · Portal Vanguarda</p>
+  <h1 id="sp-titulo">Apoio a pequenos empreendedores</h1>
+  <p class="lede" id="sp-lede">O Portal Vanguarda oferece simuladores gratuitos para pequenos empresários, MEIs e autônomos, mantidos por quem apadrinha vanguardistas.</p>
+</div></section>
+<section class="band"><div class="in">
+  <div class="impacto" id="sp-impacto" hidden>
+    <div class="impacto-top"><h3>Impacto até agora</h3><small class="note" id="sp-data"></small></div>
+    <div class="kpis" id="sp-kpis"></div>
+    <p class="note" id="sp-nota"></p>
+  </div>
+  <div class="selos" id="sp-selos"></div>
+  <p class="notice" id="sp-erro" hidden><b>Selo</b><span>Não encontramos este selo. Conheça o Portal Vanguarda mesmo assim.</span></p>
+  <div class="loop"><span class="eyebrow">Faça parte</span><p><b>Quem empreende usa os simuladores de graça. Quem pode, apadrinha vanguardistas.</b> Entre para a iniciativa.</p><div class="loop-acts"><a class="btn" href="#simuladores">Usar os simuladores grátis</a><a class="btn go" href="#apoiar">Apadrinhar vanguardistas</a><a class="btn" href="#cadastro">Criar conta</a></div></div>
+</div></section>
+</div>
+
 <div data-view="entrar">
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Entrar</p>
@@ -1020,8 +1039,14 @@ footer .notice{flex-basis:100%}
   var SUPABASE_ANON_KEY='sb_publishable_HTyKQ4PwyVEkjpARrwBriA_qeVpZyC5'; /* chave pública "anon" */
   var LOGIN_DOMINIO='decisaochave.com.br'; /* domínio do e-mail interno de login (nenhum e-mail é enviado) */
   var sb=null;
+  /* link do selo de um apoiador (?selo=codigo): guarda o código por 30 dias para creditar o cadastro a ele */
+  var REF='vg-ref';
+  (function(){var m=/[?&]selo=([a-z0-9]{4,16})/i.exec(location.search);if(!m)return;
+    try{localStorage.setItem(REF,JSON.stringify({c:m[1].toLowerCase(),t:Date.now()}));}catch(e){}
+    if(!location.hash)history.replaceState(null,'',location.pathname+location.search+'#selo');})();
+  function refSelo(){try{var r=JSON.parse(localStorage.getItem(REF)||'null');return r&&r.c&&Date.now()-r.t<30*864e5?r.c:null;}catch(e){return null;}}
   try{if(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){sb=null;}
-  window.VG={sb:sb,perfil:function(){return perfil;}}; /* usado pelo painel do apoiador */
+  window.VG={sb:sb,perfil:function(){return perfil;},ref:refSelo}; /* usado pelo painel do apoiador e pela página do selo */
   var FORA='O cadastro está sendo ligado e volta em breve. Enquanto isso, fale com a gente pelo WhatsApp (51) 99291-0038.';
   var perfil=null,cobranca={ativo:false,ambiente:''};
   function destino(c){return c.tipo==='vanguardista'?'simuladores':'painel';}
@@ -1080,6 +1105,7 @@ footer .notice{flex-basis:100%}
     if(!sb)return erro('cd-err',FORA);
     var fone=dig(g('cd-fone').value);
     var dados={tipo:tipo.value,nome:g('cd-nome').value.trim(),fone:fone,email_contato:email,doc:dig(g('cd-doc').value),cidade:g('cd-cidade').value.trim(),uf:g('cd-uf').value};
+    if(refSelo())dados.ref=refSelo();
     erro('cd-err','');ocupado(form,true);
     sb.rpc('contato_em_uso',{p_fone:fone,p_email:email||null}).then(function(r){
       if(r.error)throw r.error;
@@ -1194,6 +1220,7 @@ footer .notice{flex-basis:100%}
     if(!sb)return Promise.resolve(falha(FORA));
     var fone=dig(g('ap-whats').value),email=maskEmail(g('ap-email').value),ci=cidadeUf(g('ap-cidade').value);
     var dados={tipo:'apoiador',nome:g('ap-nome').value.trim(),fone:fone,email_contato:email,doc:dig(g('ap-doc').value),cidade:ci.cidade,uf:ci.uf};
+    if(refSelo())dados.ref=refSelo();
     var txt=btn.textContent;apBtns.forEach(function(b){b.disabled=true;});btn.textContent='Criando o cadastro…';
     function solta(){apBtns.forEach(function(b){b.disabled=false;});btn.textContent=txt;}
     return sb.rpc('contato_em_uso',{p_fone:fone,p_email:email||null}).then(function(r){
@@ -1405,43 +1432,59 @@ footer .notice{flex-basis:100%}
     salvar().then(function(r){$('pn-selos-msg').textContent=r.ok?(s.length?s.length+(s.length>1?' selos selecionados.':' selo selecionado.'):'Nenhum selo selecionado.'):'Não foi possível salvar agora.';});
   });
 
-  /* impacto: apoios pagos (api/apoiador/impacto.js, Asaas) + regiões e desempenho agregados (impacto_apoiador no Supabase) */
+  /* impacto: apoios pagos gravados pelo webhook (tabela apoios) + regiões e desempenho agregados, tudo em impacto_apoiador no Supabase */
   var moeda=function(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:v%1?2:0});};
-  var SITE_TXT='www.vanguarda.social.br';
   function listaUfs(r){var u=(r.regioes||[]).map(function(x){return x.uf;});if(!u.length)return '';if(r.outras_regioes)return u.join(', ')+' e outras regiões';return u.length>1?u.slice(0,-1).join(', ')+' e '+u[u.length-1]:u[0];}
-  function impacto(){
-    var f=st.fin||{},r=st.reg||{},i={};
-    if(f.vanguardistas_total>0){i.n=f.vanguardistas_ativos||f.vanguardistas_total;i.ativos=!!f.vanguardistas_ativos;i.valor=f.valor_total;i.meses=f.meses_vanguardista;}
-    if(r.suficiente){i.regioes=listaUfs(r);i.cidades=r.cidades;i.base=r.base;if(r.vanguardistas)i.pct=Math.round(r.ativos_30d/r.vanguardistas*100);i.sim=r.simulacoes_30d;}
+  function listaCidades(r){return (r.cidades_lista||[]).map(function(x){return x.cidade+'/'+x.uf;});}
+  function impacto(fin,reg){
+    var f=(fin===undefined?st.fin:fin)||{},r=(reg===undefined?st.reg:reg)||{},i={};
+    if(f.vanguardistas_total>0){i.n=f.vanguardistas_ativos||f.vanguardistas_total;i.ativos=!!f.vanguardistas_ativos;i.valor=Number(f.valor_total)||0;i.meses=f.meses_vanguardista;}
+    if(r.suficiente){i.regioes=listaUfs(r);i.cidadesLista=listaCidades(r);i.cidades=r.cidades;i.base=r.base;if(r.vanguardistas)i.pct=Math.round(r.ativos_30d/r.vanguardistas*100);i.sim=r.simulacoes_30d;}
     return i;
   }
   function vg(n){return n===1?'1 vanguardista':n.toLocaleString('pt-BR')+' vanguardistas';}
-  function desenharImpacto(){
-    var i=impacto(),k=[];
+  function kpisHtml(i){
+    var k=[];
     k.push('<div class="kpi"><b>'+(i.n?i.n.toLocaleString('pt-BR'):'0')+'</b><small>vanguardistas apadrinhados'+(i.n&&i.ativos?' agora':'')+'</small></div>');
     k.push('<div class="kpi"><b>'+moeda(i.valor||0)+'</b><small>investidos em apadrinhamento</small></div>');
     k.push('<div class="kpi"><b>'+(i.meses||0).toLocaleString('pt-BR')+'</b><small>meses de acesso garantidos a vanguardistas</small></div>');
-    k.push('<div class="kpi txt"><b>'+esc(i.regioes||'–')+'</b><small>regiões impactadas'+(i.cidades?' ('+i.cidades+(i.cidades>1?' cidades':' cidade')+')':'')+'</small></div>');
-    if(i.pct!=null)k.push('<div class="kpi"><b>'+i.pct+'%</b><small>dos vanguardistas '+(i.base==='grupos'?'dos seus grupos':'do portal')+' ativos em 30 dias</small></div>');
+    k.push('<div class="kpi txt"><b>'+esc(i.regioes||'–')+'</b><small>regiões impactadas'+(i.cidadesLista&&i.cidadesLista.length?': '+esc(i.cidadesLista.slice(0,4).join(', ')):'')+(i.cidades?' ('+i.cidades+(i.cidades>1?' cidades':' cidade')+')':'')+'</small></div>');
+    if(i.pct!=null)k.push('<div class="kpi"><b>'+i.pct+'%</b><small>dos vanguardistas apadrinhados ativos em 30 dias</small></div>');
+    return k;
+  }
+  function desenharImpacto(){
+    var i=impacto(),k=kpisHtml(i);
+    if(st.indic)k.push('<div class="kpi"><b>'+st.indic.visitas.toLocaleString('pt-BR')+' · '+st.indic.cadastros.toLocaleString('pt-BR')+'</b><small>visitas e cadastros pelo link do seu selo</small></div>');
     $('pn-imp-kpis').innerHTML=k.join('');
     var nota=[];
     if(st.fin===false)nota.push('Não foi possível consultar seus apoios agora.');
     else if(st.fin&&!st.fin.vanguardistas_total)nota.push('Seus números aparecem aqui assim que o primeiro apadrinhamento for pago. Os apoios são encontrados pelo CPF ou CNPJ do seu cadastro.');
-    if(st.reg&&st.reg.suficiente)nota.push('Regiões e desempenho '+(st.reg.base==='grupos'?'dos grupos que você acompanha':'de todos os vanguardistas do portal')+', sempre somados e sem dados individuais.');
-    else if(st.reg===false||(st.reg&&!st.reg.suficiente))nota.push('Regiões e desempenho aparecem quando houver pelo menos 5 vanguardistas na base.');
-    if(st.fin&&st.fin.ambiente==='sandbox')nota.push('Ambiente de teste: os apoios são do sandbox do Asaas.');
+    if(st.reg&&st.reg.suficiente)nota.push('Regiões e desempenho dos vanguardistas cadastrados que o seu apoio custeia, sempre somados e sem dados individuais. Estados e cidades só aparecem com 5 ou mais vanguardistas.');
+    else if(st.fin&&st.fin.vanguardistas_total)nota.push('Regiões e desempenho aparecem quando o seu apoio custear pelo menos 5 vanguardistas cadastrados.');
+    if(st.ambiente==='sandbox')nota.push('Ambiente de teste: os apoios são do sandbox do Asaas.');
     $('pn-imp-nota').textContent=nota.join(' ');
+  }
+  /* ambiente da cobrança (sandbox ou produção), para contar só os apoios do ambiente ligado */
+  var ambienteP=null;
+  function ambiente(){
+    if(!ambienteP)ambienteP=fetch('/api/asaas/cobranca',{cache:'no-store'}).then(function(r){return r.ok?r.json():{};}).then(function(j){return j.ambiente==='sandbox'?'sandbox':'producao';},function(){return 'producao';});
+    return ambienteP;
   }
   function carregarImpacto(){
     var sb=VG.sb;if(!sb)return;
     $('pn-imp-atualizar').disabled=true;
-    var fin=sb.auth.getSession().then(function(r){
-      var t=r&&r.data&&r.data.session&&r.data.session.access_token;if(!t)return false;
-      return fetch('/api/apoiador/impacto',{headers:{Authorization:'Bearer '+t},cache:'no-store'}).then(function(x){return x.ok?x.json():false;});
-    }).catch(function(){return false;});
-    var reg=sb.rpc('impacto_apoiador').then(function(r){return r.error?false:r.data;},function(){return false;});
-    return Promise.all([fin,reg]).then(function(v){st.fin=v[0];st.reg=v[1];$('pn-imp-atualizar').disabled=false;desenharImpacto();$('pn-mat-txt').value='';material();});
+    return ambiente().then(function(amb){
+      st.ambiente=amb;
+      return sb.rpc('impacto_apoiador',{p_ambiente:amb}).then(function(r){return r.error?false:r.data;},function(){return false;});
+    }).then(function(d){
+      st.fin=d?Object.assign({},d.financeiro):false;st.reg=d?d.regioes:false;
+      st.codigo=d&&d.codigo||null;st.indic=d?{visitas:Number(d.visitas_selo)||0,cadastros:Number(d.cadastros_selo)||0}:null;
+      $('pn-imp-atualizar').disabled=false;desenharImpacto();$('pn-mat-txt').value='';material();
+    });
   }
+  /* link do material: página pública do selo com o código do apoiador (mede quem chegou por ele) */
+  function linkSelo(){return st.codigo?SITE+'/?selo='+st.codigo:SITE;}
+  function linkTxt(){return linkSelo().replace(/^https:\/\//,'');}
   $('pn-imp-atualizar').addEventListener('click',carregarImpacto);
   /* 3. material */
   var CANAIS={
@@ -1458,21 +1501,21 @@ footer .notice{flex-basis:100%}
     if(i.valor)nums.push(moeda(i.valor)+' investidos');
     if(i.meses)nums.push(i.meses.toLocaleString('pt-BR')+(i.meses===1?' mês':' meses')+' de acesso a ferramentas de gestão');
     if(i.regioes)nums.push('regiões impactadas: '+i.regioes);
-    var desemp=i.pct!=null&&i.pct>0?'Nos últimos 30 dias, '+i.pct+'% dos vanguardistas '+(i.base==='grupos'?'que acompanhamos':'do portal')+' usaram as ferramentas'+(i.sim?' ('+i.sim.toLocaleString('pt-BR')+' dias de uso de simuladores)':'')+'.':'';
+    var desemp=i.pct!=null&&i.pct>0?'Nos últimos 30 dias, '+i.pct+'% dos vanguardistas '+'que apadrinhamos'+' usaram as ferramentas'+(i.sim?' ('+i.sim.toLocaleString('pt-BR')+' dias de uso de simuladores)':'')+'.':'';
     var bloco=nums.length?(c==='linkedin'?'Nosso impacto até agora: ':'📊 Nosso impacto até agora: ')+nums.join(' · ')+'.'+(desemp?'\n'+desemp:''):desemp;
     if(c==='linkedin')return m+' recebeu o selo "'+s.nome+'" do Portal Vanguarda.\n\n'+
       'Apadrinhamos pequenos empreendedores, MEIs e autônomos que usam simuladores gratuitos para precificar, planejar metas e entender o próprio negócio. Com o nosso apoio, o portal '+s.frase+'.\n\n'+
       (bloco?bloco+'\n\n':'')+
-      'Acreditamos que negócio pequeno bem gerido fortalece a economia de todo mundo. Convido você a fazer parte: '+SITE_TXT+'\n\n#ImpactoSocial #Empreendedorismo #ESG #PequenosNegocios'+tagsOds;
+      'Acreditamos que negócio pequeno bem gerido fortalece a economia de todo mundo. Convido você a fazer parte: '+linkTxt()+'\n\n#ImpactoSocial #Empreendedorismo #ESG #PequenosNegocios'+tagsOds;
     if(c==='instagram')return m+' agora tem o selo "'+s.curto+'" do Portal Vanguarda! 🚀\n\n'+
       'A gente apadrinha vanguardistas e, com isso, o portal '+s.frase+'.\n\n'+
       (bloco?bloco+'\n\n':'')+
       'Pequeno negócio forte faz a cidade inteira crescer. 💛\n\n'+
-      'Faça parte você também: '+SITE_TXT+' (link na bio)\n\n#ImpactoSocial #Empreendedorismo #MEI #PequenosNegocios #Vanguarda'+tagsOds;
+      'Faça parte você também: '+linkTxt()+' (link na bio)\n\n#ImpactoSocial #Empreendedorismo #MEI #PequenosNegocios #Vanguarda'+tagsOds;
     return 'Oi! '+m+' recebeu o selo "'+s.curto+'" do Portal Vanguarda. 🙌\n\n'+
       'Apadrinhamos vanguardistas e, com isso, o portal '+s.frase+'.\n\n'+
       (bloco?bloco+'\n\n':'')+
-      'Se você empreende, os simuladores são gratuitos. Se quiser apoiar também, entre em '+SITE_TXT;
+      'Se você empreende, os simuladores são gratuitos. Se quiser apoiar também, entre em '+linkTxt();
   }
   function quebra(ctx,txt,max){var ws=String(txt).split(' '),ls=[],l='';ws.forEach(function(w){var t=l?l+' '+w:w;if(ctx.measureText(t).width>max&&l){ls.push(l);l=w;}else l=t;});if(l)ls.push(l);return ls;}
   function desenhar(s,c){
@@ -1529,7 +1572,7 @@ footer .notice{flex-basis:100%}
     if(!ta.value||ta.value===ultimoTexto)ta.value=txt;ultimoTexto=txt;
     $('pn-mat-dica').textContent=cfg.dica;
     var a=$('pn-compartilhar');a.textContent=cfg.acao;
-    a.href=c==='linkedin'?'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(SITE):c==='whatsapp'?'https://wa.me/?text='+encodeURIComponent(ta.value):'https://www.instagram.com/';
+    a.href=c==='linkedin'?'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(linkSelo()):c==='whatsapp'?'https://wa.me/?text='+encodeURIComponent(ta.value):'https://www.instagram.com/';
     var go=function(){desenhar(s,c);};
     if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go,go);else go();
   }
@@ -1624,6 +1667,34 @@ footer .notice{flex-basis:100%}
     var b=e.target.closest('[data-apagar]');if(!b)return;
     b.disabled=true;VG.sb.from('grupos').delete().eq('id',b.dataset.apagar).then(function(){listarGrupos();carregarImpacto();});
   });
+
+  /* página pública do selo (#selo, aberta pelo link ?selo=codigo do material): números atuais e convite */
+  var seloCarregado=null;
+  function abrirSelo(){
+    var c=VG.ref&&VG.ref(),sb=VG.sb;
+    if(!c||!sb){$('sp-erro').hidden=!c;return;}
+    if(seloCarregado===c)return;seloCarregado=c;
+    try{var dia=new Date().toISOString().slice(0,10),k='vg-visita-'+c;if(localStorage.getItem(k)!==dia){localStorage.setItem(k,dia);sb.rpc('registrar_visita_selo',{p_codigo:c}).then(function(){},function(){});}}catch(e){}
+    ambiente().then(function(amb){
+      return sb.rpc('selo_publico',{p_codigo:c,p_ambiente:amb}).then(function(r){return r.error?null:r.data;},function(){return null;});
+    }).then(function(d){
+      if(!d){$('sp-erro').hidden=false;$('sp-impacto').hidden=true;seloCarregado=null;return;}
+      var m=d.marca||'Uma empresa apoiadora';
+      $('sp-titulo').textContent=m+' apoia pequenos empreendedores';
+      $('sp-lede').textContent=m+' apadrinha vanguardistas no Portal Vanguarda: simuladores e conteúdos gratuitos para pequenos empresários, MEIs e autônomos.';
+      var i=impacto(d.financeiro||{},d.regioes||{});
+      $('sp-kpis').innerHTML=kpisHtml(i).join('');
+      $('sp-data').textContent='Atualizado em '+new Date().toLocaleDateString('pt-BR');
+      $('sp-nota').textContent=(d.regioes&&d.regioes.suficiente?'Dados somados dos vanguardistas custeados, sem informações individuais. Estados e cidades só aparecem com 5 ou mais vanguardistas.':'Os números se atualizam a cada novo apadrinhamento.');
+      $('sp-impacto').hidden=false;$('sp-erro').hidden=true;
+      $('sp-selos').innerHTML=(d.selos||[]).filter(function(id){return SELO[id];}).map(function(id){var s=SELO[id];
+        return '<div class="selo on"><div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
+          '<div class="tags"><span class="tag">'+esc(s.cat)+'</span></div><p>'+esc(m)+' '+esc(s.frase)+'.</p></div>';}).join('');
+    });
+  }
+  function noSelo(){return location.hash==='#selo';}
+  window.addEventListener('hashchange',function(){if(noSelo())abrirSelo();});
+  if(noSelo())abrirSelo();
 
   /* entrada no painel */
   var pronto=null;
