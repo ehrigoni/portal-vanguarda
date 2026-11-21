@@ -498,16 +498,6 @@ footer .notice{flex-basis:100%}
     <article class="who-box feat" id="simular-apoio">
       <span class="tag">Para quem é apoiador do portal</span>
       <ol class="checks"><li>Escolher apadrinhamento</li><li>Informações para a nota fiscal</li><li>Pagamento</li><li>Nota Fiscal Sem Burocracia</li></ol>
-      <label class="nrow" for="sim-n"><span>Apoiar</span><input id="sim-n" type="number" min="1" step="1" value="1" inputmode="numeric"><span>vanguardistas</span></label>
-      <fieldset class="chips"><legend>Durante</legend>
-        <label><input type="radio" name="sim-p" value="1" checked><span>1 mês</span></label>
-        <label><input type="radio" name="sim-p" value="3"><span>3 meses</span></label>
-        <label><input type="radio" name="sim-p" value="6"><span>6 meses</span></label>
-        <label><input type="radio" name="sim-p" value="12"><span>12 meses</span></label>
-        <label><input type="radio" name="sim-p" value="N"><span>N meses</span></label>
-        <label class="nmeses" hidden><input id="sim-m" type="number" min="1" step="1" value="24" inputmode="numeric" aria-label="Número de meses"><span>meses</span></label>
-      </fieldset>
-      <div class="sum"><small>Total em recursos</small><b class="mono" id="sim-total">R$ 1,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 1,00</b> por mês.</p></div>
       <a class="btn go" href="#apoiar-cadastro" id="sim-go">Quero apoiar</a>
     </article>
   </div>
@@ -842,18 +832,11 @@ footer .notice{flex-basis:100%}
   document.querySelectorAll('[data-custo]').forEach(function(el){el.textContent=fmt.format(CUSTO_MEDIO);});
   function int(el,d){var n=parseInt(el.value,10);return n>0?n:d;}
   function meses(p,m){return p==='N'?int(m,1):parseInt(p,10);}
-  var simN=document.getElementById('sim-n'),simM=document.getElementById('sim-m'),simNM=simM.closest('label');
-  function simP(){return document.querySelector('input[name="sim-p"]:checked').value;}
-  function sim(){simNM.hidden=simP()!=='N';document.getElementById('sim-total').textContent=fmt.format(int(simN,1)*meses(simP(),simM)*CUSTO_MEDIO);}
-  simN.addEventListener('input',sim);simM.addEventListener('input',sim);
-  document.querySelectorAll('input[name="sim-p"]').forEach(function(r){r.addEventListener('change',sim);});
-  sim();
   var apN=document.getElementById('ap-n'),apM=document.getElementById('ap-meses');
   function apP(){return document.querySelector('input[name="ap-p"]:checked').value;}
   function ap(){apM.closest('label').hidden=apP()!=='N';document.getElementById('ap-total').textContent=fmt.format(int(apN,1)*meses(apP(),apM)*CUSTO_MEDIO);}
   [apN,apM].forEach(function(el){el.addEventListener('input',ap);});
   document.querySelectorAll('input[name="ap-p"]').forEach(function(r){r.addEventListener('change',ap);});
-  document.getElementById('sim-go').addEventListener('click',function(){apN.value=int(simN,1);var p=simP();document.querySelector('input[name="ap-p"][value="'+p+'"]').checked=true;if(p==='N')apM.value=int(simM,1);ap();});
   ap();
   /* máscaras */
   function dig(v){return String(v).replace(/\D/g,'');}
