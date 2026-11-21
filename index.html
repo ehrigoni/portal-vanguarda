@@ -709,7 +709,7 @@ footer .notice{flex-basis:100%}
         </fieldset>
         <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 12,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 1,00</b> por mês.</p></div>
         <label for="ap-nome"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
-        <label for="ap-email"><span>E-mail (opcional)</span><input id="ap-email" type="email" autocomplete="email" inputmode="email" data-mask="email"></label>
+        <label for="ap-email"><span>E-mail (para a nota fiscal)</span><input id="ap-email" type="email" required autocomplete="email" inputmode="email" data-mask="email"></label>
         <label for="ap-whats"><span>Celular ou WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
         <label for="ap-doc"><span>CPF ou CNPJ (para a nota fiscal)</span><input id="ap-doc" type="text" required inputmode="numeric" data-mask="doc"></label>
         <label for="ap-cep"><span>CEP</span><input id="ap-cep" type="text" required autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9"><small class="hint" id="ap-cep-msg" aria-live="polite"></small></label>
@@ -719,7 +719,7 @@ footer .notice{flex-basis:100%}
         <label for="ap-cidade" class="wide"><span>Cidade e estado</span><input id="ap-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
         <label for="ap-senha" class="wide" data-guest><span>Senha para o seu cadastro (obrigatória em Cadastrar e Apoiar, mínimo de 6 caracteres)</span><input id="ap-senha" type="password" minlength="6" autocomplete="new-password"></label>
       </div>
-      <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira celular, CPF ou CNPJ, CEP e número.</p>
+      <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira e-mail, celular, CPF ou CNPJ, CEP e número.</p>
       <p class="notice" id="ap-aviso-pag" hidden><b>Pagamento</b><span>Ao continuar, você vai para a fatura do Asaas, nosso sistema de cobrança, e escolhe PIX, boleto ou cartão. A nota fiscal chega no seu e-mail depois que o pagamento compensa. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. Ao clicar em Cadastrar e Apoiar ou em Apenas Apoiar, você registra seu apoio, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <button class="btn go" type="submit" id="ap-btn" data-acao="cadastrar" data-guest>Cadastrar e Apoiar</button>
