@@ -645,6 +645,7 @@ footer .notice{flex-basis:100%}
       <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. Ao clicar em Cadastrar e Apoiar ou em Apenas Apoiar, você registra seu apoio, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <button class="btn go" type="submit" id="ap-btn" data-acao="cadastrar" data-guest>Cadastrar e Apoiar</button>
       <button class="btn" type="submit" id="ap-btn-so" data-acao="apoiar">Apenas Apoiar</button>
+      <p class="note">Dúvidas: WhatsApp <a href="https://wa.me/5551992910038" target="_blank" rel="noopener">(51) 99291-0038</a></p>
       <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
     </form>
     <div class="aside">
@@ -655,11 +656,6 @@ footer .notice{flex-basis:100%}
         <pre id="ap-resumo"></pre>
         <a class="btn go" id="ap-wa" href="https://wa.me/5551992910038" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
         <p>Prefere e-mail? Copie o resumo e envie para contato@vanguarda.social.br.</p>
-      </div>
-      <div class="people" id="ap-help">
-        <h3>Como funciona</h3>
-        <p>Depois do lançamento: 1. Escolha dos apadrinhados e do período. 2. Informações para a nota fiscal. 3. Link de pagamento. 4. Nota fiscal no e-mail. Cadastrar e Apoiar também cria a sua conta de apoiador com esses dados; Apenas Apoiar registra o apoio sem criar conta. Por enquanto, falamos com você pelo WhatsApp.</p>
-        <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
       </div>
     </div>
   </div>
@@ -1075,7 +1071,7 @@ footer .notice{flex-basis:100%}
       document.getElementById(p+'-resumo').textContent=txt;
       if(p==='ap'){var cm=document.getElementById('ap-conta');cm.textContent=contaMsg;cm.hidden=!contaMsg;}
       document.getElementById(p+'-wa').href='https://wa.me/5551992910038?text='+encodeURIComponent(txt);
-      document.getElementById(p+'-done').hidden=false;document.getElementById(p+'-help').hidden=true;
+      document.getElementById(p+'-done').hidden=false;var hp=document.getElementById(p+'-help');if(hp)hp.hidden=true;
       document.getElementById(p+'-done').scrollIntoView({block:'nearest'});
       }
     });
