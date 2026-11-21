@@ -722,7 +722,7 @@ section.band#apoiadores > .in{padding-top:48px}
 <section class="band"><div class="in">
   <form class="acc" id="form-entrar" novalidate>
     <div class="fields">
-      <label for="en-login"><span>Celular, WhatsApp ou e-mail</span><input id="en-login" type="text" required autocomplete="username"></label>
+      <label for="en-login"><span>Celular, WhatsApp ou e-mail</span><input id="en-login" type="text" required autocomplete="username" data-mask="login"></label>
       <label for="en-senha"><span>Senha</span><input id="en-senha" type="password" required autocomplete="current-password"></label>
     </div>
     <p class="err" id="en-err" hidden></p>
@@ -868,7 +868,10 @@ section.band#apoiadores > .in{padding-top:48px}
     if(d.length<=11)return d.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
     return d.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1/$2').replace(/(\d{4})(\d)/,'$1-$2');}
   function maskEmail(v){return String(v).replace(/\s+/g,'').toLowerCase();}
-  var MASK={fone:maskFone,doc:maskDoc,email:maskEmail};
+  /* login: só números vira (51) 90000-0000; com letras ou @ fica como e-mail */
+  function maskLogin(v){if(/^[\d\s()-]*$/.test(v))return maskFone(v);
+    return maskEmail(v.replace(/^\((\d{0,2})\)?\s?(\d*)-?(\d*)/,'$1$2$3'));}
+  var MASK={fone:maskFone,doc:maskDoc,email:maskEmail,login:maskLogin};
   document.querySelectorAll('[data-mask]').forEach(function(i){i.addEventListener('input',function(){var f=MASK[i.dataset.mask],v=f(i.value);if(v!==i.value)i.value=v;});});
   function foneOk(v){var d=dig(v);return d.length===10||d.length===11;}
   function emailOk(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);}
