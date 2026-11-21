@@ -497,6 +497,7 @@ footer .notice{flex-basis:100%}
     </article>
     <article class="who-box feat" id="simular-apoio">
       <span class="tag">Para quem é apoiador do portal</span>
+      <ol class="checks"><li>Escolher apadrinhamento</li><li>Informações para apadrinhamento</li><li>Pagamento</li><li>Nota Fiscal Sem Burocracia</li></ol>
       <label class="nrow" for="sim-n"><span>Apoiar</span><input id="sim-n" type="number" min="1" step="1" value="1" inputmode="numeric"><span>vanguardistas</span></label>
       <fieldset class="chips"><legend>Durante</legend>
         <label><input type="radio" name="sim-p" value="1" checked><span>1 mês</span></label>
@@ -519,10 +520,10 @@ footer .notice{flex-basis:100%}
   </div>
   <div class="actions">
     <a class="btn go" href="https://wa.me/5551992910038?text=Ol%C3%A1!%20Quero%20apoiar%20o%20Portal%20Vanguarda." target="_blank" rel="noopener">Falar no WhatsApp</a>
-    <a class="btn" href="mailto:comercial@decisaochave.com.br?subject=Apoio%20ao%20Portal%20Vanguarda">Enviar e-mail</a>
+    <a class="btn" href="mailto:contato@vanguarda.social.br?subject=Apoio%20ao%20Portal%20Vanguarda">Enviar e-mail</a>
     <ul class="contact" aria-label="Contatos">
       <li><span>WhatsApp</span><b id="c-wa">(51) 99291-0038</b><button type="button" class="copy" data-copy="c-wa">Copiar</button></li>
-      <li><span>E-mail</span><b id="c-mail">comercial@decisaochave.com.br</b><button type="button" class="copy" data-copy="c-mail">Copiar</button></li>
+      <li><span>E-mail</span><b id="c-mail">contato@vanguarda.social.br</b><button type="button" class="copy" data-copy="c-mail">Copiar</button></li>
     </ul>
   </div>
 </div></section>
@@ -620,7 +621,7 @@ footer .notice{flex-basis:100%}
   <div class="head"><p class="eyebrow">Como funciona para Apoiadores</p><h2>Do apadrinhamento à nota fiscal em quatro passos</h2></div>
   <ol class="steps">
       <li><h3>Apadrinhamento</h3><p>Escolha do número de apadrinhados e período.</p></li>
-      <li><h3>Cadastro</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ, cidade, estado e senha. Leva um minuto.</p></li>
+      <li><h3>Informações para a nota fiscal</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ e endereço. Se quiser guardar seu cadastro, crie uma senha. Leva um minuto.</p></li>
       <li><h3>Pagamento</h3><p>Você recebe o link e apoia por PIX, boleto ou cartão. O pagamento compensa e o sistema de cobrança registra o valor.</p></li>
       <li><h3>Nota fiscal sem burocracia</h3><p>A NFS-e é emitida direto com a prefeitura, por integração, e chega no seu e-mail a cada pagamento, sem ninguém abrir sistema do governo.</p></li>
     </ol>
@@ -646,24 +647,27 @@ footer .notice{flex-basis:100%}
         <label for="ap-num"><span>Número</span><input id="ap-num" type="text" required inputmode="numeric" placeholder="123 ou s/n" maxlength="10"></label>
         <label for="ap-comp"><span>Complemento (opcional)</span><input id="ap-comp" type="text" autocomplete="address-line2" placeholder="Apto, sala, bloco"></label>
         <label for="ap-cidade" class="wide"><span>Cidade e estado</span><input id="ap-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
+        <label for="ap-senha" class="wide" data-guest><span>Senha para o seu cadastro (mínimo de 6 caracteres, só para Cadastrar e Apoiar)</span><input id="ap-senha" type="password" minlength="6" autocomplete="new-password"></label>
       </div>
       <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira celular, CPF ou CNPJ, CEP e número.</p>
       <p class="notice" id="ap-aviso-pag" hidden><b>Pagamento</b><span>Ao continuar, você vai para a fatura do Asaas, nosso sistema de cobrança, e escolhe PIX, boleto ou cartão. A nota fiscal chega no seu e-mail depois que o pagamento compensa. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-      <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. Ao clicar em Apoiar, você registra seu apoio, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-      <button class="btn go" type="submit" id="ap-btn">Apoiar</button>
+      <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. Ao clicar em Cadastrar e Apoiar ou em Apenas Apoiar, você registra seu apoio, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
+      <button class="btn go" type="submit" id="ap-btn" data-acao="cadastrar" data-guest>Cadastrar e Apoiar</button>
+      <button class="btn" type="submit" id="ap-btn-so" data-acao="apoiar">Apenas Apoiar</button>
       <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
     </form>
     <div class="aside">
       <div class="done" id="ap-done" hidden>
         <h3>Apoio registrado</h3>
+        <p id="ap-conta" hidden></p>
         <p>Envie pelo WhatsApp para entrar na lista. Avisaremos quando os pagamentos e as notas fiscais começarem.</p>
         <pre id="ap-resumo"></pre>
         <a class="btn go" id="ap-wa" href="https://wa.me/5551992910038" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
-        <p>Prefere e-mail? Copie o resumo e envie para comercial@decisaochave.com.br.</p>
+        <p>Prefere e-mail? Copie o resumo e envie para contato@vanguarda.social.br.</p>
       </div>
       <div class="people" id="ap-help">
         <h3>Como funciona</h3>
-        <p>Depois do lançamento: 1. Cadastro. 2. Escolha dos apadrinhados e do período. 3. Link de pagamento. 4. Nota fiscal no e-mail. Por enquanto, o botão Apoiar registra seu apoio e falamos com você pelo WhatsApp.</p>
+        <p>Depois do lançamento: 1. Escolha dos apadrinhados e do período. 2. Informações para a nota fiscal. 3. Link de pagamento. 4. Nota fiscal no e-mail. Cadastrar e Apoiar também cria a sua conta de apoiador com esses dados; Apenas Apoiar registra o apoio sem criar conta. Por enquanto, falamos com você pelo WhatsApp.</p>
         <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
       </div>
     </div>
@@ -776,7 +780,7 @@ footer .notice{flex-basis:100%}
   <div class="head"><p class="eyebrow">Contato</p><h2>Fale com a gente</h2></div>
   <ul class="contact" aria-label="Contatos">
       <li><span>WhatsApp</span><b id="c-wa">(51) 99291-0038</b><button type="button" class="copy" data-copy="c-wa">Copiar</button></li>
-      <li><span>E-mail</span><b id="c-mail">comercial@decisaochave.com.br</b><button type="button" class="copy" data-copy="c-mail">Copiar</button></li>
+      <li><span>E-mail</span><b id="c-mail">contato@vanguarda.social.br</b><button type="button" class="copy" data-copy="c-mail">Copiar</button></li>
     </ul>
 </div></section>
 </div>
@@ -785,7 +789,7 @@ footer .notice{flex-basis:100%}
 <footer><div class="in">
   <p class="notice" id="aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
   <nav class="footnav" aria-label="Rodapé"><a href="#simuladores">Simuladores</a><a href="#apoiar">Apoiar</a><a href="#sobre">Sobre</a></nav>
-  <span>WhatsApp (51) 99291-0038 · comercial@decisaochave.com.br</span>
+  <span>WhatsApp (51) 99291-0038 · contato@vanguarda.social.br</span>
 </div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -874,7 +878,7 @@ footer .notice{flex-basis:100%}
   var sb=null;
   try{if(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){sb=null;}
   var FORA='O cadastro está sendo ligado e volta em breve. Enquanto isso, fale com a gente pelo WhatsApp (51) 99291-0038.';
-  var perfil=null;
+  var perfil=null,cobranca={ativo:false,ambiente:''};
   function destino(c){return c.tipo==='vanguardista'?'simuladores':'apoiadores';}
   function emailInterno(){var r='';try{r=crypto.randomUUID().replace(/-/g,'');}catch(e){r=Date.now().toString(36)+Math.random().toString(36).slice(2);}return 'cadastro+'+r+'@'+LOGIN_DOMINIO;}
   function carregarPerfil(user){
@@ -887,6 +891,7 @@ footer .notice{flex-basis:100%}
     var c=perfil;
     document.querySelectorAll('[data-guest]').forEach(function(el){el.hidden=!!c;});
     document.querySelectorAll('[data-user]').forEach(function(el){el.hidden=!c;});
+    document.getElementById('ap-btn-so').textContent=(c?'Apoiar':'Apenas Apoiar')+(cobranca.ambiente==='sandbox'?' (teste)':'');
     if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];
       preencherApoio();}
   }
@@ -1013,15 +1018,15 @@ footer .notice{flex-basis:100%}
     apCep.addEventListener('blur',function(){var n=dig(apCep.value).length;if(n&&n<8)cepMsg('O CEP tem 8 números.',true);});
   })();
   /* cobrança do apoio pelo Asaas: a chave fica só no servidor (api/asaas/cobranca.js) */
-  var cobranca={ativo:false,ambiente:''},apBtn=document.getElementById('ap-btn');
+  var apBtns=[document.getElementById('ap-btn'),document.getElementById('ap-btn-so')];
   fetch('/api/asaas/cobranca',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.ativo)return;cobranca=j;
-    apBtn.textContent='Apoiar'+(j.ambiente==='sandbox'?' (teste)':'');
+    if(j.ambiente==='sandbox')apBtns.forEach(function(b){b.textContent+=' (teste)';});
     document.getElementById('ap-aviso').hidden=true;document.getElementById('ap-aviso-pag').hidden=false;
   }).catch(function(){});
-  function pagar(errEl,semCobranca){
+  function pagar(errEl,semCobranca,btn){
     var v=function(id){return document.getElementById(id).value.trim();};
-    var txtBtn=apBtn.textContent;apBtn.disabled=true;apBtn.textContent='Gerando o pagamento…';
+    var apBtn=btn||apBtns[1],txtBtn=apBtn.textContent;apBtn.disabled=true;apBtn.textContent='Gerando o pagamento…';
     fetch('/api/asaas/cobranca',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       vanguardistas:int(apN,1),meses:meses(apP(),apM),nome:v('ap-nome'),email:v('ap-email'),fone:v('ap-whats'),doc:v('ap-doc'),
       cep:v('ap-cep'),endereco:v('ap-end'),numero:v('ap-num'),complemento:v('ap-comp')})})
@@ -1029,9 +1034,35 @@ footer .notice{flex-basis:100%}
     .then(function(j){
       apBtn.disabled=false;apBtn.textContent=txtBtn;
       if(j.ok&&j.link){location.href=j.link;return;}
-      if(j.codigo==='sem_chave'){cobranca.ativo=false;apBtn.textContent='Apoiar';document.getElementById('ap-aviso').hidden=false;document.getElementById('ap-aviso-pag').hidden=true;semCobranca();return;}
+      if(j.codigo==='sem_chave'){cobranca.ativo=false;apBtns.forEach(function(b){b.textContent=b.textContent.replace(' (teste)','');});document.getElementById('ap-aviso').hidden=false;document.getElementById('ap-aviso-pag').hidden=true;semCobranca();return;}
       errEl.textContent=j.erro||'Não foi possível gerar o pagamento agora. Tente de novo em instantes.';errEl.hidden=false;
     },function(){apBtn.disabled=false;apBtn.textContent=txtBtn;errEl.textContent='Sem conexão com o servidor. Tente de novo em instantes.';errEl.hidden=false;});
+  }
+  /* Cadastrar e Apoiar: cria a conta de apoiador com os dados do formulário */
+  function cidadeUf(v){var m=String(v).trim().match(/^(.+?)\s*[,\/-]\s*([A-Za-z]{2})$/);if(!m)return null;var uf=m[2].toUpperCase();
+    return 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ').indexOf(uf)<0?null:{cidade:m[1].trim(),uf:uf};}
+  function criarContaApoiador(errEl,btn){
+    function g(id){return document.getElementById(id);}
+    function falha(msg,campo){errEl.textContent=msg;errEl.hidden=false;if(campo)campo.focus();return null;}
+    if(!sb)return Promise.resolve(falha(FORA));
+    var fone=dig(g('ap-whats').value),email=maskEmail(g('ap-email').value),ci=cidadeUf(g('ap-cidade').value);
+    var dados={tipo:'apoiador',nome:g('ap-nome').value.trim(),fone:fone,email_contato:email,doc:dig(g('ap-doc').value),cidade:ci.cidade,uf:ci.uf};
+    var txt=btn.textContent;apBtns.forEach(function(b){b.disabled=true;});btn.textContent='Criando o cadastro…';
+    function solta(){apBtns.forEach(function(b){b.disabled=false;});btn.textContent=txt;}
+    return sb.rpc('contato_em_uso',{p_fone:fone,p_email:email||null}).then(function(r){
+      if(r.error)throw r.error;
+      if(r.data==='fone')return falha('Já existe uma conta com esse celular. Use Entrar ou clique em Apenas Apoiar.',g('ap-whats'));
+      if(r.data==='email')return falha('Já existe uma conta com esse e-mail. Use Entrar ou clique em Apenas Apoiar.',g('ap-email'));
+      return sb.auth.signUp({email:emailInterno(),password:g('ap-senha').value,options:{data:dados}}).then(function(res){
+        if(res.error)throw res.error;
+        g('ap-senha').value='';
+        if(!res.data.session)return {msg:'Cadastro de apoiador criado. Assim que a confirmação for liberada, você entra com seu celular e senha.'};
+        return carregarPerfil(res.data.user).then(function(c){perfil=c;cabecalho();return {msg:'Cadastro de apoiador criado. Você já está conectado.'};});
+      });
+    }).catch(function(err){
+      var m=String(err&&err.message||'');
+      return falha(/password/i.test(m)?'Escolha uma senha mais forte, com pelo menos 6 caracteres.':/database|duplicate|unique/i.test(m)?'Já existe uma conta com esse celular ou e-mail. Use Entrar ou clique em Apenas Apoiar.':'Não foi possível criar o cadastro agora. Tente de novo em instantes ou use Apenas Apoiar.');
+    }).then(function(r){solta();return r;});
   }
   /* cadastro */
   document.querySelectorAll('[data-form]').forEach(function(f){
@@ -1044,15 +1075,21 @@ footer .notice{flex-basis:100%}
       var nm=document.getElementById(p+'-num');if(nm&&!/\d|s\/?n/i.test(nm.value))ok=false; /* número ou s/n */
       var errEl=document.getElementById(p+'-err');errEl.textContent=errEl.dataset.msg||(errEl.dataset.msg=errEl.textContent);
       errEl.hidden=ok;if(!ok)return;
-      if(ce){conferirCep(false).then(function(r){if(r.ok===false){errEl.textContent='CEP não encontrado. Confira os números.';errEl.hidden=false;ce.focus();return;}seguir();});return;}
-      seguir();
-      function seguir(){if(p==='ap'&&cobranca.ativo)pagar(errEl,concluir);else concluir();}
+      var btn=p==='ap'?(e.submitter&&e.submitter.dataset.acao?e.submitter:apBtns[1]):null,contaMsg='';
+      var comConta=!!(btn&&btn.dataset.acao==='cadastrar'&&!perfil);
+      if(comConta){var se=document.getElementById('ap-senha');if(se.value.length<6){errEl.textContent='Para Cadastrar e Apoiar, crie uma senha com pelo menos 6 caracteres. Ou use Apenas Apoiar.';errEl.hidden=false;se.focus();return;}
+        if(!cidadeUf(document.getElementById('ap-cidade').value)){errEl.textContent='Escreva a cidade e a sigla do estado, como Porto Alegre, RS.';errEl.hidden=false;document.getElementById('ap-cidade').focus();return;}}
+      if(ce){conferirCep(false).then(function(r){if(r.ok===false){errEl.textContent='CEP não encontrado. Confira os números.';errEl.hidden=false;ce.focus();return;}cadastrar();});return;}
+      cadastrar();
+      function cadastrar(){if(!comConta)return seguir();criarContaApoiador(errEl,btn).then(function(r){if(!r)return;contaMsg=r.msg;seguir();});}
+      function seguir(){if(p==='ap'&&cobranca.ativo)pagar(errEl,concluir,btn);else concluir();}
       function concluir(){
-      var lines=[];f.querySelectorAll('.fields label').forEach(function(l){if(l.hidden)return;var i=l.querySelector('input,select');if(i)lines.push(l.querySelector('span').textContent.replace(/ \(.*\)/,'')+': '+(i.tagName==='SELECT'?i.options[i.selectedIndex].text:i.value.trim()));});
-      if(p==='ap'){lines.push('Total em recursos: '+document.getElementById('ap-total').textContent);}
+      var lines=[];f.querySelectorAll('.fields label').forEach(function(l){if(l.hidden||l.closest('.chips'))return;var i=l.querySelector('input,select');if(i&&i.type==='password')return;if(i)lines.push(l.querySelector('span').textContent.replace(/ \(.*\)/,'')+': '+(i.tagName==='SELECT'?i.options[i.selectedIndex].text:i.value.trim()));});
+      if(p==='ap'){var mm=meses(apP(),apM);lines.splice(1,0,'Durante: '+mm+(mm===1?' mês':' meses'));lines.push('Total em recursos: '+document.getElementById('ap-total').textContent);}
       if(p==='vg')lines.unshift('Perfil: Vanguardista');
       var txt='Olá! Tenho interesse no Portal Vanguarda.\n'+lines.join('\n');
       document.getElementById(p+'-resumo').textContent=txt;
+      if(p==='ap'){var cm=document.getElementById('ap-conta');cm.textContent=contaMsg;cm.hidden=!contaMsg;}
       document.getElementById(p+'-wa').href='https://wa.me/5551992910038?text='+encodeURIComponent(txt);
       document.getElementById(p+'-done').hidden=false;document.getElementById(p+'-help').hidden=true;
       document.getElementById(p+'-done').scrollIntoView({block:'nearest'});
