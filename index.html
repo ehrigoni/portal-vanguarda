@@ -214,6 +214,12 @@ footer .notice{flex-basis:100%}
 .pagehead h1{font-size:clamp(30px,4.6vw,48px);line-height:1.08;font-weight:700;max-width:22ch}
 [data-view="apoiar"] .pagehead h1,[data-view="apoiar"] .pagehead .lede{max-width:none}
 #como-funciona .head h2,#como-funciona .head .lede{max-width:none}
+[data-view="simuladores"] .pagehead h1,[data-view="simuladores"] .pagehead .lede{max-width:none}
+.sim-nota{font-size:15px;padding:14px 16px;border-style:solid}
+.sim-nota span{display:grid;gap:12px;justify-items:start}
+.sim-nota .btn{padding:8px 16px;font-size:14px}
+.sim-nota.visto{font-size:13px;padding:10px 12px;border-style:dashed}
+.sim-nota.visto .btn{display:none}
 @media (min-width:861px){#como-funciona .head h2{font-size:clamp(22px,2.6vw,34px)}}
 .doors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:860px){.doors{grid-template-columns:1fr}}
@@ -536,6 +542,7 @@ footer .notice{flex-basis:100%}
   <p class="eyebrow">Simuladores · grátis</p>
   <h1>Dois raios X para decidir preço e meta</h1>
   <p class="lede">O primeiro mostra para onde vai cada real de uma venda. O segundo mostra quanto o negócio precisa faturar por mês.</p>
+  <div class="notice sim-nota" id="sim-nota"><b>Importante</b><span>Os simuladores fornecem valores que não contemplam impostos e que visam uma estrutura de organização ideal. Cada negócio pode divergir e cabe ao usuário a decisão final de empregar os valores apresentados nos simuladores.<button type="button" class="btn go" id="sim-nota-ok">Entendi</button></span></div>
 </div></section>
 <section class="band" id="raio-x"><div class="in">
   <div class="head">
@@ -1096,6 +1103,11 @@ footer .notice{flex-basis:100%}
     var txt='Conheci o Portal Vanguarda: simuladores gratuitos para quem empreende, como o raio X da venda e o raio X do preço. Vale testar: '+url;
     a.href='https://wa.me/?text='+encodeURIComponent(txt);
     a.addEventListener('click',function(e){if(navigator.share&&matchMedia('(pointer:coarse)').matches){e.preventDefault();navigator.share({title:'Portal Vanguarda',text:txt}).catch(function(){});}});
+  })();
+  /* nota dos simuladores: em destaque até a pessoa clicar em Entendi; depois fica discreta */
+  (function(){var n=document.getElementById('sim-nota'),ok=document.getElementById('sim-nota-ok');if(!n||!ok)return;
+    var K='vg-sim-nota-vista';try{if(localStorage.getItem(K))n.classList.add('visto');}catch(e){}
+    ok.addEventListener('click',function(){n.classList.add('visto');try{localStorage.setItem(K,'1');}catch(e){}});
   })();
   render(15);
 })();
