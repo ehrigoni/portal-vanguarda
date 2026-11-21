@@ -210,6 +210,7 @@ footer .notice{flex-basis:100%}
 }
 .pagehead .in{padding-block:48px 8px;display:grid;gap:12px}
 .pagehead h1{font-size:clamp(30px,4.6vw,48px);line-height:1.08;font-weight:700;max-width:22ch}
+[data-view="apoiar"] .pagehead h1,[data-view="apoiar"] .pagehead .lede{max-width:none}
 .doors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:860px){.doors{grid-template-columns:1fr}}
 .door{display:grid;gap:10px;align-content:start;border:1px solid var(--line);border-radius:12px;padding:20px;text-decoration:none;color:var(--fg);background:var(--panel)}
@@ -241,6 +242,7 @@ footer .notice{flex-basis:100%}
 .signup .fields .hint.bad{color:var(--amber)}
 .signup .wide{grid-column:1/-1}
 .signup .note{font-size:13px;color:var(--muted)}
+.signup .btn-nota{margin:-6px 0 4px;text-align:center}
 #cd-btn{justify-self:center}
 #cd-entrar{text-align:center}
 .done{border:1px solid var(--glow);border-radius:12px;padding:18px 20px;display:grid;gap:10px;background:var(--panel)}
@@ -498,17 +500,8 @@ footer .notice{flex-basis:100%}
     <article class="who-box feat" id="simular-apoio">
       <span class="tag">Para quem é apoiador do portal</span>
       <ol class="checks"><li>Escolher apadrinhamento</li><li>Informações para a nota fiscal</li><li>Pagamento</li><li>Nota Fiscal Sem Burocracia</li></ol>
-      <label class="nrow" for="sim-n"><span>Apoiar</span><input id="sim-n" type="number" min="1" step="1" value="1" inputmode="numeric"><span>vanguardistas</span></label>
-      <fieldset class="chips"><legend>Durante</legend>
-        <label><input type="radio" name="sim-p" value="1" checked><span>1 mês</span></label>
-        <label><input type="radio" name="sim-p" value="3"><span>3 meses</span></label>
-        <label><input type="radio" name="sim-p" value="6"><span>6 meses</span></label>
-        <label><input type="radio" name="sim-p" value="12"><span>12 meses</span></label>
-        <label><input type="radio" name="sim-p" value="N"><span>N meses</span></label>
-        <label class="nmeses" hidden><input id="sim-m" type="number" min="1" step="1" value="24" inputmode="numeric" aria-label="Número de meses"><span>meses</span></label>
-      </fieldset>
-      <div class="sum"><small>Total em recursos</small><b class="mono" id="sim-total">R$ 1,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 1,00</b> por mês.</p></div>
       <a class="btn go" href="#apoiar-cadastro" id="sim-go">Quero apoiar</a>
+      <p class="hint">Dúvidas: WhatsApp <a href="https://wa.me/5551992910038" target="_blank" rel="noopener">(51) 99291-0038</a></p>
     </article>
   </div>
 </div></section>
@@ -615,7 +608,7 @@ footer .notice{flex-basis:100%}
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Apoiar · apoiadores e vanguardistas</p>
   <h1>Apoie vanguardistas a partir de 1 mês</h1>
-  <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Apoiar.</p>
+  <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Cadastrar e Apoiar ou em Apenas Apoiar.</p>
 </div></section>
 <section class="band" id="apoiadores"><div class="in">
   <div class="head"><p class="eyebrow">Como funciona para Apoiadores</p><h2>Do apadrinhamento à nota fiscal em quatro passos</h2></div>
@@ -628,7 +621,7 @@ footer .notice{flex-basis:100%}
   <div class="signup" id="apoiar-cadastro">
     <form class="fields-form" data-form="ap" novalidate>
       <div class="fields two">
-        <label for="ap-n"><span>Número de apadrinhados</span><input id="ap-n" type="number" min="1" step="1" value="1" required inputmode="numeric"></label>
+        <label for="ap-n" class="wide"><span>Número de apadrinhados</span><input id="ap-n" type="number" min="1" step="1" value="1" required inputmode="numeric"></label>
         <fieldset class="chips wide" id="ap-periodo"><legend>Durante</legend>
           <label><input type="radio" name="ap-p" value="1"><span>1 mês</span></label>
           <label><input type="radio" name="ap-p" value="3"><span>3 meses</span></label>
@@ -653,7 +646,10 @@ footer .notice{flex-basis:100%}
       <p class="notice" id="ap-aviso-pag" hidden><b>Pagamento</b><span>Ao continuar, você vai para a fatura do Asaas, nosso sistema de cobrança, e escolhe PIX, boleto ou cartão. A nota fiscal chega no seu e-mail depois que o pagamento compensa. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. Ao clicar em Cadastrar e Apoiar ou em Apenas Apoiar, você registra seu apoio, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
       <button class="btn go" type="submit" id="ap-btn" data-acao="cadastrar" data-guest>Cadastrar e Apoiar</button>
+      <p class="note btn-nota" data-guest>Suas informações ficam guardadas na sua conta para os próximos apoios.</p>
       <button class="btn" type="submit" id="ap-btn-so" data-acao="apoiar">Apenas Apoiar</button>
+      <p class="note btn-nota" data-guest>Nenhuma informação fica guardada no portal. Os dados servem só para este apoio e a nota fiscal.</p>
+      <p class="note">Dúvidas: WhatsApp <a href="https://wa.me/5551992910038" target="_blank" rel="noopener">(51) 99291-0038</a></p>
       <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
     </form>
     <div class="aside">
@@ -664,11 +660,6 @@ footer .notice{flex-basis:100%}
         <pre id="ap-resumo"></pre>
         <a class="btn go" id="ap-wa" href="https://wa.me/5551992910038" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
         <p>Prefere e-mail? Copie o resumo e envie para contato@vanguarda.social.br.</p>
-      </div>
-      <div class="people" id="ap-help">
-        <h3>Como funciona</h3>
-        <p>Depois do lançamento: 1. Escolha dos apadrinhados e do período. 2. Informações para a nota fiscal. 3. Link de pagamento. 4. Nota fiscal no e-mail. Cadastrar e Apoiar também cria a sua conta de apoiador com esses dados; Apenas Apoiar registra o apoio sem criar conta. Por enquanto, falamos com você pelo WhatsApp.</p>
-        <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
       </div>
     </div>
   </div>
@@ -842,18 +833,11 @@ footer .notice{flex-basis:100%}
   document.querySelectorAll('[data-custo]').forEach(function(el){el.textContent=fmt.format(CUSTO_MEDIO);});
   function int(el,d){var n=parseInt(el.value,10);return n>0?n:d;}
   function meses(p,m){return p==='N'?int(m,1):parseInt(p,10);}
-  var simN=document.getElementById('sim-n'),simM=document.getElementById('sim-m'),simNM=simM.closest('label');
-  function simP(){return document.querySelector('input[name="sim-p"]:checked').value;}
-  function sim(){simNM.hidden=simP()!=='N';document.getElementById('sim-total').textContent=fmt.format(int(simN,1)*meses(simP(),simM)*CUSTO_MEDIO);}
-  simN.addEventListener('input',sim);simM.addEventListener('input',sim);
-  document.querySelectorAll('input[name="sim-p"]').forEach(function(r){r.addEventListener('change',sim);});
-  sim();
   var apN=document.getElementById('ap-n'),apM=document.getElementById('ap-meses');
   function apP(){return document.querySelector('input[name="ap-p"]:checked').value;}
   function ap(){apM.closest('label').hidden=apP()!=='N';document.getElementById('ap-total').textContent=fmt.format(int(apN,1)*meses(apP(),apM)*CUSTO_MEDIO);}
   [apN,apM].forEach(function(el){el.addEventListener('input',ap);});
   document.querySelectorAll('input[name="ap-p"]').forEach(function(r){r.addEventListener('change',ap);});
-  document.getElementById('sim-go').addEventListener('click',function(){apN.value=int(simN,1);var p=simP();document.querySelector('input[name="ap-p"][value="'+p+'"]').checked=true;if(p==='N')apM.value=int(simM,1);ap();});
   ap();
   /* máscaras */
   function dig(v){return String(v).replace(/\D/g,'');}
@@ -1091,7 +1075,7 @@ footer .notice{flex-basis:100%}
       document.getElementById(p+'-resumo').textContent=txt;
       if(p==='ap'){var cm=document.getElementById('ap-conta');cm.textContent=contaMsg;cm.hidden=!contaMsg;}
       document.getElementById(p+'-wa').href='https://wa.me/5551992910038?text='+encodeURIComponent(txt);
-      document.getElementById(p+'-done').hidden=false;document.getElementById(p+'-help').hidden=true;
+      document.getElementById(p+'-done').hidden=false;var hp=document.getElementById(p+'-help');if(hp)hp.hidden=true;
       document.getElementById(p+'-done').scrollIntoView({block:'nearest'});
       }
     });
