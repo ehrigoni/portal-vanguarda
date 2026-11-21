@@ -329,6 +329,59 @@ footer .notice{flex-basis:100%}
 .footnav{display:flex;gap:16px;flex-wrap:wrap}
 .footnav a{color:var(--muted);text-decoration:none}
 .footnav a:hover{color:var(--fg)}
+
+/* painel do apoiador */
+.pn-form{display:grid;gap:14px}
+.pn-form .fields select,.fields-one select{width:100%;background:transparent;border:0;color:var(--fg);font-family:var(--body);font-size:16px;padding:0;outline:none}
+.pn-form .fields select option,.fields-one select option{background:var(--panel);color:var(--fg)}
+.pn-acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pn-acts .btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+.pn-acts .note{color:var(--muted);font-size:14px}
+.chips input[type=checkbox]{position:absolute;opacity:0;pointer-events:none}
+.chips input[type=checkbox]+span{font-family:var(--body);font-size:14px;padding:7px 12px;border:1px solid var(--line);border-radius:999px}
+.chips input[type=checkbox]:checked+span{border-color:var(--amber);color:var(--amber)}
+.chips input[type=checkbox]:focus-visible+span{outline:2px solid var(--amber);outline-offset:2px}
+.fields .wide{grid-column:1/-1}
+.selos{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.selo{position:relative;border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:10px;align-content:start;cursor:pointer;background:transparent}
+.selo:hover{border-color:var(--glow)}
+.selo.rec{border-color:var(--glow);background:var(--panel)}
+.selo.on{border-color:var(--amber);box-shadow:inset 0 0 0 1px var(--amber)}
+.selo input{position:absolute;left:0;top:0;opacity:0;pointer-events:none}
+#pn-conteudo .chips label{position:relative}
+#pn-conteudo .chips input{left:0;top:0}
+.selo:focus-within{outline:2px solid var(--amber);outline-offset:3px}
+.selo-top{display:flex;gap:12px;align-items:center}
+.selo-badge{flex:0 0 auto;width:52px;height:52px;border-radius:50%;border:2px solid var(--glow);display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:13px;color:var(--glow);text-align:center;line-height:1.05}
+.selo.on .selo-badge{border-color:var(--amber);color:var(--amber)}
+.selo h3{font-size:17px}
+.selo p{color:var(--muted);font-size:14px}
+.selo .por{font-size:13px;color:var(--fg);border-top:1px dashed var(--line);padding-top:8px}
+.selo .tags{display:flex;gap:6px;flex-wrap:wrap}
+.selo .tag.ok{border-color:var(--glow);color:var(--glow)}
+.selo .tag.sel{border-color:var(--amber);color:var(--amber)}
+.mat{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
+@media (max-width:860px){.mat{grid-template-columns:1fr}}
+.mat-ctl{display:grid;gap:14px}
+.fields-one{display:grid;gap:6px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel);min-width:0}
+.fields-one:focus-within{border-color:var(--glow)}
+.fields-one span{font-size:13px;color:var(--muted)}
+.fields-one textarea{width:100%;background:transparent;border:0;color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;resize:vertical;outline:none}
+.mat-prev{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--film);display:grid;place-items:center}
+.mat-prev canvas{display:block;width:100%;height:auto;max-height:70vh;object-fit:contain;border-radius:6px}
+.grupos{display:grid;gap:14px}
+.grupo{border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:14px;background:var(--panel)}
+.grupo-top{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.grupo-top h3{flex:1 1 auto}
+.grupo-top .filtro{color:var(--muted);font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.kpi{background:var(--bg);padding:12px 14px;display:grid;gap:2px}
+.kpi b{font-family:var(--mono);font-size:22px;font-variant-numeric:tabular-nums}
+.kpi small{color:var(--muted);font-size:12.5px;line-height:1.35}
+.spark{display:grid;gap:6px}
+.spark small{color:var(--muted);font-size:12.5px}
+.spark svg{display:block;width:100%;height:56px}
+.grupo .pouco{color:var(--muted);font-size:14px}
 </style>
 <style>body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
 </head>
@@ -338,7 +391,7 @@ footer .notice{flex-basis:100%}
 <header class="top"><div class="in">
   <a class="brand" href="#inicio">Portal <span>Vanguarda</span></a>
   <nav aria-label="Páginas">
-    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#sobre" data-nav="sobre">Sobre</a>
+    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#painel" data-nav="painel" data-apoiador hidden>Painel</a><a href="#sobre" data-nav="sobre">Sobre</a>
   </nav>
   <div class="acc-top">
     <a class="enter" href="#entrar" data-guest>Entrar</a>
@@ -711,6 +764,86 @@ footer .notice{flex-basis:100%}
   </div>
 </div></section>
 </div>
+<div data-view="painel">
+<section class="pagehead"><div class="in">
+  <p class="eyebrow">Painel do apoiador</p>
+  <h1 id="pn-titulo">Seu painel de impacto</h1>
+  <p class="lede">Veja os selos sociais que combinam com o seu negócio, gere material para divulgar o seu apoio e acompanhe, de forma agregada, grupos de vanguardistas.</p>
+  <div class="pn-acts" data-apoiador hidden><a class="btn go" href="#apoiar-cadastro">Apadrinhar vanguardistas</a><a class="btn" href="#pn-selos">Ver selos</a><a class="btn" href="#pn-grupos">Acompanhar grupos</a></div>
+</div></section>
+<section class="band" id="pn-fora" hidden><div class="in">
+  <div class="loop"><span class="eyebrow">Acesso</span><p><b>O painel é exclusivo para apoiadores cadastrados.</b> Entre com sua conta ou cadastre-se como apoiador para ver os selos e acompanhar vanguardistas.</p><div class="loop-acts"><a class="btn" href="#entrar">Entrar</a><a class="btn go" href="#cadastro" data-tipo="apoiador">Cadastrar-se como apoiador</a></div></div>
+</div></section>
+<div id="pn-conteudo" hidden>
+<section class="band" id="pn-perfil"><div class="in">
+  <div class="head"><p class="eyebrow">1 · Seu negócio</p><h2>Conte um pouco sobre a sua empresa</h2><p class="lede">Com essas respostas o portal indica os selos mais adequados para você. Leva menos de um minuto e dá para mudar quando quiser.</p></div>
+  <form class="pn-form" id="pn-form-perfil" novalidate>
+    <div class="fields two">
+      <label for="pn-marca"><span>Nome da empresa ou marca (aparece no material)</span><input id="pn-marca" type="text" maxlength="80" autocomplete="organization"></label>
+      <label for="pn-apad"><span>Quantos vanguardistas você apadrinha</span><input id="pn-apad" type="number" min="0" step="1" inputmode="numeric" placeholder="0"></label>
+      <fieldset class="chips wide" id="pn-porte"><legend>Porte</legend>
+        <label><input type="radio" name="pn-porte" value="autonomo"><span>Autônomo</span></label>
+        <label><input type="radio" name="pn-porte" value="mei"><span>MEI</span></label>
+        <label><input type="radio" name="pn-porte" value="me"><span>Microempresa</span></label>
+        <label><input type="radio" name="pn-porte" value="epp"><span>Pequena empresa</span></label>
+        <label><input type="radio" name="pn-porte" value="media"><span>Média ou grande</span></label>
+      </fieldset>
+      <label for="pn-setor" class="wide"><span>Setor</span><select id="pn-setor"><option value="">Selecione</option><option value="comercio">Comércio e varejo</option><option value="alimentacao">Alimentação</option><option value="servicos">Serviços</option><option value="tecnologia">Tecnologia</option><option value="industria">Indústria</option><option value="educacao">Educação</option><option value="saude">Saúde e bem-estar</option><option value="financas">Finanças, contabilidade e seguros</option><option value="construcao">Construção e imóveis</option><option value="outro">Outro</option></select></label>
+      <fieldset class="chips pn-checks wide" id="pn-obj"><legend>O que você quer com o apoio (marque quantos quiser)</legend>
+        <label><input type="checkbox" value="redes"><span>Mostrar impacto nas redes sociais</span></label>
+        <label><input type="checkbox" value="local"><span>Fortalecer a marca no bairro e na cidade</span></label>
+        <label><input type="checkbox" value="esg"><span>Relatório ESG ou de sustentabilidade</span></label>
+        <label><input type="checkbox" value="educacao"><span>Apoiar a educação empreendedora</span></label>
+        <label><input type="checkbox" value="comunidade"><span>Apoiar comunidades vulneráveis</span></label>
+        <label><input type="checkbox" value="clientes"><span>Atrair clientes e parceiros</span></label>
+      </fieldset>
+    </div>
+    <div class="pn-acts"><button class="btn go" type="submit">Salvar e ver selos recomendados</button><span class="note" id="pn-perfil-msg" aria-live="polite"></span></div>
+  </form>
+</div></section>
+<section class="band" id="pn-selos"><div class="in">
+  <div class="head"><p class="eyebrow">2 · Selos sociais</p><h2>Selos disponíveis para o seu apoio</h2><p class="lede">Os selos mostram ao mercado o impacto que o seu apoio gera. Os marcados como recomendados combinam melhor com o seu perfil. Selecione os que quiser usar na divulgação.</p></div>
+  <div class="selos" id="pn-lista-selos"></div>
+  <div class="pn-acts"><span class="note" id="pn-selos-msg" aria-live="polite"></span></div>
+</div></section>
+<section class="band" id="pn-material"><div class="in">
+  <div class="head"><p class="eyebrow">3 · Material de divulgação</p><h2>Divulgue no LinkedIn, Instagram ou WhatsApp</h2><p class="lede">Escolha um dos selos selecionados e o canal. O portal gera a imagem e o texto prontos para publicar.</p></div>
+  <p class="notice" id="pn-mat-vazio"><b>Selos</b><span>Selecione pelo menos um selo acima para gerar o material.</span></p>
+  <div class="mat" id="pn-mat" hidden>
+    <div class="mat-ctl">
+      <label class="fields-one" for="pn-mat-selo"><span>Selo</span><select id="pn-mat-selo"></select></label>
+      <fieldset class="chips" id="pn-canal"><legend>Canal</legend>
+        <label><input type="radio" name="pn-canal" value="linkedin" checked><span>LinkedIn</span></label>
+        <label><input type="radio" name="pn-canal" value="instagram"><span>Instagram</span></label>
+        <label><input type="radio" name="pn-canal" value="whatsapp"><span>WhatsApp</span></label>
+      </fieldset>
+      <label class="fields-one" for="pn-mat-txt"><span>Texto (pode editar antes de copiar)</span><textarea id="pn-mat-txt" rows="9"></textarea></label>
+      <div class="pn-acts">
+        <button class="btn go" type="button" id="pn-baixar">Baixar imagem</button>
+        <button class="btn" type="button" id="pn-copiar">Copiar texto</button>
+        <a class="btn" id="pn-compartilhar" href="#" target="_blank" rel="noopener">Abrir no LinkedIn</a>
+      </div>
+      <p class="note" id="pn-mat-dica"></p>
+    </div>
+    <div class="mat-prev"><canvas id="pn-canvas" width="1200" height="627" aria-label="Prévia da imagem do selo"></canvas></div>
+  </div>
+</div></section>
+<section class="band" id="pn-grupos"><div class="in">
+  <div class="head"><p class="eyebrow">4 · Acompanhe vanguardistas</p><h2>Grupos de vanguardistas cadastrados</h2><p class="lede">Monte um grupo por estado, cidade ou tipo de cadastro e acompanhe o desempenho dele. Para proteger cada vanguardista, os números aparecem sempre somados e só para grupos com pelo menos 5 pessoas, sem nome ou dado individual.</p></div>
+  <p class="notice" id="pn-grupos-off" hidden><b>Em breve</b><span>O acompanhamento de grupos está sendo ligado no banco de dados do portal. Os selos e o material já funcionam.</span></p>
+  <form class="pn-form" id="pn-form-grupo" novalidate>
+    <div class="fields four">
+      <label for="pn-g-nome"><span>Nome do grupo</span><input id="pn-g-nome" type="text" maxlength="60" placeholder="Ex.: Vanguardistas do RS"></label>
+      <label for="pn-g-uf"><span>Estado</span><select id="pn-g-uf"><option value="">Todos</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
+      <label for="pn-g-cidade"><span>Cidade (opcional)</span><input id="pn-g-cidade" type="text" maxlength="80" placeholder="Todas"></label>
+      <label for="pn-g-doc"><span>Cadastro</span><select id="pn-g-doc"><option value="">Todos</option><option value="cpf">Pessoa física (CPF)</option><option value="cnpj">Empresa ou MEI (CNPJ)</option></select></label>
+    </div>
+    <div class="pn-acts"><button class="btn go" type="submit" id="pn-g-salvar" disabled>Acompanhar este grupo</button><span class="note" id="pn-g-msg" aria-live="polite"></span></div>
+  </form>
+  <div class="grupos" id="pn-lista-grupos"></div>
+</div></section>
+</div>
+</div>
 <div data-view="entrar">
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Entrar</p>
@@ -880,20 +1013,23 @@ footer .notice{flex-basis:100%}
   var LOGIN_DOMINIO='decisaochave.com.br'; /* domínio do e-mail interno de login (nenhum e-mail é enviado) */
   var sb=null;
   try{if(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){sb=null;}
+  window.VG={sb:sb,perfil:function(){return perfil;}}; /* usado pelo painel do apoiador */
   var FORA='O cadastro está sendo ligado e volta em breve. Enquanto isso, fale com a gente pelo WhatsApp (51) 99291-0038.';
   var perfil=null,cobranca={ativo:false,ambiente:''};
-  function destino(c){return c.tipo==='vanguardista'?'simuladores':'apoiadores';}
+  function destino(c){return c.tipo==='vanguardista'?'simuladores':'painel';}
   function emailInterno(){var r='';try{r=crypto.randomUUID().replace(/-/g,'');}catch(e){r=Date.now().toString(36)+Math.random().toString(36).slice(2);}return 'cadastro+'+r+'@'+LOGIN_DOMINIO;}
   function carregarPerfil(user){
     if(!user)return Promise.resolve(null);
     return sb.from('perfis').select('tipo,nome,fone,email,doc,cidade,uf').eq('id',user.id).maybeSingle().then(function(r){
-      var m=user.user_metadata||{};return r.data||(m.tipo?{tipo:m.tipo,nome:m.nome,fone:m.fone,email:m.email_contato,doc:m.doc,cidade:m.cidade,uf:m.uf}:null);
+      var m=user.user_metadata||{},c=r.data||(m.tipo?{tipo:m.tipo,nome:m.nome,fone:m.fone,email:m.email_contato,doc:m.doc,cidade:m.cidade,uf:m.uf}:null);if(c)c.id=user.id;return c;
     },function(){return null;});
   }
   function cabecalho(){
     var c=perfil;
     document.querySelectorAll('[data-guest]').forEach(function(el){el.hidden=!!c;});
     document.querySelectorAll('[data-user]').forEach(function(el){el.hidden=!c;});
+    document.querySelectorAll('[data-apoiador]').forEach(function(el){el.hidden=!(c&&c.tipo==='apoiador');});
+    try{document.dispatchEvent(new CustomEvent('vg:perfil',{detail:c}));}catch(e){}
     document.getElementById('ap-btn-so').textContent=(c?'Apoiar':'Apenas Apoiar')+(cobranca.ambiente==='sandbox'?' (teste)':'');
     if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];
       preencherApoio();}
@@ -1111,7 +1247,330 @@ footer .notice{flex-basis:100%}
     var K='vg-sim-nota-vista';try{if(localStorage.getItem(K))n.classList.add('visto');}catch(e){}
     ok.addEventListener('click',function(){n.classList.add('visto');try{localStorage.setItem(K,'1');}catch(e){}});
   })();
+  /* atividade do vanguardista logado (base do desempenho agregado no painel do apoiador): no máximo uma por tipo por dia */
+  (function(){var feito={};
+    function registrar(tipo){
+      if(!sb||!perfil||perfil.tipo!=='vanguardista'||feito[tipo])return;feito[tipo]=1;
+      sb.from('atividades').insert({tipo:tipo}).then(function(){},function(){});
+    }
+    ['preco','preco-faixa'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',function(){registrar('simulador_preco');});});
+    ids.forEach(function(k){var el=document.getElementById('c-'+k);if(el)el.addEventListener('input',function(){registrar('simulador_meta');});});
+    var ind=document.getElementById('indicar');if(ind)ind.addEventListener('click',function(){registrar('indicacao');});
+  })();
   render(15);
+})();
+</script>
+<script>
+/* Painel do apoiador: selos sociais recomendados, material de divulgação e grupos de vanguardistas (dados só agregados).
+   Banco: supabase/painel.sql. Sem as tabelas, perfil e selos ficam guardados neste navegador e os grupos aparecem como "em breve". */
+(function(){
+  var VG=window.VG;if(!VG)return;
+  function $(id){return document.getElementById(id);}
+  function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  var SITE='https://www.vanguarda.social.br';
+  var ANO=new Date().getFullYear();
+
+  /* catálogo de selos (docs/ModeloDeNegociosPortalVanguarda.docx) */
+  var SELOS=[
+    {id:'madrinha',nome:'Empresa Madrinha · Impacto Direto',curto:'Empresa Madrinha',sigla:'EM',cat:'Meta social',
+     desc:'Mostra que o seu aporte mantém simuladores e conteúdos gratuitos para um número concreto de empreendedores.',
+     frase:'mantém ferramentas gratuitas de gestão para pequenos empreendedores'},
+    {id:'educacao',nome:'Investidora em Educação Empreendedora',curto:'Educação Empreendedora',sigla:'EE',cat:'Meta social',
+     desc:'Certifica que a empresa financia novas trilhas educativas e módulos de simuladores para quem está começando.',
+     frase:'financia educação empreendedora e novas trilhas de aprendizado'},
+    {id:'periferia',nome:'Aceleradora de Negócios Periféricos',curto:'Negócios Periféricos',sigla:'NP',cat:'Meta social',
+     desc:'Para quem quer direcionar o apoio a microempreendedores de comunidades e regiões de vulnerabilidade social.',
+     frase:'acelera microempreendedores de comunidades e periferias'},
+    {id:'ods8',nome:'Parceiro ODS 8 · Trabalho decente e crescimento econômico',curto:'Parceiro ODS 8',sigla:'ODS 8',cat:'Agenda ONU',
+     desc:'Indica investimento direto na emancipação financeira e na sustentabilidade de pequenos negócios locais.',
+     frase:'investe em trabalho decente e crescimento econômico (ODS 8)'},
+    {id:'ods4',nome:'Parceiro ODS 4 · Educação de qualidade',curto:'Parceiro ODS 4',sigla:'ODS 4',cat:'Agenda ONU',
+     desc:'Mostra apoio ao acesso democrático e gratuito a ferramentas de simulação econômica.',
+     frase:'apoia educação de qualidade e acesso gratuito ao conhecimento (ODS 4)'},
+    {id:'ods10',nome:'Parceiro ODS 10 · Redução das desigualdades',curto:'Parceiro ODS 10',sigla:'ODS 10',cat:'Agenda ONU',
+     desc:'Leva ao pequeno comerciante ferramentas de gestão que antes só grandes empresas podiam pagar.',
+     frase:'ajuda a reduzir desigualdades entre pequenos e grandes negócios (ODS 10)'},
+    {id:'techbem',nome:'Tecnologia para o Bem',curto:'Tecnologia para o Bem',sigla:'TB',cat:'Visibilidade digital',
+     desc:'Para empresas de tecnologia que querem se posicionar como apoiadoras de ferramentas digitais gratuitas.',
+     frase:'apoia tecnologia aberta e gratuita para quem empreende'},
+    {id:'powered',nome:'Powered by · Cota master',curto:'Powered by',sigla:'PB',cat:'Visibilidade digital',
+     desc:'A sua marca aparece no rodapé de um simulador de alta procura. Exige cota master de apadrinhamento.',
+     frase:'mantém um simulador do Portal Vanguarda com a própria marca'}
+  ];
+  var SELO={};SELOS.forEach(function(s){SELO[s.id]=s;});
+
+  /* regras de recomendação: cada regra soma pontos e explica o porquê */
+  function pontuar(p){
+    var obj={};(p.objetivos||[]).forEach(function(o){obj[o]=1;});
+    var pequeno=/^(autonomo|mei|me)$/.test(p.porte||''),maior=/^(epp|media)$/.test(p.porte||''),set=p.setor||'';
+    var R={};SELOS.forEach(function(s){R[s.id]={p:0,por:[]};});
+    function add(id,n,por){R[id].p+=n;if(por&&R[id].por.indexOf(por)<0)R[id].por.push(por);}
+    add('madrinha',2,'é o selo de entrada, vale para qualquer porte');
+    if(pequeno)add('madrinha',2,'combina com negócios do seu porte');
+    if(obj.redes)add('madrinha',1,'rende boas publicações com números concretos');
+    if(obj.educacao){add('educacao',3,'você quer apoiar a educação empreendedora');add('ods4',2,'você quer apoiar a educação');}
+    if(set==='educacao'){add('educacao',2,'o seu setor é educação');add('ods4',2,'o seu setor é educação');}
+    if(obj.comunidade){add('periferia',3,'você quer apoiar comunidades vulneráveis');add('ods10',2,'você quer reduzir desigualdades');}
+    if(obj.local){add('periferia',2,'fortalece a sua marca no bairro e na cidade');add('madrinha',1,'mostra apoio a negócios da sua região');add('ods8',1,'reforça o apoio à economia local');}
+    if(set==='comercio'||set==='alimentacao')add('periferia',1,'o seu setor vive do comércio de bairro');
+    if(obj.esg){add('ods8',2,'entra direto no relatório ESG');add('ods4',1,'entra no relatório ESG');add('ods10',2,'entra no relatório ESG');add('educacao',1,'é indicador social para o ESG');}
+    if(/^(financas|servicos|industria|construcao)$/.test(set))add('ods8',2,'o seu setor depende de pequenos negócios saudáveis');
+    if(maior)add('ods8',1,'é o selo ODS mais usado por empresas do seu porte');
+    if(set==='tecnologia')add('techbem',4,'o seu setor é tecnologia');
+    if(obj.redes)add('techbem',1,'tem apelo forte nas redes');
+    if(maior){add('powered',3,'o seu porte comporta a cota master');}
+    if(obj.clientes){add('powered',2,'a sua marca aparece para quem usa os simuladores');add('madrinha',1,'aproxima você de novos clientes');}
+    if(obj.local&&maior)add('powered',1,'');
+    if(pequeno)R.powered.p-=2;
+    return R;
+  }
+  function recomendados(p){
+    var R=pontuar(p);if(!p.porte&&!p.setor&&!(p.objetivos||[]).length)return {R:R,top:[]};
+    var ord=SELOS.slice().sort(function(a,b){return R[b.id].p-R[a.id].p;});
+    return {R:R,top:ord.filter(function(s){return R[s.id].p>=3;}).slice(0,3).map(function(s){return s.id;})};
+  }
+
+  /* estado */
+  var st={perfil:null,ap:{marca:'',apadrinhados:0,porte:'',setor:'',objetivos:[],selos:[]},db:true,grupos:true};
+  var LS='vg-painel-';
+  function lsGet(){try{return JSON.parse(localStorage.getItem(LS+(st.perfil&&st.perfil.id||'x'))||'null');}catch(e){return null;}}
+  function lsSet(){try{localStorage.setItem(LS+(st.perfil&&st.perfil.id||'x'),JSON.stringify(st.ap));}catch(e){}}
+  function semTabela(err){var c=err&&(err.code||'');return c==='42P01'||c==='PGRST205'||c==='PGRST202'||/does not exist|schema cache|Could not find/i.test(err&&err.message||'');}
+
+  function carregar(){
+    var sb=VG.sb;
+    var local=lsGet();if(local)st.ap=Object.assign(st.ap,local);
+    if(!st.ap.marca)st.ap.marca=st.perfil.nome||'';
+    if(!sb){st.db=false;return Promise.resolve();}
+    return sb.from('apoiador_perfil').select('marca,apadrinhados,porte,setor,objetivos,selos').eq('id',st.perfil.id).maybeSingle().then(function(r){
+      if(r.error){if(semTabela(r.error))st.db=false;return;}
+      if(r.data){Object.keys(r.data).forEach(function(k){if(r.data[k]!=null)st.ap[k]=r.data[k];});}
+    },function(){st.db=false;});
+  }
+  function salvar(){
+    lsSet();
+    if(!st.db||!VG.sb)return Promise.resolve({ok:true,local:true});
+    var a=st.ap;
+    return VG.sb.from('apoiador_perfil').upsert({id:st.perfil.id,marca:a.marca||null,apadrinhados:a.apadrinhados||0,porte:a.porte||null,setor:a.setor||null,objetivos:a.objetivos||[],selos:a.selos||[],atualizado_em:new Date().toISOString()})
+      .then(function(r){if(r.error){if(semTabela(r.error)){st.db=false;return {ok:true,local:true};}return {ok:false};}return {ok:true};},function(){return {ok:false};});
+  }
+
+  /* 1. perfil */
+  function preencherPerfil(){
+    var a=st.ap;$('pn-marca').value=a.marca||'';$('pn-apad').value=a.apadrinhados||'';
+    document.querySelectorAll('input[name="pn-porte"]').forEach(function(r){r.checked=r.value===a.porte;});
+    $('pn-setor').value=a.setor||'';
+    document.querySelectorAll('#pn-obj input').forEach(function(c){c.checked=(a.objetivos||[]).indexOf(c.value)>=0;});
+  }
+  function lerPerfil(){
+    var a=st.ap;a.marca=$('pn-marca').value.trim();var n=parseInt($('pn-apad').value,10);a.apadrinhados=n>0?n:0;
+    var pr=document.querySelector('input[name="pn-porte"]:checked');a.porte=pr?pr.value:'';a.setor=$('pn-setor').value;
+    a.objetivos=[].slice.call(document.querySelectorAll('#pn-obj input:checked')).map(function(c){return c.value;});
+  }
+  $('pn-form-perfil').addEventListener('submit',function(e){
+    e.preventDefault();lerPerfil();var msg=$('pn-perfil-msg');msg.textContent='Salvando…';
+    var rec=recomendados(st.ap).top;
+    if(!(st.ap.selos||[]).length&&rec.length)st.ap.selos=rec.slice(0,1);
+    salvar().then(function(r){msg.textContent=r.ok?(r.local?'Guardado neste navegador.':'Perfil salvo.'):'Não foi possível salvar agora. Tente de novo.';});
+    desenharSelos();material();
+    $('pn-selos').scrollIntoView({block:'start'});
+  });
+
+  /* 2. selos */
+  function desenharSelos(){
+    var rr=recomendados(st.ap),R=rr.R,top=rr.top,sel=st.ap.selos||[];
+    var ord=SELOS.slice().sort(function(a,b){var ta=top.indexOf(a.id),tb=top.indexOf(b.id);if(ta>=0||tb>=0)return (ta<0?9:ta)-(tb<0?9:tb);return 0;});
+    $('pn-lista-selos').innerHTML=ord.map(function(s){
+      var rec=top.indexOf(s.id)>=0,on=sel.indexOf(s.id)>=0,por=R[s.id].por.filter(Boolean).slice(0,2);
+      return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+'>'+
+        '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
+        '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
+        '<p>'+esc(s.desc)+'</p>'+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+'</label>';
+    }).join('');
+    $('pn-selos-msg').textContent=top.length?'':'Preencha o passo 1 para ver os selos recomendados para você.';
+  }
+  $('pn-lista-selos').addEventListener('change',function(e){
+    var c=e.target;if(!c||c.type!=='checkbox')return;
+    var s=st.ap.selos=(st.ap.selos||[]).filter(function(x){return x!==c.value;});if(c.checked)s.push(c.value);
+    desenharSelos();material();
+    $('pn-selos-msg').textContent='Salvando…';
+    salvar().then(function(r){$('pn-selos-msg').textContent=r.ok?(s.length?s.length+(s.length>1?' selos selecionados.':' selo selecionado.'):'Nenhum selo selecionado.'):'Não foi possível salvar agora.';});
+  });
+
+  /* 3. material */
+  var CANAIS={
+    linkedin:{w:1200,h:627,arq:'linkedin',acao:'Abrir no LinkedIn',dica:'No LinkedIn, crie a publicação, cole o texto e anexe a imagem baixada.'},
+    instagram:{w:1080,h:1080,arq:'instagram',acao:'Compartilhar',dica:'No Instagram, publique a imagem baixada e cole o texto na legenda. No celular, o botão Compartilhar já envia a imagem.'},
+    whatsapp:{w:1080,h:1920,arq:'whatsapp-status',acao:'Enviar no WhatsApp',dica:'Use a imagem no status do WhatsApp e envie o texto para seus contatos e grupos.'}
+  };
+  function canal(){var r=document.querySelector('input[name="pn-canal"]:checked');return r?r.value:'linkedin';}
+  function marca(){return st.ap.marca||(st.perfil&&st.perfil.nome)||'Nossa empresa';}
+  function textoPara(s,c){
+    var m=marca(),n=st.ap.apadrinhados||0,q=n?(n===1?'1 vanguardista':n+' vanguardistas'):'vanguardistas';
+    var tagsOds=s.id.indexOf('ods')===0?' #'+s.sigla.replace(' ',''):'';
+    if(c==='linkedin')return m+' recebeu o selo "'+s.nome+'" do Portal Vanguarda.\n\n'+
+      'Apadrinhamos '+q+': pequenos empreendedores, MEIs e autônomos que usam simuladores gratuitos para precificar, planejar metas e entender o próprio negócio. Com o nosso apoio, o portal '+s.frase+'.\n\n'+
+      'Acreditamos que negócio pequeno bem gerido fortalece a economia de todo mundo.\n\n'+
+      'Quer apoiar também? '+SITE+'\n\n#ImpactoSocial #Empreendedorismo #ESG #PequenosNegocios'+tagsOds;
+    if(c==='instagram')return m+' agora tem o selo "'+s.curto+'" do Portal Vanguarda! 🚀\n\n'+
+      'A gente apadrinha '+q+'. Com isso, o Portal Vanguarda '+s.frase+'.\n\n'+
+      'Pequeno negócio forte faz a cidade inteira crescer. 💛\n\n'+
+      'Apoie também: vanguarda.social.br\n\n#ImpactoSocial #Empreendedorismo #MEI #PequenosNegocios #Vanguarda'+tagsOds;
+    return 'Oi! '+m+' recebeu o selo "'+s.curto+'" do Portal Vanguarda. 🙌\n\n'+
+      'Apadrinhamos '+q+'. Com isso, o Portal Vanguarda '+s.frase+'.\n\n'+
+      'Se você empreende, os simuladores são gratuitos. Se quiser apoiar, também dá: '+SITE;
+  }
+  function quebra(ctx,txt,max){var ws=String(txt).split(' '),ls=[],l='';ws.forEach(function(w){var t=l?l+' '+w:w;if(ctx.measureText(t).width>max&&l){ls.push(l);l=w;}else l=t;});if(l)ls.push(l);return ls;}
+  function desenhar(s,c){
+    var cv=$('pn-canvas'),cfg=CANAIS[c];cv.width=cfg.w;cv.height=cfg.h;var x=cv.getContext('2d'),W=cfg.w,H=cfg.h;
+    var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0b1b2c');g.addColorStop(1,'#123a55');x.fillStyle=g;x.fillRect(0,0,W,H);
+    x.strokeStyle='rgba(127,211,240,.10)';x.lineWidth=1;for(var i=0;i<W;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke();}for(var j=0;j<H;j+=40){x.beginPath();x.moveTo(0,j);x.lineTo(W,j);x.stroke();}
+    var land=W>H,u=Math.min(W,H)/1080;
+    var r=land?200:(H>W*1.4?300:250),cx=land?W*0.27:W/2,cy=land?H/2:(H>W*1.4?H*0.34:H*0.36);
+    /* selo */
+    x.save();x.shadowColor='rgba(127,211,240,.55)';x.shadowBlur=40*u;x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.fillStyle='#0e2436';x.fill();x.restore();
+    x.lineWidth=10*u;x.strokeStyle='#7fd3f0';x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.stroke();
+    x.lineWidth=3*u;x.strokeStyle='#f2b84b';x.beginPath();x.arc(cx,cy,r-26*u,0,Math.PI*2);x.stroke();
+    x.textAlign='center';x.textBaseline='middle';x.fillStyle='#f2b84b';
+    x.font='600 '+Math.round(22*u+(land?2:4))+'px "IBM Plex Mono", monospace';x.fillText('SELO SOCIAL · '+ANO,cx,cy-r*0.52);
+    x.fillStyle='#e8f2f8';var fs=Math.round(r*(s.sigla.length>3?0.42:0.56));x.font='700 '+fs+'px "Space Grotesk", sans-serif';x.fillText(s.sigla,cx,cy-r*0.08);
+    x.fillStyle='#7fd3f0';x.font='500 '+Math.round(r*0.11)+'px "Space Grotesk", sans-serif';
+    quebra(x,s.curto,r*1.5).slice(0,2).forEach(function(l,k,arr){x.fillText(l,cx,cy+r*(0.3+k*0.14)-(arr.length>1?r*0.05:0));});
+    x.fillStyle='#9fb7c8';x.font='500 '+Math.round(r*0.085)+'px "IBM Plex Mono", monospace';x.fillText('PORTAL VANGUARDA',cx,cy+r*0.66);
+    /* texto */
+    var tx=land?W*0.52:W*0.08,tw=land?W*0.42:W*0.84,ty=land?H*0.2:cy+r+90*u;
+    x.textAlign=land?'left':'center';x.textBaseline='alphabetic';if(!land)tx=W/2;
+    x.fillStyle='#7fd3f0';x.font='600 '+Math.round(26*u+(land?4:0))+'px "IBM Plex Mono", monospace';x.fillText(s.cat.toUpperCase(),tx,ty);ty+=land?66:Math.round(64*u);
+    x.fillStyle='#e8f2f8';var t1=Math.round(land?52:62*u);x.font='700 '+t1+'px "Space Grotesk", sans-serif';
+    quebra(x,marca(),tw).slice(0,2).forEach(function(l){x.fillText(l,tx,ty);ty+=t1*1.12;});
+    x.fillStyle='#9fb7c8';var t2=Math.round(land?28:34*u);x.font='400 '+t2+'px "IBM Plex Sans", sans-serif';
+    var n=st.ap.apadrinhados||0,linha=(n?'apadrinha '+n+(n===1?' vanguardista':' vanguardistas')+' e ':'')+s.frase+'.';
+    ty+=t2*0.3;quebra(x,linha.charAt(0).toUpperCase()+linha.slice(1),tw).slice(0,land?4:5).forEach(function(l){x.fillText(l,tx,ty);ty+=t2*1.35;});
+    /* rodapé */
+    x.fillStyle='#f2b84b';x.fillRect(0,H-12*u,W,12*u);
+    x.fillStyle='#e8f2f8';x.font='600 '+Math.round(land?24:30*u)+'px "IBM Plex Mono", monospace';x.textAlign='center';x.fillText('vanguarda.social.br',W/2,H-(land?34:60*u));
+  }
+  var ultimoTexto='';
+  function material(){
+    var sel=(st.ap.selos||[]).filter(function(id){return SELO[id];});
+    $('pn-mat-vazio').hidden=!!sel.length;$('pn-mat').hidden=!sel.length;if(!sel.length)return;
+    var ss=$('pn-mat-selo'),atual=ss.value;
+    ss.innerHTML=sel.map(function(id){return '<option value="'+id+'">'+esc(SELO[id].nome)+'</option>';}).join('');
+    ss.value=sel.indexOf(atual)>=0?atual:sel[0];
+    var s=SELO[ss.value],c=canal(),cfg=CANAIS[c],txt=textoPara(s,c),ta=$('pn-mat-txt');
+    if(!ta.value||ta.value===ultimoTexto)ta.value=txt;ultimoTexto=txt;
+    $('pn-mat-dica').textContent=cfg.dica;
+    var a=$('pn-compartilhar');a.textContent=cfg.acao;
+    a.href=c==='linkedin'?'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(SITE):c==='whatsapp'?'https://wa.me/?text='+encodeURIComponent(ta.value):'https://www.instagram.com/';
+    var go=function(){desenhar(s,c);};
+    if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go,go);else go();
+  }
+  $('pn-mat-selo').addEventListener('change',function(){$('pn-mat-txt').value='';material();});
+  document.querySelectorAll('input[name="pn-canal"]').forEach(function(r){r.addEventListener('change',function(){$('pn-mat-txt').value='';material();});});
+  $('pn-mat-txt').addEventListener('input',function(){if(canal()==='whatsapp')$('pn-compartilhar').href='https://wa.me/?text='+encodeURIComponent($('pn-mat-txt').value);});
+  function nomeArquivo(){return 'selo-'+$('pn-mat-selo').value+'-'+CANAIS[canal()].arq+'.png';}
+  $('pn-baixar').addEventListener('click',function(){
+    $('pn-canvas').toBlob(function(b){if(!b)return;var u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=nomeArquivo();document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},4000);},'image/png');
+  });
+  $('pn-copiar').addEventListener('click',function(){
+    var b=this,t=$('pn-mat-txt');
+    try{navigator.clipboard.writeText(t.value).then(function(){b.textContent='Copiado';},function(){t.select();b.textContent='Selecionado';});}catch(e){t.select();b.textContent='Selecionado';}
+    setTimeout(function(){b.textContent='Copiar texto';},2000);
+  });
+  $('pn-compartilhar').addEventListener('click',function(e){
+    if(canal()!=='instagram'||!navigator.share||!navigator.canShare)return;
+    e.preventDefault();var txt=$('pn-mat-txt').value;
+    $('pn-canvas').toBlob(function(b){
+      var f=new File([b],nomeArquivo(),{type:'image/png'});
+      if(navigator.canShare({files:[f]}))navigator.share({files:[f],text:txt}).catch(function(){});
+      else window.open('https://www.instagram.com/','_blank','noopener');
+    },'image/png');
+  });
+
+  /* 4. grupos (dados agregados calculados no banco: contar_grupo e painel_grupo) */
+  var gTimer=null,gSeq=0;
+  function filtros(){return {uf:$('pn-g-uf').value||null,cidade:$('pn-g-cidade').value.trim()||null,tipo_doc:$('pn-g-doc').value||null};}
+  function descreve(g){var p=[];p.push(g.cidade?g.cidade+(g.uf?' / '+g.uf:''):(g.uf||'Todo o Brasil'));p.push(g.tipo_doc==='cpf'?'pessoa física':g.tipo_doc==='cnpj'?'empresa ou MEI':'todos os cadastros');return p.join(' · ');}
+  var POUCO='Grupo pequeno demais para mostrar com privacidade: são necessários pelo menos 5 vanguardistas, e o filtro não pode isolar menos de 5 pessoas em relação a um grupo maior. Amplie o filtro (outro estado, sem cidade ou todos os cadastros).';
+  function conferirGrupo(){
+    clearTimeout(gTimer);var msg=$('pn-g-msg'),btn=$('pn-g-salvar');btn.disabled=true;
+    if(!st.grupos||!VG.sb)return;
+    msg.textContent='Conferindo o tamanho do grupo…';
+    gTimer=setTimeout(function(){
+      var f=filtros(),seq=++gSeq;
+      VG.sb.rpc('contar_grupo',{p_uf:f.uf,p_cidade:f.cidade,p_tipo_doc:f.tipo_doc}).then(function(r){
+        if(seq!==gSeq)return;
+        if(r.error){if(semTabela(r.error))gruposOff();else msg.textContent='Não foi possível conferir agora.';return;}
+        if(r.data==null){msg.textContent=POUCO;return;}
+        msg.textContent=r.data.toLocaleString('pt-BR')+' vanguardistas cadastrados neste grupo.';btn.disabled=false;
+      },function(){msg.textContent='Sem conexão com o servidor.';});
+    },350);
+  }
+  ['pn-g-uf','pn-g-doc'].forEach(function(id){$(id).addEventListener('change',conferirGrupo);});
+  $('pn-g-cidade').addEventListener('input',conferirGrupo);
+  function gruposOff(){st.grupos=false;$('pn-grupos-off').hidden=false;$('pn-form-grupo').hidden=true;$('pn-lista-grupos').innerHTML='';}
+  $('pn-form-grupo').addEventListener('submit',function(e){
+    e.preventDefault();var f=filtros(),nome=$('pn-g-nome').value.trim()||descreve(f),msg=$('pn-g-msg'),btn=$('pn-g-salvar');
+    btn.disabled=true;msg.textContent='Salvando o grupo…';
+    VG.sb.from('grupos').insert({nome:nome.slice(0,60),uf:f.uf,cidade:f.cidade,tipo_doc:f.tipo_doc}).then(function(r){
+      if(r.error){msg.textContent=/row-level|policy/i.test(r.error.message||'')?'Limite de 20 grupos atingido ou conta sem permissão de apoiador.':'Não foi possível salvar o grupo agora.';btn.disabled=false;return;}
+      $('pn-g-nome').value='';msg.textContent='Grupo salvo.';listarGrupos();
+    });
+  });
+  function pct(a,n){return n?Math.round(a/n*100)+'%':'–';}
+  function spark(sem){
+    var max=Math.max.apply(null,sem.map(function(s){return s.ativos;}).concat([1])),w=100/sem.length;
+    return '<svg viewBox="0 0 100 40" preserveAspectRatio="none" role="img" aria-label="Vanguardistas ativos por semana nas últimas 8 semanas">'+
+      sem.map(function(s,i){var h=s.ativos/max*34;return '<rect x="'+(i*w+w*0.18).toFixed(2)+'" y="'+(38-h).toFixed(2)+'" width="'+(w*0.64).toFixed(2)+'" height="'+Math.max(h,0.8).toFixed(2)+'" rx="0.8" fill="'+(i===sem.length-1?'#f2b84b':'#7fd3f0')+'"><title>'+(s.k===0?'Esta semana':'Há '+s.k+(s.k>1?' semanas':' semana'))+': '+s.ativos+' ativos</title></rect>';}).join('')+'</svg>';
+  }
+  function cartaoGrupo(g,d){
+    var top='<div class="grupo-top"><h3>'+esc(g.nome)+'</h3><span class="filtro">'+esc(descreve(g))+'</span><button type="button" class="copy" data-apagar="'+g.id+'">Deixar de acompanhar</button></div>';
+    if(!d)return '<article class="grupo">'+top+'<p class="pouco">Carregando os números…</p></article>';
+    if(d.erro)return '<article class="grupo">'+top+'<p class="pouco">Não foi possível carregar os números agora.</p></article>';
+    if(!d.suficiente)return '<article class="grupo">'+top+'<p class="pouco">'+esc(POUCO)+'</p></article>';
+    var n=d.vanguardistas,med=n?(d.simulacoes_30d/n).toLocaleString('pt-BR',{maximumFractionDigits:1}):'0';
+    return '<article class="grupo">'+top+'<div class="kpis">'+
+      '<div class="kpi"><b>'+n.toLocaleString('pt-BR')+'</b><small>vanguardistas no grupo</small></div>'+
+      '<div class="kpi"><b>'+pct(d.ativos_30d,n)+'</b><small>ativos nos últimos 30 dias</small></div>'+
+      '<div class="kpi"><b>'+pct(d.usaram_simulador_30d,n)+'</b><small>usaram os simuladores em 30 dias</small></div>'+
+      '<div class="kpi"><b>'+med+'</b><small>dias de uso de simulador por vanguardista em 30 dias</small></div>'+
+      '<div class="kpi"><b>'+pct(d.indicaram_30d,n)+'</b><small>indicaram o portal a outros empreendedores em 30 dias</small></div>'+
+      '</div><div class="spark"><small>Vanguardistas ativos por semana (últimas 8 semanas, a mais recente em amarelo)</small>'+spark(d.semanas||[])+'</div></article>';
+  }
+  function listarGrupos(){
+    if(!st.grupos||!VG.sb)return;
+    var box=$('pn-lista-grupos');
+    VG.sb.from('grupos').select('id,nome,uf,cidade,tipo_doc,criado_em').order('criado_em').then(function(r){
+      if(r.error){if(semTabela(r.error))gruposOff();return;}
+      var gs=r.data||[];
+      if(!gs.length){box.innerHTML='<p class="note">Você ainda não acompanha nenhum grupo. Escolha os filtros acima e clique em Acompanhar este grupo.</p>';return;}
+      box.innerHTML=gs.map(function(g){return '<div data-grupo="'+g.id+'">'+cartaoGrupo(g,null)+'</div>';}).join('');
+      gs.forEach(function(g){
+        VG.sb.rpc('painel_grupo',{p_grupo:g.id}).then(function(x){
+          var el=box.querySelector('[data-grupo="'+g.id+'"]');if(el)el.innerHTML=cartaoGrupo(g,x.error?{erro:true}:x.data);
+        });
+      });
+    });
+  }
+  $('pn-lista-grupos').addEventListener('click',function(e){
+    var b=e.target.closest('[data-apagar]');if(!b)return;
+    b.disabled=true;VG.sb.from('grupos').delete().eq('id',b.dataset.apagar).then(function(){listarGrupos();});
+  });
+
+  /* entrada no painel */
+  var pronto=null;
+  function abrir(){
+    var p=VG.perfil(),ok=!!(p&&p.tipo==='apoiador');
+    $('pn-fora').hidden=ok;$('pn-conteudo').hidden=!ok;
+    if(!ok){st.perfil=null;pronto=null;return;}
+    if(pronto===p.id)return;pronto=p.id;st.perfil=p;
+    $('pn-titulo').textContent='Olá, '+String(p.nome||'').split(' ')[0]+'. Este é o seu painel de impacto';
+    carregar().then(function(){preencherPerfil();desenharSelos();material();listarGrupos();conferirGrupo();});
+  }
+  function naTela(){return (decodeURIComponent(location.hash.slice(1))||'').indexOf('painel')===0||location.hash.indexOf('#pn-')===0;}
+  window.addEventListener('hashchange',function(){if(naTela())abrir();});
+  document.addEventListener('vg:perfil',function(){if(naTela()||pronto)abrir();});
+  if(naTela())abrir();
 })();
 </script>
 
