@@ -361,6 +361,15 @@ footer .notice{flex-basis:100%}
 .selo .tags{display:flex;gap:6px;flex-wrap:wrap}
 .selo .tag.ok{border-color:var(--glow);color:var(--glow)}
 .selo .tag.sel{border-color:var(--amber);color:var(--amber)}
+/* abas do painel: a de desenvolvimento humano só aparece depois do primeiro apoio pago */
+.pn-abas-band .in{padding-block:18px 0}
+.pn-abas{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.pn-abas [role=tab]{font-family:var(--display);font-weight:500;font-size:15px;color:var(--muted);background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:10px 14px;cursor:pointer}
+.pn-abas [role=tab]:hover{color:var(--fg)}
+.pn-abas [role=tab][aria-selected=true]{color:var(--amber);border-bottom-color:var(--amber)}
+.selo.dh{cursor:default;border-color:var(--amber);background:var(--panel)}
+.selo.dh .selo-badge{border-color:var(--amber);color:var(--amber)}
+.selo.dh .btn{justify-self:start;padding:8px 14px;font-size:14px}
 .mat{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
 @media (max-width:860px){.mat{grid-template-columns:1fr}}
 .mat-ctl{display:grid;gap:14px}
@@ -780,6 +789,13 @@ footer .notice{flex-basis:100%}
   <div class="loop"><span class="eyebrow">Acesso</span><p><b>O painel é exclusivo para apoiadores cadastrados.</b> Entre com sua conta ou cadastre-se como apoiador para ver os selos e acompanhar vanguardistas.</p><div class="loop-acts"><a class="btn" href="#entrar">Entrar</a><a class="btn go" href="#cadastro" data-tipo="apoiador">Cadastrar-se como apoiador</a></div></div>
 </div></section>
 <div id="pn-conteudo" hidden>
+<section class="pn-abas-band"><div class="in">
+  <div class="pn-abas" role="tablist" aria-label="Seções do painel">
+    <button type="button" role="tab" id="pn-tab-geral" aria-controls="pn-aba-geral" aria-selected="true">Selos e material</button>
+    <button type="button" role="tab" id="pn-tab-dh" aria-controls="pn-aba-dh" aria-selected="false" tabindex="-1" hidden>Desenvolvimento humano</button>
+  </div>
+</div></section>
+<div id="pn-aba-geral" role="tabpanel" aria-labelledby="pn-tab-geral">
 <section class="band" id="pn-perfil"><div class="in">
   <div class="head"><p class="eyebrow">1 · Seu negócio</p><h2>Conte um pouco sobre a sua empresa</h2><p class="lede">Com essas respostas o portal indica os selos mais adequados para você. Leva menos de um minuto e dá para mudar quando quiser.</p></div>
   <form class="pn-form" id="pn-form-perfil" novalidate>
@@ -851,6 +867,14 @@ footer .notice{flex-basis:100%}
   </form>
   <div class="grupos" id="pn-lista-grupos"></div>
 </div></section>
+</div>
+<div id="pn-aba-dh" role="tabpanel" aria-labelledby="pn-tab-dh" hidden>
+<section class="band" id="pn-dh"><div class="in">
+  <div class="head"><p class="eyebrow">Selos de desenvolvimento humano</p><h2>Selos conquistados com o seu apoio</h2><p class="lede">Educação, trabalho decente e menos desigualdade (ODS: 4 · 8 · 10). Estes selos ficam liberados porque você já apoiou vanguardistas, e você pode usá-los no material de divulgação.</p></div>
+  <div class="selos" id="pn-dh-lista"></div>
+  <p class="note" id="pn-dh-nota"></p>
+</div></section>
+</div>
 </div>
 </div>
 <div data-view="selo">
@@ -1479,9 +1503,45 @@ footer .notice{flex-basis:100%}
     }).then(function(d){
       st.fin=d?Object.assign({},d.financeiro):false;st.reg=d?d.regioes:false;
       st.codigo=d&&d.codigo||null;st.indic=d?{visitas:Number(d.visitas_selo)||0,cadastros:Number(d.cadastros_selo)||0}:null;
-      $('pn-imp-atualizar').disabled=false;desenharImpacto();$('pn-mat-txt').value='';material();
+      $('pn-imp-atualizar').disabled=false;desenharImpacto();desenharDH();$('pn-mat-txt').value='';material();
     });
   }
+  /* aba Desenvolvimento humano: aparece quando o apoiador tem pelo menos um apoio pago e não estornado (tabela apoios) */
+  var DH=['ods4','ods8','ods10'];
+  function temApoio(){return !!(st.fin&&Number(st.fin.apoios)>0);}
+  function aba(qual,foco){
+    var dh=qual==='dh'&&temApoio();
+    $('pn-aba-geral').hidden=dh;$('pn-aba-dh').hidden=!dh;
+    [['pn-tab-geral',!dh],['pn-tab-dh',dh]].forEach(function(t){var b=$(t[0]);b.setAttribute('aria-selected',t[1]?'true':'false');b.tabIndex=t[1]?0:-1;if(t[1]&&foco)b.focus();});
+  }
+  function desenharDH(){
+    var tem=temApoio();$('pn-tab-dh').hidden=!tem;
+    if(!tem){aba('geral');$('pn-dh-lista').innerHTML='';return;}
+    var sel=st.ap.selos||[],desde=st.fin.desde?new Date(st.fin.desde):null;
+    var quando=desde&&!isNaN(desde)?desde.toLocaleDateString('pt-BR',{month:'short',year:'numeric'}):'';
+    $('pn-dh-lista').innerHTML=DH.filter(function(id){return SELO[id];}).map(function(id){var s=SELO[id],on=sel.indexOf(id)>=0;
+      return '<div class="selo dh"><div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
+        '<div class="tags"><span class="tag">'+esc(s.cat)+'</span><span class="tag sel">Conquistado'+(quando?' em '+esc(quando):'')+'</span></div>'+
+        '<p>'+esc(s.desc)+'</p>'+
+        '<button type="button" class="btn'+(on?'':' go')+'" data-dh="'+id+'">'+(on?'Ver no material':'Usar no material')+'</button></div>';
+    }).join('');
+    $('pn-dh-nota').textContent='O selo vale enquanto houver apoio pago e sai se o pagamento for estornado.'+(st.ambiente==='sandbox'?' Ambiente de teste: os apoios são do sandbox do Asaas.':'');
+  }
+  $('pn-dh-lista').addEventListener('click',function(e){
+    var b=e.target.closest('[data-dh]');if(!b)return;var id=b.getAttribute('data-dh');
+    var s=st.ap.selos=st.ap.selos||[];if(s.indexOf(id)<0){s.push(id);salvar();}
+    desenharSelos();material();desenharDH();aba('geral');
+    var ss=$('pn-mat-selo');if(ss){ss.value=id;ss.dispatchEvent(new Event('change'));}
+    $('pn-material').scrollIntoView({block:'start'});
+  });
+  $('pn-tab-geral').addEventListener('click',function(){aba('geral');});
+  $('pn-tab-dh').addEventListener('click',function(){aba('dh');});
+  document.querySelector('.pn-abas').addEventListener('keydown',function(e){
+    if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;if(!temApoio())return;
+    e.preventDefault();aba($('pn-tab-dh').getAttribute('aria-selected')==='true'?'geral':'dh',true);
+  });
+  /* links como "Ver selos" e "Acompanhar grupos" levam de volta à primeira aba */
+  window.addEventListener('hashchange',function(){if(location.hash.indexOf('#pn-')===0)aba('geral');});
   /* link do material: página pública do selo com o código do apoiador (mede quem chegou por ele) */
   function linkSelo(){return st.codigo?SITE+'/?selo='+st.codigo:SITE;}
   function linkTxt(){return linkSelo().replace(/^https:\/\//,'');}
@@ -1702,7 +1762,7 @@ footer .notice{flex-basis:100%}
     var p=VG.perfil(),ok=!!(p&&p.tipo==='apoiador');
     $('pn-fora').hidden=ok;$('pn-conteudo').hidden=!ok;
     if(!ok){st.perfil=null;pronto=null;return;}
-    if(pronto===p.id)return;pronto=p.id;st.perfil=p;
+    if(pronto===p.id)return;pronto=p.id;st.perfil=p;st.fin=null;aba('geral');desenharDH();
     $('pn-titulo').textContent='Olá, '+String(p.nome||'').split(' ')[0]+'. Este é o seu painel de impacto';
     carregar().then(function(){preencherPerfil();desenharSelos();material();listarGrupos();conferirGrupo();carregarImpacto();});
   }
