@@ -66,7 +66,8 @@ async function asaas(method, path, body) {
   });
   const json = await r.json().catch(() => ({}));
   if (!r.ok) {
-    const e = new Error("Asaas " + r.status + ": " + JSON.stringify((json && json.errors) || json));
+    // só os erros de validação do Asaas, nunca o corpo inteiro (pode ter dados do cliente)
+    const e = new Error("Asaas " + r.status + ": " + JSON.stringify(((json && json.errors) || []).map((x) => x && (x.code || x.description))));
     e.status = r.status;
     throw e;
   }
@@ -110,8 +111,11 @@ async function supabase(method, path, body, prefer) {
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!r.ok) {
+    // LGPD: o corpo de erro do banco pode repetir a linha enviada (CPF/CNPJ, celular, e-mail); não vai para o log.
     const t = await r.text().catch(() => "");
-    const e = new Error("Supabase " + r.status + ": " + t.slice(0, 300));
+    let codigo = "";
+    try { codigo = String(JSON.parse(t).code || ""); } catch (_) {}
+    const e = new Error("Supabase " + r.status + (codigo ? " " + codigo : ""));
     e.supabase = true;
     throw e;
   }
@@ -201,7 +205,8 @@ module.exports = async function handler(req, res) {
     } else if (String(corpo.event).startsWith("INVOICE_") && corpo.invoice) {
       const n = corpo.invoice;
       const log = corpo.event === "INVOICE_ERROR" ? console.error : console.log;
-      log("nfse", corpo.event, n.id, n.payment || "", n.status || "", n.statusDescription || "", n.pdfUrl || "");
+      // sem o link do PDF: a nota tem nome e CPF/CNPJ do cliente (LGPD)
+      log("nfse", corpo.event, n.id, n.payment || "", n.status || "", n.statusDescription || "");
     }
     return res.status(200).send("ok");
   } catch (e) {
