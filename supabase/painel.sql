@@ -2,8 +2,10 @@
 -- Rode este arquivo no Supabase DEPOIS do schema.sql: SQL Editor > New query > colar > Run.
 -- Pode rodar de novo sem perder dados (tudo é "if not exists" / "or replace").
 --
--- Privacidade: o apoiador nunca lê dados de um vanguardista. Ele só recebe números do grupo inteiro,
+-- Privacidade (LGPD): o apoiador nunca lê dados de um vanguardista. Ele só recebe números do grupo inteiro,
 -- calculados aqui no banco, e só quando o grupo tem pelo menos 5 vanguardistas (constante MIN_GRUPO abaixo).
+-- Dos vanguardistas, só saem região (estado e cidade), porte, tipo de negócio e faixa de faturamento, somados.
+-- Nunca nome, CPF/CNPJ, celular, e-mail ou atividade de uso.
 
 -- 1. Perfil do apoiador para recomendar selos e guardar os selos escolhidos
 create table if not exists public.apoiador_perfil (
@@ -35,31 +37,10 @@ drop policy if exists "apoiador edita o proprio perfil" on public.apoiador_perfi
 create policy "apoiador edita o proprio perfil" on public.apoiador_perfil
   for update using (auth.uid() = id) with check (auth.uid() = id);
 
--- 2. Atividade dos vanguardistas (base do desempenho agregado)
---    No máximo um registro por tipo por dia para cada vanguardista.
-create table if not exists public.atividades (
-  id              bigint generated always as identity primary key,
-  vanguardista_id uuid not null default auth.uid() references public.perfis (id) on delete cascade,
-  tipo            text not null check (tipo in ('simulador_preco', 'simulador_meta', 'indicacao')),
-  dia             date not null default (now() at time zone 'America/Sao_Paulo')::date,
-  unique (vanguardista_id, tipo, dia)
-);
-
-create index if not exists atividades_dia on public.atividades (dia);
-
-alter table public.atividades enable row level security;
-
-drop policy if exists "vanguardista registra a propria atividade" on public.atividades;
-create policy "vanguardista registra a propria atividade" on public.atividades
-  for insert with check (
-    vanguardista_id = auth.uid()
-    and dia = (now() at time zone 'America/Sao_Paulo')::date
-    and exists (select 1 from public.perfis p where p.id = auth.uid() and p.tipo = 'vanguardista')
-  );
-
-drop policy if exists "vanguardista ve a propria atividade" on public.atividades;
-create policy "vanguardista ve a propria atividade" on public.atividades
-  for select using (vanguardista_id = auth.uid());
+-- 2. Atividade dos vanguardistas: DESATIVADA (LGPD, minimização de dados).
+--    O painel mostra dos vanguardistas só faturamento, região, tipo de negócio e porte, somados.
+--    O registro de uso dos simuladores deixou de ser feito e a tabela antiga é apagada.
+drop table if exists public.atividades;
 
 -- 3. Grupos de vanguardistas que o apoiador acompanha.
 --    O grupo é um filtro (estado, cidade, pessoa física ou jurídica), nunca uma lista de pessoas.
@@ -100,6 +81,43 @@ as $$
   select translate(coalesce(t, ''),
     'áàâãäéèêëíìîïóòôõöúùûüçÁÀÂÃÄÉÈÊËÍÌÎÏÓÒÔÕÖÚÙÛÜÇ',
     'aaaaaeeeeiiiiooooouuuucAAAAAEEEEIIIIOOOOOUUUUC');
+$$;
+
+-- 3b. Perfil somado de um conjunto de vanguardistas (uso interno): porte, tipo de negócio e faixa de
+--     faturamento. Só sai uma faixa com 5 ou mais vanguardistas; as menores são somadas em "outros",
+--     que também fica com 0 ou com pelo menos 5.
+create or replace function public._perfil_somado(p_ids uuid[])
+returns jsonb
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  with mp as (select p.porte_negocio, p.ramo, p.faturamento from public.perfis p where p.id = any(p_ids)),
+  campos as (
+    select 'portes' as campo, coalesce(porte_negocio, 'nao_informado') as k from mp
+    union all select 'ramos', coalesce(ramo, 'nao_informado') from mp
+    union all select 'faturamento', coalesce(faturamento, 'nao_informado') from mp
+  ),
+  cont as (select campo, k, count(*) as q from campos group by campo, k),
+  -- faixas pequenas (menos de 5) vão para "outros". Se "outros" ficar entre 1 e 4, a menor faixa grande
+  -- também vai para lá, para que ninguém descubra um grupo pequeno subtraindo do total.
+  base as (
+    select c.*, sum(case when q < 5 then q else 0 end) over (partition by campo) as pequeno,
+           row_number() over (partition by campo, (q >= 5) order by q, k) as ordem
+    from cont c
+  ),
+  marcado as (
+    select campo, k, q, (q < 5 or (pequeno between 1 and 4 and q >= 5 and ordem = 1)) as vai_para_outros from base
+  ),
+  por_campo as (
+    select campo,
+           coalesce(jsonb_agg(jsonb_build_object('k', k, 'q', q) order by q desc, k) filter (where not vai_para_outros), '[]'::jsonb) as faixas,
+           coalesce(sum(q) filter (where vai_para_outros), 0) as outros
+    from marcado group by campo
+  )
+  select coalesce(jsonb_object_agg(campo, jsonb_build_object('faixas', faixas, 'outros', outros)), '{}'::jsonb)
+  from por_campo;
 $$;
 
 -- 4. Quem entra num grupo (uso interno das funções abaixo; não fica exposto)
@@ -172,8 +190,9 @@ begin
 end;
 $$;
 
--- 6. Desempenho agregado de um grupo do próprio apoiador.
---    Devolve só totais, médias e percentuais do grupo; nada por pessoa.
+-- 6. Perfil somado de um grupo do próprio apoiador: quantos vanguardistas e a distribuição por porte,
+--    tipo de negócio e faixa de faturamento. Nada por pessoa e nada de uso ou atividade.
+drop function if exists public.painel_grupo(uuid);
 create or replace function public.painel_grupo(p_grupo uuid)
 returns jsonb
 language plpgsql
@@ -185,45 +204,17 @@ declare
   MIN_GRUPO constant integer := 5;
   g public.grupos;
   n integer;
-  hoje date := (now() at time zone 'America/Sao_Paulo')::date;
-  r jsonb;
 begin
   select * into g from public.grupos where id = p_grupo and apoiador_id = auth.uid();
   if not found then raise exception 'grupo não encontrado'; end if;
 
   n := public._grupo_seguro(g.uf, g.cidade, g.tipo_doc, MIN_GRUPO);
-
   if n is null then
     return jsonb_build_object('suficiente', false, 'minimo', MIN_GRUPO);
   end if;
 
-  with m as (
-    select id from public._membros_grupo(g.uf, g.cidade, g.tipo_doc)
-  ),
-  a as (
-    select a.* from public.atividades a join m on m.id = a.vanguardista_id
-    where a.dia > hoje - 56
-  ),
-  semanas as (
-    select s.k,
-           count(distinct a.vanguardista_id) as ativos,
-           count(a.id) filter (where a.tipo like 'simulador%') as simulacoes
-    from generate_series(7, 0, -1) as s(k)
-    left join a on a.dia > hoje - 7 * (s.k + 1) and a.dia <= hoje - 7 * s.k
-    group by s.k
-  )
-  select jsonb_build_object(
-    'suficiente', true,
-    'vanguardistas', n,
-    'ativos_30d', (select count(distinct vanguardista_id) from a where dia > hoje - 30),
-    'usaram_simulador_30d', (select count(distinct vanguardista_id) from a where dia > hoje - 30 and tipo like 'simulador%'),
-    'indicaram_30d', (select count(distinct vanguardista_id) from a where dia > hoje - 30 and tipo = 'indicacao'),
-    'simulacoes_30d', (select count(*) from a where dia > hoje - 30 and tipo like 'simulador%'),
-    'indicacoes_30d', (select count(*) from a where dia > hoje - 30 and tipo = 'indicacao'),
-    'semanas', (select jsonb_agg(jsonb_build_object('k', k, 'ativos', ativos, 'simulacoes', simulacoes) order by k desc) from semanas)
-  ) into r;
-
-  return r;
+  return jsonb_build_object('suficiente', true, 'vanguardistas', n, 'perfil',
+    public._perfil_somado(array(select id from public._membros_grupo(g.uf, g.cidade, g.tipo_doc))));
 end;
 $$;
 
@@ -406,10 +397,9 @@ begin
       where ap.doc = p_doc and ap.ambiente = p_ambiente and ap.estornado_em is null
       and (ap.fone = p_fone or (nullif(ap.email, '') is not null and ap.email = lower(trim(coalesce(p_email, '')))))
     ),
-    mp as (select p.* from public.perfis p join m on m.id = p.id),
+    mp as (select p.cidade, p.uf from public.perfis p join m on m.id = p.id),
     ufs as (select uf, count(*) as q from mp group by uf),
-    cids as (select min(cidade) as cidade, uf, count(*) as q from mp group by lower(public.unaccent_safe(cidade)), uf),
-    a as (select a.* from public.atividades a join m on m.id = a.vanguardista_id where a.dia > hoje - 30)
+    cids as (select min(cidade) as cidade, uf, count(*) as q from mp group by lower(public.unaccent_safe(cidade)), uf)
     select jsonb_build_object(
       'suficiente', true,
       'base', 'apoios',
@@ -417,10 +407,7 @@ begin
       'regioes', coalesce((select jsonb_agg(jsonb_build_object('uf', uf, 'vanguardistas', q) order by q desc, uf) from ufs where q >= MIN_GRUPO), '[]'::jsonb),
       'cidades_lista', coalesce((select jsonb_agg(jsonb_build_object('cidade', cidade, 'uf', uf, 'vanguardistas', q) order by q desc, cidade) from cids where q >= MIN_GRUPO), '[]'::jsonb),
       'outras_regioes', exists (select 1 from ufs where q < MIN_GRUPO),
-      'cidades', (select count(*) from cids),
-      'ativos_30d', (select count(distinct vanguardista_id) from a),
-      'simulacoes_30d', (select count(*) from a where tipo like 'simulador%'),
-      'indicacoes_30d', (select count(*) from a where tipo = 'indicacao')
+      'perfil', public._perfil_somado(array(select id from m))
     ) into reg;
   end if;
 
@@ -503,6 +490,7 @@ grant execute on function public.alocar_apoios() to service_role;
 revoke all on function public._alocar_ao_cadastrar() from public, anon, authenticated;
 revoke all on function public._indicacao_ao_cadastrar() from public, anon, authenticated;
 revoke all on function public._impacto_dos_apoios(text, text, text, text) from public, anon, authenticated;
+revoke all on function public._perfil_somado(uuid[]) from public, anon, authenticated;
 revoke all on function public.impacto_apoiador(text) from public, anon;
 grant execute on function public.impacto_apoiador(text) to authenticated;
 revoke all on function public.selo_publico(text, text) from public;

@@ -419,9 +419,6 @@ section.band#apoiadores > .in{padding-top:48px}
 .kpi b{font-family:var(--mono);font-size:22px;font-variant-numeric:tabular-nums}
 .kpi.txt b{font-size:16px;line-height:1.35;padding-top:4px}
 .kpi small{color:var(--muted);font-size:12.5px;line-height:1.35}
-.spark{display:grid;gap:6px}
-.spark small{color:var(--muted);font-size:12.5px}
-.spark svg{display:block;width:100%;height:56px}
 .grupo .pouco{color:var(--muted);font-size:14px}
 </style>
 <style>body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
@@ -868,7 +865,7 @@ section.band#apoiadores > .in{padding-top:48px}
   </div>
 </div></section>
 <section class="band" id="pn-grupos"><div class="in">
-  <div class="head"><p class="eyebrow">4 · Acompanhe vanguardistas</p><h2>Grupos de vanguardistas cadastrados</h2><p class="lede">Monte um grupo por estado, cidade ou tipo de cadastro e acompanhe o desempenho dele. Para proteger cada vanguardista, os números aparecem sempre somados e só para grupos com pelo menos 5 pessoas, sem nome ou dado individual.</p></div>
+  <div class="head"><p class="eyebrow">4 · Acompanhe vanguardistas</p><h2>Grupos de vanguardistas cadastrados</h2><p class="lede">Monte um grupo por estado, cidade ou tipo de cadastro e veja o perfil dele: porte, tipo de negócio e faturamento. Para proteger cada vanguardista (LGPD), os números aparecem sempre somados e só em grupos e faixas com pelo menos 5 pessoas, sem nome, documento, contato ou qualquer dado individual.</p></div>
   <p class="notice" id="pn-grupos-off" hidden><b>Em breve</b><span>O acompanhamento de grupos está sendo ligado no banco de dados do portal. Os selos e o material já funcionam.</span></p>
   <form class="pn-form" id="pn-form-grupo" novalidate>
     <div class="fields four">
@@ -946,6 +943,12 @@ section.band#apoiadores > .in{padding-top:48px}
         <label for="cd-doc" class="wide"><span>CPF ou CNPJ</span><input id="cd-doc" type="text" required inputmode="numeric" placeholder="000.000.000-00" data-mask="doc"></label>
         <label for="cd-cidade"><span>Cidade</span><input id="cd-cidade" type="text" required autocomplete="address-level2"></label>
         <label for="cd-uf"><span>Estado</span><select id="cd-uf" required autocomplete="address-level1"><option value="" selected disabled>Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
+        <div class="wide cd-negocio" id="cd-negocio" hidden>
+          <p class="note">Sobre o seu negócio (opcional). Apoiadores veem só totais de grupos com 5 ou mais vanguardistas, nunca o seu nome, documento ou contato.</p>
+        </div>
+        <label for="cd-porte" data-negocio hidden><span>Porte do negócio (opcional)</span><select id="cd-porte"><option value="">Prefiro não informar</option><option value="autonomo">Autônomo</option><option value="mei">MEI</option><option value="me">Microempresa</option><option value="epp">Pequena empresa</option><option value="media">Média ou grande</option></select></label>
+        <label for="cd-ramo" data-negocio hidden><span>Tipo de negócio (opcional)</span><select id="cd-ramo"><option value="">Prefiro não informar</option><option value="comercio">Comércio e varejo</option><option value="alimentacao">Alimentação</option><option value="servicos">Serviços</option><option value="tecnologia">Tecnologia</option><option value="industria">Indústria</option><option value="educacao">Educação</option><option value="saude">Saúde e bem-estar</option><option value="financas">Finanças, contabilidade e seguros</option><option value="construcao">Construção e imóveis</option><option value="outro">Outro</option></select></label>
+        <label for="cd-fat" class="wide" data-negocio hidden><span>Faturamento mensal (opcional)</span><select id="cd-fat"><option value="">Prefiro não informar</option><option value="ate5k">Até R$ 5 mil</option><option value="5a20k">De R$ 5 mil a R$ 20 mil</option><option value="20a50k">De R$ 20 mil a R$ 50 mil</option><option value="50a100k">De R$ 50 mil a R$ 100 mil</option><option value="acima100k">Acima de R$ 100 mil</option></select></label>
         <label for="cd-senha" class="wide"><span>Senha (mínimo de 6 caracteres)</span><input id="cd-senha" type="password" required minlength="6" autocomplete="new-password"></label>
       </div>
       <p class="err" id="cd-err" hidden></p>
@@ -1147,6 +1150,11 @@ section.band#apoiadores > .in{padding-top:48px}
   function ocupado(form,on){var b=form.querySelector('button[type=submit]');b.disabled=on;b.style.opacity=on?.6:'';}
   document.querySelectorAll('[data-tipo]').forEach(function(a){a.addEventListener('click',function(){var r=document.querySelector('input[name="cd-tipo"][value="'+a.dataset.tipo+'"]');if(r)r.checked=true;});});
 
+  /* perguntas opcionais sobre o negócio: só para vanguardistas */
+  function negocio(){var t=document.querySelector('input[name="cd-tipo"]:checked'),vg=!!(t&&t.value==='vanguardista');
+    document.querySelectorAll('#cd-negocio,[data-negocio]').forEach(function(el){el.hidden=!vg;});}
+  document.querySelectorAll('input[name="cd-tipo"]').forEach(function(r){r.addEventListener('change',negocio);});
+  document.querySelectorAll('[data-tipo]').forEach(function(a){a.addEventListener('click',function(){setTimeout(negocio,0);});});
   document.getElementById('form-cadastro').addEventListener('submit',function(e){
     e.preventDefault();var form=e.target;
     function g(id){return document.getElementById(id);}
@@ -1162,6 +1170,7 @@ section.band#apoiadores > .in{padding-top:48px}
     if(!sb)return erro('cd-err',FORA);
     var fone=dig(g('cd-fone').value);
     var dados={tipo:tipo.value,nome:g('cd-nome').value.trim(),fone:fone,email_contato:email,doc:dig(g('cd-doc').value),cidade:g('cd-cidade').value.trim(),uf:g('cd-uf').value};
+    if(tipo.value==='vanguardista'){if(g('cd-porte').value)dados.porte_negocio=g('cd-porte').value;if(g('cd-ramo').value)dados.ramo=g('cd-ramo').value;if(g('cd-fat').value)dados.faturamento=g('cd-fat').value;}
     if(refSelo())dados.ref=refSelo();
     erro('cd-err','');ocupado(form,true);
     sb.rpc('contato_em_uso',{p_fone:fone,p_email:email||null}).then(function(r){
@@ -1340,16 +1349,6 @@ section.band#apoiadores > .in{padding-top:48px}
     var K='vg-sim-nota-vista';try{if(localStorage.getItem(K))n.classList.add('visto');}catch(e){}
     ok.addEventListener('click',function(){n.classList.add('visto');try{localStorage.setItem(K,'1');}catch(e){}});
   })();
-  /* atividade do vanguardista logado (base do desempenho agregado no painel do apoiador): no máximo uma por tipo por dia */
-  (function(){var feito={};
-    function registrar(tipo){
-      if(!sb||!perfil||perfil.tipo!=='vanguardista'||feito[tipo])return;feito[tipo]=1;
-      sb.from('atividades').insert({tipo:tipo}).then(function(){},function(){});
-    }
-    ['preco','preco-faixa'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',function(){registrar('simulador_preco');});});
-    ids.forEach(function(k){var el=document.getElementById('c-'+k);if(el)el.addEventListener('input',function(){registrar('simulador_meta');});});
-    var ind=document.getElementById('indicar');if(ind)ind.addEventListener('click',function(){registrar('indicacao');});
-  })();
   render(15);
 })();
 </script>
@@ -1490,35 +1489,49 @@ section.band#apoiadores > .in{padding-top:48px}
     salvar().then(function(r){$('pn-selos-msg').textContent=r.ok?(s.length?s.length+(s.length>1?' selos selecionados.':' selo selecionado.'):'Nenhum selo selecionado.'):'Não foi possível salvar agora.';});
   });
 
-  /* impacto: apoios pagos gravados pelo webhook (tabela apoios) + regiões e desempenho agregados, tudo em impacto_apoiador no Supabase */
+  /* impacto: apoios pagos gravados pelo webhook (tabela apoios) + região e perfil somados dos vanguardistas, tudo em impacto_apoiador no Supabase */
   var moeda=function(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:v%1?2:0});};
   function listaUfs(r){var u=(r.regioes||[]).map(function(x){return x.uf;});if(!u.length)return '';if(r.outras_regioes)return u.join(', ')+' e outras regiões';return u.length>1?u.slice(0,-1).join(', ')+' e '+u[u.length-1]:u[0];}
   function listaCidades(r){return (r.cidades_lista||[]).map(function(x){return x.cidade+'/'+x.uf;});}
   function impacto(fin,reg){
     var f=(fin===undefined?st.fin:fin)||{},r=(reg===undefined?st.reg:reg)||{},i={};
     if(f.vanguardistas_total>0){i.n=f.vanguardistas_ativos||f.vanguardistas_total;i.ativos=!!f.vanguardistas_ativos;i.valor=Number(f.valor_total)||0;i.meses=f.meses_vanguardista;}
-    if(r.suficiente){i.regioes=listaUfs(r);i.cidadesLista=listaCidades(r);i.cidades=r.cidades;i.base=r.base;if(r.vanguardistas)i.pct=Math.round(r.ativos_30d/r.vanguardistas*100);i.sim=r.simulacoes_30d;}
+    if(r.suficiente){i.regioes=listaUfs(r);i.cidadesLista=listaCidades(r);i.base=r.base;i.perfil=r.perfil||null;i.total=r.vanguardistas;}
     return i;
   }
   function vg(n){return n===1?'1 vanguardista':n.toLocaleString('pt-BR')+' vanguardistas';}
+  /* perfil somado dos vanguardistas (LGPD): só porte, tipo de negócio e faixa de faturamento, em faixas de 5 ou mais */
+  var ROT={
+    portes:{autonomo:'autônomos',mei:'MEIs',me:'microempresas',epp:'pequenas empresas',media:'médias empresas',nao_informado:'porte não informado'},
+    ramos:{comercio:'comércio',alimentacao:'alimentação',servicos:'serviços',tecnologia:'tecnologia',industria:'indústria',educacao:'educação',saude:'saúde e bem-estar',financas:'finanças',construcao:'construção',outro:'outros ramos',nao_informado:'ramo não informado'},
+    faturamento:{ate5k:'até R$ 5 mil/mês','5a20k':'R$ 5 a 20 mil/mês','20a50k':'R$ 20 a 50 mil/mês','50a100k':'R$ 50 a 100 mil/mês',acima100k:'acima de R$ 100 mil/mês',nao_informado:'faturamento não informado'}
+  };
+  function faixasTxt(perfil,campo,total){
+    var c=perfil&&perfil[campo];if(!c)return '';
+    var f=(c.faixas||[]).filter(function(x){return x.k!=='nao_informado';});
+    if(!f.length)return '';
+    return f.map(function(x){return Math.round(x.q/total*100)+'% '+(ROT[campo][x.k]||x.k);}).join(' · ');
+  }
   function kpisHtml(i){
     var k=[];
     k.push('<div class="kpi"><b>'+(i.n?i.n.toLocaleString('pt-BR'):'0')+'</b><small>vanguardistas apadrinhados'+(i.n&&i.ativos?' agora':'')+'</small></div>');
     k.push('<div class="kpi"><b>'+moeda(i.valor||0)+'</b><small>investidos em apadrinhamento</small></div>');
     k.push('<div class="kpi"><b>'+(i.meses||0).toLocaleString('pt-BR')+'</b><small>meses de acesso garantidos a vanguardistas</small></div>');
-    k.push('<div class="kpi txt"><b>'+esc(i.regioes||'–')+'</b><small>regiões impactadas'+(i.cidadesLista&&i.cidadesLista.length?': '+esc(i.cidadesLista.slice(0,4).join(', ')):'')+(i.cidades?' ('+i.cidades+(i.cidades>1?' cidades':' cidade')+')':'')+'</small></div>');
-    if(i.pct!=null)k.push('<div class="kpi"><b>'+i.pct+'%</b><small>dos vanguardistas apadrinhados ativos em 30 dias</small></div>');
+    k.push('<div class="kpi txt"><b>'+esc(i.regioes||'–')+'</b><small>regiões impactadas'+(i.cidadesLista&&i.cidadesLista.length?': '+esc(i.cidadesLista.slice(0,4).join(', ')):'')+'</small></div>');
+    [['portes','porte dos negócios'],['ramos','tipo de negócio'],['faturamento','faturamento mensal']].forEach(function(c){
+      var t=i.perfil?faixasTxt(i.perfil,c[0],i.total):'';if(t)k.push('<div class="kpi txt"><b>'+esc(t)+'</b><small>'+c[1]+'</small></div>');
+    });
     return k;
   }
   function desenharImpacto(){
     var i=impacto(),k=kpisHtml(i);
-    if(st.indic)k.push('<div class="kpi"><b>'+st.indic.visitas.toLocaleString('pt-BR')+' · '+st.indic.cadastros.toLocaleString('pt-BR')+'</b><small>visitas e cadastros pelo link do seu selo</small></div>');
+    if(st.indic)k.push('<div class="kpi"><b>'+st.indic.visitas.toLocaleString('pt-BR')+' · '+(st.indic.cadastros>=5?st.indic.cadastros.toLocaleString('pt-BR'):'menos de 5')+'</b><small>visitas e cadastros pelo link do seu selo</small></div>');
     $('pn-imp-kpis').innerHTML=k.join('');
     var nota=[];
     if(st.fin===false)nota.push('Não foi possível consultar seus apoios agora.');
-    else if(st.fin&&!st.fin.vanguardistas_total)nota.push('Seus números aparecem aqui assim que o primeiro apadrinhamento for pago. Os apoios são encontrados pelo CPF ou CNPJ e pelo celular ou e-mail do seu cadastro.');
-    if(st.reg&&st.reg.suficiente)nota.push('Regiões e desempenho dos vanguardistas cadastrados que o seu apoio custeia, sempre somados e sem dados individuais. Estados e cidades só aparecem com 5 ou mais vanguardistas.');
-    else if(st.fin&&st.fin.vanguardistas_total)nota.push('Regiões e desempenho aparecem quando o seu apoio custear pelo menos 5 vanguardistas cadastrados.');
+    else if(st.fin&&!st.fin.vanguardistas_total)nota.push('Seus números aparecem aqui assim que o primeiro apadrinhamento for pago.');
+    if(st.reg&&st.reg.suficiente)nota.push('Região, porte, tipo de negócio e faturamento dos vanguardistas que o seu apoio custeia, sempre somados. Nenhum vanguardista é identificado: cada número reúne pelo menos 5 pessoas.');
+    else if(st.fin&&st.fin.vanguardistas_total)nota.push('Região, porte, tipo de negócio e faturamento aparecem quando o seu apoio custear pelo menos 5 vanguardistas cadastrados. Abaixo disso, nada é mostrado, para que ninguém seja identificado.');
     if(st.ambiente==='sandbox')nota.push('Ambiente de teste: os apoios são do sandbox do Asaas.');
     $('pn-imp-nota').textContent=nota.join(' ');
   }
@@ -1611,7 +1624,7 @@ section.band#apoiadores > .in{padding-top:48px}
     if(i.valor)nums.push(moeda(i.valor)+' investidos');
     if(i.meses)nums.push(i.meses.toLocaleString('pt-BR')+(i.meses===1?' mês':' meses')+' de acesso a ferramentas de gestão');
     if(i.regioes)nums.push('regiões impactadas: '+i.regioes);
-    var desemp=i.pct!=null&&i.pct>0?'Nos últimos 30 dias, '+i.pct+'% dos vanguardistas '+'que apadrinhamos'+' usaram as ferramentas'+(i.sim?' ('+i.sim.toLocaleString('pt-BR')+' dias de uso de simuladores)':'')+'.':'';
+    var pt=i.perfil?faixasTxt(i.perfil,'portes',i.total):'',desemp=pt?'Quem apadrinhamos: '+pt+'.':'';
     var bloco=nums.length?(c==='linkedin'?'Nosso impacto até agora: ':'📊 Nosso impacto até agora: ')+nums.join(' · ')+'.'+(desemp?'\n'+desemp:''):desemp;
     if(c==='linkedin')return m+' recebeu o selo "'+s.nome+'" do Portal Vanguarda.\n\n'+
       'Apadrinhamos pequenos empreendedores, MEIs e autônomos que usam simuladores gratuitos para precificar, planejar metas e entender o próprio negócio. Com o nosso apoio, o portal '+s.frase+'.\n\n'+
@@ -1653,13 +1666,12 @@ section.band#apoiadores > .in{padding-top:48px}
     x.fillStyle='#9fb7c8';var t2=Math.round(land?28:34*u);x.font='400 '+t2+'px "IBM Plex Sans", sans-serif';
     var i=impacto(),linha=s.frase+'.';
     ty+=t2*0.3;quebra(x,linha.charAt(0).toUpperCase()+linha.slice(1),tw).slice(0,land||alto?3:2).forEach(function(l){x.fillText(l,tx,ty);ty+=t2*1.35;});
-    /* números de impacto (mudam a cada apoio e com o desempenho dos vanguardistas) */
+    /* números de impacto (mudam a cada apoio) */
     var stats=[];
     if(i.n)stats.push([i.n.toLocaleString('pt-BR'),i.n===1?'vanguardista apadrinhado':'vanguardistas apadrinhados']);
     if(i.valor)stats.push([moeda(i.valor),'investidos']);
     if(i.regioes)stats.push([(st.reg.regioes||[]).map(function(z){return z.uf;}).slice(0,3).join(' · ')+(st.reg.outras_regioes||(st.reg.regioes||[]).length>3?' +':''),'regiões impactadas']);
     else if(i.meses)stats.push([i.meses.toLocaleString('pt-BR'),'meses de acesso']);
-    if(i.pct!=null&&i.pct>0&&stats.length<3)stats.push([i.pct+'%','ativos em 30 dias']);
     if(stats.length){
       ty+=t2*0.6;var cw=tw/stats.length,x0=land?tx:W/2-tw/2,big=Math.round(land?40:56*u),sm=Math.round(land?17:24*u);
       x.strokeStyle='rgba(242,184,75,.6)';x.lineWidth=2*u;x.beginPath();x.moveTo(x0,ty-big*0.2);x.lineTo(x0+tw,ty-big*0.2);x.stroke();ty+=big*1.05;
@@ -1738,25 +1750,16 @@ section.band#apoiadores > .in{padding-top:48px}
       $('pn-g-nome').value='';msg.textContent='Grupo salvo.';listarGrupos();carregarImpacto();
     });
   });
-  function pct(a,n){return n?Math.round(a/n*100)+'%':'–';}
-  function spark(sem){
-    var max=Math.max.apply(null,sem.map(function(s){return s.ativos;}).concat([1])),w=100/sem.length;
-    return '<svg viewBox="0 0 100 40" preserveAspectRatio="none" role="img" aria-label="Vanguardistas ativos por semana nas últimas 8 semanas">'+
-      sem.map(function(s,i){var h=s.ativos/max*34;return '<rect x="'+(i*w+w*0.18).toFixed(2)+'" y="'+(38-h).toFixed(2)+'" width="'+(w*0.64).toFixed(2)+'" height="'+Math.max(h,0.8).toFixed(2)+'" rx="0.8" fill="'+(i===sem.length-1?'#f2b84b':'#7fd3f0')+'"><title>'+(s.k===0?'Esta semana':'Há '+s.k+(s.k>1?' semanas':' semana'))+': '+s.ativos+' ativos</title></rect>';}).join('')+'</svg>';
-  }
   function cartaoGrupo(g,d){
     var top='<div class="grupo-top"><h3>'+esc(g.nome)+'</h3><span class="filtro">'+esc(descreve(g))+'</span><button type="button" class="copy" data-apagar="'+g.id+'">Deixar de acompanhar</button></div>';
     if(!d)return '<article class="grupo">'+top+'<p class="pouco">Carregando os números…</p></article>';
     if(d.erro)return '<article class="grupo">'+top+'<p class="pouco">Não foi possível carregar os números agora.</p></article>';
     if(!d.suficiente)return '<article class="grupo">'+top+'<p class="pouco">'+esc(POUCO)+'</p></article>';
-    var n=d.vanguardistas,med=n?(d.simulacoes_30d/n).toLocaleString('pt-BR',{maximumFractionDigits:1}):'0';
-    return '<article class="grupo">'+top+'<div class="kpis">'+
-      '<div class="kpi"><b>'+n.toLocaleString('pt-BR')+'</b><small>vanguardistas no grupo</small></div>'+
-      '<div class="kpi"><b>'+pct(d.ativos_30d,n)+'</b><small>ativos nos últimos 30 dias</small></div>'+
-      '<div class="kpi"><b>'+pct(d.usaram_simulador_30d,n)+'</b><small>usaram os simuladores em 30 dias</small></div>'+
-      '<div class="kpi"><b>'+med+'</b><small>dias de uso de simulador por vanguardista em 30 dias</small></div>'+
-      '<div class="kpi"><b>'+pct(d.indicaram_30d,n)+'</b><small>indicaram o portal a outros empreendedores em 30 dias</small></div>'+
-      '</div><div class="spark"><small>Vanguardistas ativos por semana (últimas 8 semanas, a mais recente em amarelo)</small>'+spark(d.semanas||[])+'</div></article>';
+    var n=d.vanguardistas,k=['<div class="kpi"><b>'+n.toLocaleString('pt-BR')+'</b><small>vanguardistas no grupo</small></div>'];
+    [['portes','porte dos negócios'],['ramos','tipo de negócio'],['faturamento','faturamento mensal']].forEach(function(c){
+      var t=faixasTxt(d.perfil,c[0],n);k.push('<div class="kpi txt"><b>'+esc(t||'–')+'</b><small>'+c[1]+(t?'':' (faixas com menos de 5 vanguardistas não aparecem)')+'</small></div>');
+    });
+    return '<article class="grupo">'+top+'<div class="kpis">'+k.join('')+'</div></article>';
   }
   function listarGrupos(){
     if(!st.grupos||!VG.sb)return;
@@ -1795,7 +1798,7 @@ section.band#apoiadores > .in{padding-top:48px}
       var i=impacto(d.financeiro||{},d.regioes||{});
       $('sp-kpis').innerHTML=kpisHtml(i).join('');
       $('sp-data').textContent='Atualizado em '+new Date().toLocaleDateString('pt-BR');
-      $('sp-nota').textContent=(d.regioes&&d.regioes.suficiente?'Dados somados dos vanguardistas custeados, sem informações individuais. Estados e cidades só aparecem com 5 ou mais vanguardistas.':'Os números se atualizam a cada novo apadrinhamento.');
+      $('sp-nota').textContent=(d.regioes&&d.regioes.suficiente?'Dados somados dos vanguardistas custeados: região, porte, tipo de negócio e faturamento. Nenhum vanguardista é identificado; cada número reúne pelo menos 5 pessoas.':'Os números se atualizam a cada novo apadrinhamento.');
       $('sp-impacto').hidden=false;$('sp-erro').hidden=true;
       $('sp-selos').innerHTML=(d.selos||[]).filter(function(id){return SELO[id];}).map(function(id){var s=SELO[id];
         return '<div class="selo on"><div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
