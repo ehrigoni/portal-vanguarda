@@ -86,7 +86,7 @@ async function asaas(method, path, body) {
   if (!r.ok) {
     const e = new Error("Asaas " + r.status);
     e.status = r.status;
-    e.detalhes = (json && json.errors) || json;
+    e.detalhes = (json && json.errors) || []; // só os erros de validação, nunca o corpo inteiro (LGPD)
     throw e;
   }
   return json;
@@ -191,7 +191,7 @@ module.exports = async function handler(req, res) {
       id: cobranca.id,
     });
   } catch (e) {
-    console.error("asaas", e.status, JSON.stringify(e.detalhes || e.message));
+    console.error("asaas", e.status, JSON.stringify(Array.isArray(e.detalhes) ? e.detalhes.map((x) => x && (x.code || x.description)) : e.message));
     if (e.status === 401) {
       return res.status(502).json({ erro: "Cobrança indisponível no momento.", codigo: "chave_recusada" });
     }

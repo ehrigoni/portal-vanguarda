@@ -14,6 +14,15 @@ create table if not exists public.perfis (
   criado_em  timestamptz not null default now()
 );
 
+-- Perfil do negócio do vanguardista (opcional). É o único dado de vanguardistas que chega aos
+-- apoiadores, e só somado em grupos de 5 ou mais (supabase/painel.sql). Nunca nome, CPF/CNPJ ou contato.
+alter table public.perfis add column if not exists porte_negocio text
+  check (porte_negocio in ('autonomo', 'mei', 'me', 'epp', 'media'));
+alter table public.perfis add column if not exists ramo text
+  check (ramo in ('comercio', 'alimentacao', 'servicos', 'tecnologia', 'industria', 'educacao', 'saude', 'financas', 'construcao', 'outro'));
+alter table public.perfis add column if not exists faturamento text
+  check (faturamento in ('ate5k', '5a20k', '20a50k', '50a100k', 'acima100k'));
+
 alter table public.perfis enable row level security;
 
 drop policy if exists "ver o proprio perfil" on public.perfis;
@@ -32,7 +41,7 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.perfis (id, tipo, nome, fone, email, doc, cidade, uf)
+  insert into public.perfis (id, tipo, nome, fone, email, doc, cidade, uf, porte_negocio, ramo, faturamento)
   values (
     new.id,
     new.raw_user_meta_data ->> 'tipo',
@@ -41,7 +50,13 @@ begin
     nullif(lower(trim(coalesce(new.raw_user_meta_data ->> 'email_contato', ''))), ''),
     regexp_replace(coalesce(new.raw_user_meta_data ->> 'doc', ''), '[^0-9]', '', 'g'),
     trim(new.raw_user_meta_data ->> 'cidade'),
-    upper(new.raw_user_meta_data ->> 'uf')
+    upper(new.raw_user_meta_data ->> 'uf'),
+    case when new.raw_user_meta_data ->> 'porte_negocio' in ('autonomo', 'mei', 'me', 'epp', 'media')
+         then new.raw_user_meta_data ->> 'porte_negocio' end,
+    case when new.raw_user_meta_data ->> 'ramo' in ('comercio', 'alimentacao', 'servicos', 'tecnologia', 'industria', 'educacao', 'saude', 'financas', 'construcao', 'outro')
+         then new.raw_user_meta_data ->> 'ramo' end,
+    case when new.raw_user_meta_data ->> 'faturamento' in ('ate5k', '5a20k', '20a50k', '50a100k', 'acima100k')
+         then new.raw_user_meta_data ->> 'faturamento' end
   );
   return new;
 end;
