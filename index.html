@@ -344,6 +344,15 @@ section.band#apoiadores > .in{padding-top:48px}
 
 /* painel do apoiador */
 .pn-form{display:grid;gap:14px}
+/* painel: títulos na largura da tela; no passo 1, cada quadro cresce com o próprio texto (nada é esticado nem cortado) */
+[data-view="painel"] .pagehead h1,[data-view="painel"] .pagehead .lede,[data-view="painel"] .head h2,[data-view="painel"] .head .lede{max-width:none}
+.pn-form .fields{align-items:start}
+.pn-form .fields > label,.pn-form .fields > fieldset{height:auto;min-height:0;align-self:start}
+.pn-form .fields input{font-family:var(--body);font-weight:500;font-size:16px;line-height:1.4}
+.pn-form .fields select{line-height:1.4;min-height:1.4em}
+.pn-form .chips label{max-width:100%}
+.pn-form .chips input+span{display:inline-block;line-height:1.35;white-space:normal;overflow-wrap:anywhere}
+#pn-apoiar .signup{margin-top:4px}
 .pn-form .fields select,.fields-one select{width:100%;background:transparent;border:0;color:var(--fg);font-family:var(--body);font-size:16px;padding:0;outline:none}
 .pn-form .fields select option,.fields-one select option{background:var(--panel);color:var(--fg)}
 .pn-acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -777,12 +786,17 @@ section.band#apoiadores > .in{padding-top:48px}
   <p class="eyebrow">Painel do apoiador</p>
   <h1 id="pn-titulo">Seu painel de impacto</h1>
   <p class="lede">Veja os selos sociais que combinam com o seu negócio, gere material para divulgar o seu apoio e acompanhe, de forma agregada, grupos de vanguardistas.</p>
-  <div class="pn-acts" data-apoiador hidden><a class="btn go" href="#apoiar-cadastro">Apadrinhar vanguardistas</a><a class="btn" href="#pn-selos">Ver selos</a><a class="btn" href="#pn-grupos">Acompanhar grupos</a></div>
+  <div class="pn-acts" data-apoiador hidden><a class="btn go" href="#pn-apoiar">Apadrinhar vanguardistas</a><a class="btn" href="#pn-selos">Ver selos</a><a class="btn" href="#pn-grupos">Acompanhar grupos</a></div>
 </div></section>
 <section class="band" id="pn-fora" hidden><div class="in">
   <div class="loop"><span class="eyebrow">Acesso</span><p><b>O painel é exclusivo para apoiadores cadastrados.</b> Entre com sua conta ou cadastre-se como apoiador para ver os selos e acompanhar vanguardistas.</p><div class="loop-acts"><a class="btn" href="#entrar">Entrar</a><a class="btn go" href="#cadastro" data-tipo="apoiador">Cadastrar-se como apoiador</a></div></div>
 </div></section>
 <div id="pn-conteudo" hidden>
+<section class="band" id="pn-apoiar" hidden><div class="in">
+  <div class="head"><p class="eyebrow">Apadrinhar vanguardistas</p><h2>Apoie sem sair do painel</h2><p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Os dados do seu cadastro já vêm preenchidos; falta só o que ele não tem, como CEP e endereço.</p></div>
+  <div id="pn-apoiar-form"></div>
+  <div class="pn-acts"><a class="btn" href="#painel" id="pn-apoiar-fechar">Fechar</a></div>
+</div></section>
 <section class="pn-abas-band"><div class="in">
   <div class="pn-abas" role="tablist" aria-label="Seções do painel">
     <button type="button" role="tab" id="pn-tab-geral" aria-controls="pn-aba-geral" aria-selected="true">Selos e material</button>
@@ -1182,6 +1196,7 @@ section.band#apoiadores > .in{padding-top:48px}
   var views=[].slice.call(document.querySelectorAll('[data-view]'));
   function show(){
     var h=decodeURIComponent(location.hash.slice(1))||'inicio';
+    if(typeof window.vgAntesDeMostrar==='function')window.vgAntesDeMostrar(h); /* painel: devolve o formulário de apoio ao lugar dele */
     var v=document.querySelector('[data-view="'+h+'"]'),target=null;
     if(!v){target=document.getElementById(h);v=target&&target.closest('[data-view]');}
     if(!v)v=views[0];
@@ -1555,6 +1570,22 @@ section.band#apoiadores > .in{padding-top:48px}
   });
   /* links como "Ver selos" e "Acompanhar grupos" levam de volta à primeira aba */
   window.addEventListener('hashchange',function(){if(location.hash.indexOf('#pn-')===0)aba('geral');});
+  /* Apadrinhar dentro do painel: o mesmo formulário do Apoiar (#apoiar-cadastro) vem para cá, com tudo o que já funciona nele,
+     e volta para a página Apoiar quando a pessoa sai do painel. */
+  var apForm=$('apoiar-cadastro'),apLugar=null;
+  function trazerApoio(){
+    if(!apForm)return;
+    if(!apLugar){apLugar=document.createComment('lugar do formulário de apoio');apForm.parentNode.insertBefore(apLugar,apForm);}
+    if(apForm.parentNode!==$('pn-apoiar-form'))$('pn-apoiar-form').appendChild(apForm);
+    $('pn-apoiar').hidden=false;
+    var vazio=[].slice.call(apForm.querySelectorAll('.fields input[required]')).filter(function(i){return !i.closest('label').hidden&&!i.value.trim();})[0];
+    if(vazio)setTimeout(function(){vazio.focus({preventScroll:true});},0);
+  }
+  function devolverApoio(){
+    $('pn-apoiar').hidden=true;
+    if(apForm&&apLugar&&apLugar.parentNode&&apForm.parentNode!==apLugar.parentNode)apLugar.parentNode.insertBefore(apForm,apLugar.nextSibling);
+  }
+  window.vgAntesDeMostrar=function(h){if(h==='pn-apoiar'&&VG.perfil()&&VG.perfil().tipo==='apoiador')trazerApoio();else devolverApoio();};
   /* link do material: página pública do selo com o código do apoiador (mede quem chegou por ele) */
   function linkSelo(){return st.codigo?SITE+'/?selo='+st.codigo:SITE;}
   function linkTxt(){return linkSelo().replace(/^https:\/\//,'');}
@@ -1775,6 +1806,7 @@ section.band#apoiadores > .in{padding-top:48px}
     var p=VG.perfil(),ok=!!(p&&p.tipo==='apoiador');
     $('pn-fora').hidden=ok;$('pn-conteudo').hidden=!ok;
     if(!ok){st.perfil=null;pronto=null;return;}
+    if(location.hash==='#pn-apoiar'&&$('pn-apoiar').hidden){trazerApoio();$('pn-apoiar').scrollIntoView({block:'start'});}
     if(pronto===p.id)return;pronto=p.id;st.perfil=p;st.fin=null;aba('geral');desenharDH();
     $('pn-titulo').textContent='Olá, '+String(p.nome||'').split(' ')[0]+'. Este é o seu painel de impacto';
     carregar().then(function(){preencherPerfil();desenharSelos();material();listarGrupos();conferirGrupo();carregarImpacto();});
