@@ -220,6 +220,8 @@ section.band#apoiadores > .in{padding-top:48px}
 .hero h1,.hero .lede{max-width:none}
 @media (min-width:861px){.hero h1{font-size:clamp(28px,3.4vw,44px)}}
 [data-view="simuladores"] .pagehead h1,[data-view="simuladores"] .pagehead .lede,#raio-x .head h2,#raio-x .head .lede,#raio-x-preco .head h2,#raio-x-preco .head .lede{max-width:none}
+/* Vanguardistas e Sobre: textos ocupam toda a largura da tela */
+#como-funciona-vanguardistas .head h2,[data-view="sobre"] .head h2,[data-view="sobre"] .head .lede{max-width:none}
 .sim-nota{font-size:15px;padding:14px 16px;border-style:solid}
 .sim-nota span{display:grid;gap:12px;justify-items:start}
 .sim-nota .btn{padding:8px 16px;font-size:14px}
@@ -687,31 +689,14 @@ section.band#apoiadores > .in{padding-top:48px}
 </div>
 <div data-view="vanguardistas">
 <section class="band" id="como-funciona-vanguardistas"><div class="in">
-  <div class="head"><p class="eyebrow">Como funciona para Vanguardistas</p><h2>Cadastre seu negócio e fique disponível para ser apadrinhado</h2></div>
+  <div class="head"><p class="eyebrow">Como funciona para Vanguardistas</p><h2>Use os simuladores de maneira gratuita. Cadastre seu negócio para liberar mais funções. Fique disponível para ser apadrinhado</h2></div>
   <ol class="steps">
-      <li><h3>Cadastro</h3><p>Acesso ilimitado e gratuito aos simuladores básicos.</p></li>
-      <li><h3>Pagamento</h3><p>Todo vanguardista pode se tornar um apoiador do portal, dispensando o apadrinhamento de outro vanguardista.</p></li>
-      <li><h3>Uso</h3><p>Caso deseje armazenar o histórico das simulações, é necessário que seja realizado um cadastro. Depois é necessário tornar-se um apoiador ou pedir para que um outro apoiador lhe apadrinhe no portal.</p></li>
-      <li><h3>Apadrinhamento</h3><p>O Vanguardista fica disponível para que seja apadrinhado na plataforma.</p></li>
+      <li><h3>Acesso ilimitado aos simuladores</h3><p>Gratuito aos simuladores básicos.</p></li>
+      <li><h3>Amplie a Comunidade</h3><p>Convide outros empreendedores a se tornarem vanguardistas, fortalecendo o portal.</p></li>
+      <li><h3>Contribuição com a comunidade</h3><p>Todo vanguardista pode se tornar um apoiador do portal, dispensando o apadrinhamento de outro vanguardista. Com isso ele pode se cadastrar no portal, armazenar histórico de simulações e ter acesso a simuladores mais avançados.</p></li>
+      <li><h3>Apadrinhamento</h3><p>Caso o vanguardista tenha se cadastrado no portal e não exercido seu apoio, este fica disponível para que seja apadrinhado na plataforma.</p></li>
     </ol>
-  <div class="loop" id="vanguardista-cadastro"><span class="eyebrow">Vanguardista</span><p><b>Crie sua conta e comece pelos simuladores.</b> Depois do lançamento, você escolhe o plano e fica disponível para ser apadrinhado.</p><a class="btn go" href="#cadastro" data-tipo="vanguardista">Cadastrar-se como vanguardista</a></div>
-</div></section>
-<section class="band" id="trilha"><div class="in">
-  <div class="head">
-    <p class="eyebrow">A trilha da emancipação</p>
-    <h2>Uma jornada com fim: de aprendiz a padrinho</h2>
-    <p class="lede">O objetivo é que a comunidade cresça a ponto de não depender mais de nós. Cada etapa devolve algo para quem vem depois.</p>
-  </div>
-  <ol class="trail">
-    <li><h3>Aprende</h3><p>Usa os simuladores e as trilhas de conteúdo sem pagar nada. Precifica, planeja e entende o próprio negócio.</p></li>
-    <li><h3>Convida</h3><p>Ao trazer outros 3 empreendedores, desbloqueia funções especiais do simulador e certificados artísticos.</p></li>
-    <li><h3>Ensina</h3><p>No espaço da comunidade, quem já usou as ferramentas e prosperou vira tutor de quem está chegando.</p></li>
-    <li><h3>Apadrinha</h3><p>Ao atingir a maturidade, recebe o status de Mentor Aluno: passa a financiar o projeto ou a formar novos integrantes.</p></li>
-  </ol>
-  <div class="loop">
-    <span class="eyebrow">Ciclo</span>
-    <p><b>Cada padrinho veio da trilha ou abre espaço para ela.</b> O portal cresce pelo boca a boca dos próprios empreendedores, sem depender de anúncios.</p>
-  </div>
+  <div class="loop" id="vanguardista-cadastro"><p><b>Crie sua conta e comece pelos simuladores.</b> Depois do lançamento, você escolhe o plano e fica disponível para ser apadrinhado.</p><a class="btn go" href="#cadastro" data-tipo="vanguardista">Cadastrar-se como vanguardista</a></div>
 </div></section>
 </div>
 <div data-view="entrar">
@@ -772,6 +757,23 @@ section.band#apoiadores > .in{padding-top:48px}
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Sobre</p>
   <h1>Como o Vanguarda funciona</h1>
+</div></section>
+<section class="band" id="trilha"><div class="in">
+  <div class="head">
+    <p class="eyebrow">A trilha da emancipação</p>
+    <h2>Uma jornada com fim: de aprendiz a padrinho</h2>
+    <p class="lede">O objetivo é que a comunidade cresça a ponto de não depender mais de nós. Cada etapa devolve algo para quem vem depois.</p>
+  </div>
+  <ol class="trail">
+    <li><h3>Aprenda</h3><p>Use os simuladores e as trilhas de desenvolvimento sem pagar nada. Precifique, planeje e entenda o próprio negócio.</p></li>
+    <li><h3>Convide</h3><p>Traga outros empreendedores, fortaleça a comunidade.</p></li>
+    <li><h3>Contribua</h3><p>Você pode a qualquer momento contribuir com a comunidade. Isso irá liberar créditos para que você adquira acesso a simuladores mais avançados.</p></li>
+    <li><h3>Apadrinhe</h3><p>Além de contribuir com a comunidade você tem a oportunidade de formar novos integrantes.</p></li>
+  </ol>
+  <div class="loop">
+    <span class="eyebrow">Ciclo</span>
+    <p><b>Cada padrinho ou veio da jornada ou é independente.</b> O portal cresce pelo boca a boca dos próprios empreendedores, sem depender de anúncios. Os padrinhos podem mostrar em suas redes o impacto que vêm causando.</p>
+  </div>
 </div></section>
 <section class="band" id="modelo"><div class="in">
   <div class="head">
