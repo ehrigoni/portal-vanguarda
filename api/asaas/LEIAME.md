@@ -67,7 +67,9 @@ Em **Integrações > Webhooks**, crie um webhook com:
 
 - URL: `https://<endereço do site>/api/asaas/webhook`
 - Token de autenticação: o mesmo valor de `ASAAS_WEBHOOK_TOKEN` na Vercel
-- Eventos: `PAYMENT_CONFIRMED`, `PAYMENT_RECEIVED` e todos os `INVOICE_*`
+- Eventos: `PAYMENT_CONFIRMED`, `PAYMENT_RECEIVED`, `PAYMENT_REFUNDED`, `PAYMENT_CHARGEBACK_REQUESTED`, `PAYMENT_DELETED` e todos os `INVOICE_*`
+
+Os eventos de pagamento também alimentam o painel do apoiador: cada apoio confirmado vai para a tabela `apoios` do Supabase, e estornos marcam o apoio como estornado. Para isso, a Vercel precisa de `SUPABASE_SERVICE_ROLE_KEY` (chave service_role do Supabase, em Project Settings > API Keys). Sem ela, a nota sai normalmente e o registro é pulado.
 - Fila de sincronização: ativada
 
 Faça isso no sandbox e, depois, de novo na conta de produção: cada ambiente tem os seus webhooks.
