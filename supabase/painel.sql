@@ -374,8 +374,6 @@ begin
     'vanguardistas_total', coalesce(sum(vanguardistas), 0),
     'vanguardistas_ativos', coalesce(sum(vanguardistas) filter (where (pago_em + make_interval(months => meses))::date >= hoje), 0),
     'meses_vanguardista', coalesce(sum(vanguardistas * meses), 0),
-    -- vanguardistas apadrinhados por 12 meses ou mais (requisito do selo Powered by: 15)
-    'vanguardistas_ano', coalesce(sum(vanguardistas) filter (where meses >= 12), 0),
     'desde', min(pago_em)
   ) into fin
   from public.apoios
@@ -467,8 +465,8 @@ begin
   select * into me from public.perfis where id = ap.id;
   r := public._impacto_dos_apoios(me.doc, me.fone, me.email, p_ambiente);
   selos := coalesce(ap.selos, '{}');
-  -- Powered by só aparece para quem apadrinhou pelo menos 15 vanguardistas por 12 meses ou mais
-  if coalesce((r #>> '{financeiro,vanguardistas_ano}')::integer, 0) < 15 then
+  -- Powered by só aparece para quem pagou pelo menos 180 meses de uso (vanguardistas x meses, somando os apoios)
+  if coalesce((r #>> '{financeiro,meses_vanguardista}')::integer, 0) < 180 then
     selos := array_remove(selos, 'powered');
   end if;
   return r || jsonb_build_object(

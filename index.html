@@ -1390,9 +1390,9 @@ section.band#apoiadores > .in{padding-top:48px}
      desc:'Para empresas de tecnologia que querem se posicionar como apoiadoras de ferramentas digitais gratuitas.',
      frase:'apoia tecnologia aberta e gratuita para quem empreende'},
     {id:'powered',nome:'Powered by · Sua marca no simulador',curto:'Powered by',sigla:'PB',cat:'Visibilidade digital',
-     desc:'A sua empresa é uma notória patrocinadora do Portal Vanguarda. Exige o apadrinhamento de pelo menos 15 vanguardistas, durante 1 ano cada.',
+     desc:'A sua empresa é uma notória patrocinadora do Portal Vanguarda. Isso significa que apadrinhaste 180 meses de uso do portal divididos entre {X}.',
      frase:'mantém um simulador do Portal Vanguarda com a própria marca',
-     req:{vanguardistas:15,meses:12}}
+     req:{meses:180}}
   ];
   var SELO={};SELOS.forEach(function(s){SELO[s.id]=s;});
 
@@ -1476,18 +1476,20 @@ section.band#apoiadores > .in{padding-top:48px}
 
   /* 2. selos */
   /* selo com requisito (Powered by): só pode ser usado quando os apoios pagos cumprem a exigência; até lá aparece bloqueado */
-  function anoAtual(){return st.fin?Number(st.fin.vanguardistas_ano)||0:0;}
-  function liberado(id){var s=SELO[id];return !!s&&(!s.req||anoAtual()>=s.req.vanguardistas);}
+  /* Powered by: pelo menos 180 meses de uso pagos, somando todos os apoios, com qualquer número de vanguardistas */
+  function mesesPagos(){return st.fin?Number(st.fin.meses_vanguardista)||0:0;}
+  function liberado(id){var s=SELO[id];return !!s&&(!s.req||mesesPagos()>=s.req.meses);}
+  function descSelo(s,bloq){return s.desc.replace('{X}',bloq?'os vanguardistas que você escolher':vg(Number(st.fin&&st.fin.vanguardistas_total)||0));}
   function desenharSelos(){
     var rr=recomendados(st.ap),R=rr.R,top=rr.top,sel=st.ap.selos||[];
     var ord=SELOS.slice().sort(function(a,b){var ta=top.indexOf(a.id),tb=top.indexOf(b.id);if(ta>=0||tb>=0)return (ta<0?9:ta)-(tb<0?9:tb);return 0;});
     $('pn-lista-selos').innerHTML=ord.map(function(s){
       var bloq=!liberado(s.id),rec=!bloq&&top.indexOf(s.id)>=0,on=!bloq&&sel.indexOf(s.id)>=0,por=R[s.id].por.filter(Boolean).slice(0,2);
-      var falta=bloq?'<p class="req">Disponível só depois de apadrinhar '+s.req.vanguardistas+' vanguardistas por '+(s.req.meses===12?'1 ano':s.req.meses+' meses')+' cada. Você tem '+anoAtual().toLocaleString('pt-BR')+' de '+s.req.vanguardistas+'. Até lá, o selo não entra no material de divulgação.</p>':'';
+      var falta=bloq?'<p class="req">Disponível depois de apadrinhar pelo menos '+s.req.meses+' meses de uso do portal, somando todos os seus apadrinhamentos, com qualquer número de vanguardistas. Você tem '+mesesPagos().toLocaleString('pt-BR')+' de '+s.req.meses+' meses. Até lá, o selo não entra no material de divulgação.</p>':'';
       return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':'')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
         '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
         '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
-        '<p>'+esc(s.desc)+'</p>'+falta+(s.req?(bloq?'':'<p class="por">Condição para usar: apadrinhar pelo menos '+s.req.vanguardistas+' vanguardistas por '+(s.req.meses===12?'1 ano':s.req.meses+' meses')+' cada. Cumprida.</p>'):(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':''))+'</label>';
+        '<p>'+esc(descSelo(s,bloq))+'</p>'+falta+(s.req?(bloq?'':'<p class="por">Condição para usar: apadrinhar pelo menos '+s.req.meses+' meses de uso do portal, com qualquer número de vanguardistas. Cumprida.</p>'):(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':''))+'</label>';
     }).join('');
     $('pn-selos-msg').textContent=top.length?'':'Preencha o passo 1 para ver os selos recomendados para você.';
   }
