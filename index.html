@@ -382,6 +382,10 @@ section.band#apoiadores > .in{padding-top:48px}
 .selo .tags{display:flex;gap:6px;flex-wrap:wrap}
 .selo .tag.ok{border-color:var(--glow);color:var(--glow)}
 .selo .tag.sel{border-color:var(--amber);color:var(--amber)}
+.selo.bloq{cursor:not-allowed;border-style:dashed}
+.selo.bloq .selo-badge,.selo.bloq h3{opacity:.6}
+.selo .tag.bloq{border-color:var(--muted);color:var(--muted)}
+.selo .req{font-size:13px;color:var(--fg);border-top:1px dashed var(--line);padding-top:8px}
 /* abas do painel: a de desenvolvimento humano só aparece depois do primeiro apoio pago */
 .pn-abas-band .in{padding-block:18px 0}
 .pn-abas{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
@@ -1386,8 +1390,9 @@ section.band#apoiadores > .in{padding-top:48px}
      desc:'Para empresas de tecnologia que querem se posicionar como apoiadoras de ferramentas digitais gratuitas.',
      frase:'apoia tecnologia aberta e gratuita para quem empreende'},
     {id:'powered',nome:'Powered by · Sua marca no simulador',curto:'Powered by',sigla:'PB',cat:'Visibilidade digital',
-     desc:'A sua marca aparece no rodapé de um simulador de alta procura. Indicado para apoios de maior porte.',
-     frase:'mantém um simulador do Portal Vanguarda com a própria marca'}
+     desc:'A sua empresa é uma notória patrocinadora do Portal Vanguarda. Exige o apadrinhamento de pelo menos 15 vanguardistas, durante 1 ano cada.',
+     frase:'mantém um simulador do Portal Vanguarda com a própria marca',
+     req:{vanguardistas:15,meses:12}}
   ];
   var SELO={};SELOS.forEach(function(s){SELO[s.id]=s;});
 
@@ -1462,6 +1467,7 @@ section.band#apoiadores > .in{padding-top:48px}
   $('pn-form-perfil').addEventListener('submit',function(e){
     e.preventDefault();lerPerfil();var msg=$('pn-perfil-msg');msg.textContent='Salvando…';
     var rec=recomendados(st.ap).top;
+    rec=rec.filter(liberado);
     if(!(st.ap.selos||[]).length&&rec.length)st.ap.selos=rec.slice(0,1);
     salvar().then(function(r){msg.textContent=r.ok?(r.local?'Guardado neste navegador.':'Perfil salvo.'):'Não foi possível salvar agora. Tente de novo.';});
     desenharSelos();material();
@@ -1469,20 +1475,25 @@ section.band#apoiadores > .in{padding-top:48px}
   });
 
   /* 2. selos */
+  /* selo com requisito (Powered by): só pode ser usado quando os apoios pagos cumprem a exigência; até lá aparece bloqueado */
+  function anoAtual(){return st.fin?Number(st.fin.vanguardistas_ano)||0:0;}
+  function liberado(id){var s=SELO[id];return !!s&&(!s.req||anoAtual()>=s.req.vanguardistas);}
   function desenharSelos(){
     var rr=recomendados(st.ap),R=rr.R,top=rr.top,sel=st.ap.selos||[];
     var ord=SELOS.slice().sort(function(a,b){var ta=top.indexOf(a.id),tb=top.indexOf(b.id);if(ta>=0||tb>=0)return (ta<0?9:ta)-(tb<0?9:tb);return 0;});
     $('pn-lista-selos').innerHTML=ord.map(function(s){
-      var rec=top.indexOf(s.id)>=0,on=sel.indexOf(s.id)>=0,por=R[s.id].por.filter(Boolean).slice(0,2);
-      return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+'>'+
+      var bloq=!liberado(s.id),rec=!bloq&&top.indexOf(s.id)>=0,on=!bloq&&sel.indexOf(s.id)>=0,por=R[s.id].por.filter(Boolean).slice(0,2);
+      var falta=bloq?'<p class="req">Disponível só depois de apadrinhar '+s.req.vanguardistas+' vanguardistas por '+(s.req.meses===12?'1 ano':s.req.meses+' meses')+' cada. Você tem '+anoAtual().toLocaleString('pt-BR')+' de '+s.req.vanguardistas+'. Até lá, o selo não entra no material de divulgação.</p>':'';
+      return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':'')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
         '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
-        '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
-        '<p>'+esc(s.desc)+'</p>'+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+'</label>';
+        '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
+        '<p>'+esc(s.desc)+'</p>'+falta+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+'</label>';
     }).join('');
     $('pn-selos-msg').textContent=top.length?'':'Preencha o passo 1 para ver os selos recomendados para você.';
   }
   $('pn-lista-selos').addEventListener('change',function(e){
     var c=e.target;if(!c||c.type!=='checkbox')return;
+    if(c.checked&&!liberado(c.value)){c.checked=false;return;}
     var s=st.ap.selos=(st.ap.selos||[]).filter(function(x){return x!==c.value;});if(c.checked)s.push(c.value);
     desenharSelos();material();
     $('pn-selos-msg').textContent='Salvando…';
@@ -1550,7 +1561,7 @@ section.band#apoiadores > .in{padding-top:48px}
     }).then(function(d){
       st.fin=d?Object.assign({},d.financeiro):false;st.reg=d?d.regioes:false;
       st.codigo=d&&d.codigo||null;st.indic=d?{visitas:Number(d.visitas_selo)||0,cadastros:Number(d.cadastros_selo)||0}:null;
-      $('pn-imp-atualizar').disabled=false;desenharImpacto();desenharDH();$('pn-mat-txt').value='';material();
+      $('pn-imp-atualizar').disabled=false;desenharImpacto();desenharSelos();desenharDH();$('pn-mat-txt').value='';material();
     });
   }
   /* aba Desenvolvimento humano: aparece quando o apoiador tem pelo menos um apoio pago e não estornado (tabela apoios) */
@@ -1685,7 +1696,7 @@ section.band#apoiadores > .in{padding-top:48px}
   }
   var ultimoTexto='';
   function material(){
-    var sel=(st.ap.selos||[]).filter(function(id){return SELO[id];});
+    var sel=(st.ap.selos||[]).filter(liberado);
     $('pn-mat-vazio').hidden=!!sel.length;$('pn-mat').hidden=!sel.length;if(!sel.length)return;
     var ss=$('pn-mat-selo'),atual=ss.value;
     ss.innerHTML=sel.map(function(id){return '<option value="'+id+'">'+esc(SELO[id].nome)+'</option>';}).join('');
