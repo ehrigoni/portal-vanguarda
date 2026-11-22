@@ -849,6 +849,7 @@ section.band#apoiadores > .in{padding-top:48px}
         <label><input type="radio" name="pn-canal" value="linkedin" checked><span>LinkedIn</span></label>
         <label><input type="radio" name="pn-canal" value="instagram"><span>Instagram</span></label>
         <label><input type="radio" name="pn-canal" value="whatsapp"><span>WhatsApp</span></label>
+        <label><input type="radio" name="pn-canal" value="email"><span>E-mail</span></label>
       </fieldset>
       <label class="fields-one" for="pn-mat-txt"><span>Texto (pode editar antes de copiar)</span><textarea id="pn-mat-txt" rows="9"></textarea></label>
       <div class="pn-acts">
@@ -1594,8 +1595,12 @@ section.band#apoiadores > .in{padding-top:48px}
   var CANAIS={
     linkedin:{w:1200,h:627,arq:'linkedin',acao:'Abrir no LinkedIn',dica:'No LinkedIn, crie a publicação, cole o texto e anexe a imagem baixada.'},
     instagram:{w:1080,h:1080,arq:'instagram',acao:'Compartilhar',dica:'No Instagram, publique a imagem baixada e cole o texto na legenda. No celular, o botão Compartilhar já envia a imagem.'},
-    whatsapp:{w:1080,h:1920,arq:'whatsapp-status',acao:'Enviar no WhatsApp',dica:'Use a imagem no status do WhatsApp e envie o texto para seus contatos e grupos.'}
+    whatsapp:{w:1080,h:1920,arq:'whatsapp-status',acao:'Enviar no WhatsApp',dica:'Use a imagem no status do WhatsApp e envie o texto para seus contatos e grupos.'},
+    email:{w:1200,h:627,arq:'email',acao:'Abrir no e-mail',dica:'O botão abre seu programa de e-mail com o assunto e o texto prontos. Anexe a imagem baixada e escolha os destinatários.'}
   };
+  function assuntoEmail(){return marca()+' recebeu um selo do Portal Vanguarda';}
+  function linkEmail(t){return 'mailto:?subject='+encodeURIComponent(assuntoEmail())+'&body='+encodeURIComponent(t);}
+  function linkCanal(c,t){return c==='linkedin'?'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(linkSelo()):c==='whatsapp'?'https://wa.me/?text='+encodeURIComponent(t):c==='email'?linkEmail(t):'https://www.instagram.com/';}
   function canal(){var r=document.querySelector('input[name="pn-canal"]:checked');return r?r.value:'linkedin';}
   function marca(){return st.ap.marca||(st.perfil&&st.perfil.nome)||'Nossa empresa';}
   function textoPara(s,c){
@@ -1606,7 +1611,7 @@ section.band#apoiadores > .in{padding-top:48px}
     if(i.meses)nums.push(i.meses.toLocaleString('pt-BR')+(i.meses===1?' mês':' meses')+' de acesso a ferramentas de gestão');
     if(i.regioes)nums.push('regiões impactadas: '+i.regioes);
     var desemp=i.pct!=null&&i.pct>0?'Nos últimos 30 dias, '+i.pct+'% dos vanguardistas '+'que apadrinhamos'+' usaram as ferramentas'+(i.sim?' ('+i.sim.toLocaleString('pt-BR')+' dias de uso de simuladores)':'')+'.':'';
-    var bloco=nums.length?(c==='linkedin'?'Nosso impacto até agora: ':'📊 Nosso impacto até agora: ')+nums.join(' · ')+'.'+(desemp?'\n'+desemp:''):desemp;
+    var bloco=nums.length?(c==='linkedin'||c==='email'?'Nosso impacto até agora: ':'📊 Nosso impacto até agora: ')+nums.join(' · ')+'.'+(desemp?'\n'+desemp:''):desemp;
     if(c==='linkedin')return m+' recebeu o selo "'+s.nome+'" do Portal Vanguarda.\n\n'+
       'Apadrinhamos pequenos empreendedores, MEIs e autônomos que usam simuladores gratuitos para precificar, planejar metas e entender o próprio negócio. Com o nosso apoio, o portal '+s.frase+'.\n\n'+
       (bloco?bloco+'\n\n':'')+
@@ -1616,6 +1621,10 @@ section.band#apoiadores > .in{padding-top:48px}
       (bloco?bloco+'\n\n':'')+
       'Pequeno negócio forte faz a cidade inteira crescer. 💛\n\n'+
       'Faça parte você também: '+linkTxt()+' (link na bio)\n\n#ImpactoSocial #Empreendedorismo #MEI #PequenosNegocios #Vanguarda'+tagsOds;
+    if(c==='email')return 'Olá,\n\n'+m+' recebeu o selo "'+s.nome+'" do Portal Vanguarda.\n\n'+
+      'Apadrinhamos pequenos empreendedores, MEIs e autônomos que usam simuladores gratuitos para precificar, planejar metas e entender o próprio negócio. Com o nosso apoio, o portal '+s.frase+'.\n\n'+
+      (bloco?bloco+'\n\n':'')+
+      'Se você empreende, os simuladores são gratuitos. Se quiser apoiar também, conheça o portal em '+linkTxt()+'\n\nUm abraço,\n'+m;
     return 'Oi! '+m+' recebeu o selo "'+s.curto+'" do Portal Vanguarda. 🙌\n\n'+
       'Apadrinhamos vanguardistas e, com isso, o portal '+s.frase+'.\n\n'+
       (bloco?bloco+'\n\n':'')+
@@ -1676,13 +1685,13 @@ section.band#apoiadores > .in{padding-top:48px}
     if(!ta.value||ta.value===ultimoTexto)ta.value=txt;ultimoTexto=txt;
     $('pn-mat-dica').textContent=cfg.dica;
     var a=$('pn-compartilhar');a.textContent=cfg.acao;
-    a.href=c==='linkedin'?'https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(linkSelo()):c==='whatsapp'?'https://wa.me/?text='+encodeURIComponent(ta.value):'https://www.instagram.com/';
+    a.href=linkCanal(c,ta.value);a.target=c==='email'?'_self':'_blank';
     var go=function(){desenhar(s,c);};
     if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go,go);else go();
   }
   $('pn-mat-selo').addEventListener('change',function(){$('pn-mat-txt').value='';material();});
   document.querySelectorAll('input[name="pn-canal"]').forEach(function(r){r.addEventListener('change',function(){$('pn-mat-txt').value='';material();});});
-  $('pn-mat-txt').addEventListener('input',function(){if(canal()==='whatsapp')$('pn-compartilhar').href='https://wa.me/?text='+encodeURIComponent($('pn-mat-txt').value);});
+  $('pn-mat-txt').addEventListener('input',function(){var c=canal();if(c==='whatsapp'||c==='email')$('pn-compartilhar').href=linkCanal(c,$('pn-mat-txt').value);});
   function nomeArquivo(){return 'selo-'+$('pn-mat-selo').value+'-'+CANAIS[canal()].arq+'.png';}
   $('pn-baixar').addEventListener('click',function(){
     $('pn-canvas').toBlob(function(b){if(!b)return;var u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=nomeArquivo();document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},4000);},'image/png');
