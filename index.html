@@ -1487,7 +1487,7 @@ section.band#apoiadores > .in{padding-top:48px}
       return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':'')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
         '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
         '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
-        '<p>'+esc(s.desc)+'</p>'+falta+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+'</label>';
+        '<p>'+esc(s.desc)+'</p>'+falta+(s.req?(bloq?'':'<p class="por">Condição para usar: apadrinhar pelo menos '+s.req.vanguardistas+' vanguardistas por '+(s.req.meses===12?'1 ano':s.req.meses+' meses')+' cada. Cumprida.</p>'):(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':''))+'</label>';
     }).join('');
     $('pn-selos-msg').textContent=top.length?'':'Preencha o passo 1 para ver os selos recomendados para você.';
   }
