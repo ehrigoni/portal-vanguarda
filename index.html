@@ -390,7 +390,13 @@ section.band#apoiadores > .in{padding-top:48px}
 .pn-abas [role=tab][aria-selected=true]{color:var(--amber);border-bottom-color:var(--amber)}
 .selo.dh{cursor:default;border-color:var(--amber);background:var(--panel)}
 .selo.dh .selo-badge{border-color:var(--amber);color:var(--amber)}
-.selo.dh .btn{justify-self:start;padding:8px 14px;font-size:14px}
+.selo.dh{display:flex;flex-direction:column;gap:10px}
+.selo.dh .btn{margin-top:auto;align-self:stretch;padding:10px 14px;font-size:14px}
+/* botões do painel em linha, com a mesma largura e altura, ocupando a largura do quadro */
+[data-view="painel"] .pagehead .pn-acts,.mat-ctl .pn-acts{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:10px;align-items:stretch}
+[data-view="painel"] .pagehead .pn-acts{max-width:720px}
+[data-view="painel"] .pagehead .pn-acts .btn,.mat-ctl .pn-acts .btn{width:100%;min-height:46px;white-space:normal;text-align:center;line-height:1.25;padding:10px 12px}
+@media (max-width:460px){[data-view="painel"] .pagehead .pn-acts .btn,.mat-ctl .pn-acts .btn{font-size:14px;padding:8px 8px}}
 .mat{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
 @media (max-width:860px){.mat{grid-template-columns:1fr}}
 .mat-ctl{display:grid;gap:14px}
@@ -1380,8 +1386,8 @@ section.band#apoiadores > .in{padding-top:48px}
     {id:'techbem',nome:'Tecnologia para o Bem',curto:'Tecnologia para o Bem',sigla:'TB',cat:'Visibilidade digital',
      desc:'Para empresas de tecnologia que querem se posicionar como apoiadoras de ferramentas digitais gratuitas.',
      frase:'apoia tecnologia aberta e gratuita para quem empreende'},
-    {id:'powered',nome:'Powered by · Cota master',curto:'Powered by',sigla:'PB',cat:'Visibilidade digital',
-     desc:'A sua marca aparece no rodapé de um simulador de alta procura. Exige cota master de apadrinhamento.',
+    {id:'powered',nome:'Powered by · Sua marca no simulador',curto:'Powered by',sigla:'PB',cat:'Visibilidade digital',
+     desc:'A sua marca aparece no rodapé de um simulador de alta procura. Indicado para apoios de maior porte.',
      frase:'mantém um simulador do Portal Vanguarda com a própria marca'}
   ];
   var SELO={};SELOS.forEach(function(s){SELO[s.id]=s;});
@@ -1405,7 +1411,7 @@ section.band#apoiadores > .in{padding-top:48px}
     if(maior)add('ods8',1,'é o selo ODS mais usado por empresas do seu porte');
     if(set==='tecnologia')add('techbem',4,'o seu setor é tecnologia');
     if(obj.redes)add('techbem',1,'tem apelo forte nas redes');
-    if(maior){add('powered',3,'o seu porte comporta a cota master');}
+    if(maior){add('powered',3,'o seu porte comporta esse selo');}
     if(obj.clientes){add('powered',2,'a sua marca aparece para quem usa os simuladores');add('madrinha',1,'aproxima você de novos clientes');}
     if(obj.local&&maior)add('powered',1,'');
     if(pequeno)R.powered.p-=2;
