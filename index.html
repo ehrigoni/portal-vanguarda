@@ -296,7 +296,7 @@ section.band#apoiadores > .in{padding-top:48px}
 .nrow input,.chips input[type=number]{width:90px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--fg);font-family:var(--mono);font-size:18px;font-weight:600;padding:6px 10px}
 .chips{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;min-width:0}
 .chips legend{font-size:14px;color:var(--muted);padding:0;margin-bottom:8px}
-.chips label{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.chips label{display:inline-flex;align-items:center;gap:8px;cursor:pointer;position:relative}
 .chips input[type=radio]{position:absolute;opacity:0;pointer-events:none}
 .chips input[type=radio]+span{font-family:var(--mono);font-size:14px;padding:7px 12px;border:1px solid var(--line);border-radius:999px}
 .chips input[type=radio]:checked+span{border-color:var(--amber);color:var(--amber)}
@@ -1494,7 +1494,7 @@ section.band#apoiadores > .in{padding-top:48px}
     $('pn-imp-kpis').innerHTML=k.join('');
     var nota=[];
     if(st.fin===false)nota.push('Não foi possível consultar seus apoios agora.');
-    else if(st.fin&&!st.fin.vanguardistas_total)nota.push('Seus números aparecem aqui assim que o primeiro apadrinhamento for pago. Os apoios são encontrados pelo CPF ou CNPJ do seu cadastro.');
+    else if(st.fin&&!st.fin.vanguardistas_total)nota.push('Seus números aparecem aqui assim que o primeiro apadrinhamento for pago. Os apoios são encontrados pelo CPF ou CNPJ e pelo celular ou e-mail do seu cadastro.');
     if(st.reg&&st.reg.suficiente)nota.push('Regiões e desempenho dos vanguardistas cadastrados que o seu apoio custeia, sempre somados e sem dados individuais. Estados e cidades só aparecem com 5 ou mais vanguardistas.');
     else if(st.fin&&st.fin.vanguardistas_total)nota.push('Regiões e desempenho aparecem quando o seu apoio custear pelo menos 5 vanguardistas cadastrados.');
     if(st.ambiente==='sandbox')nota.push('Ambiente de teste: os apoios são do sandbox do Asaas.');

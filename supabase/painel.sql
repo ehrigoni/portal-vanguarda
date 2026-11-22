@@ -248,6 +248,11 @@ create table if not exists public.apoios (
   criado_em     timestamptz not null default now()
 );
 create index if not exists apoios_doc on public.apoios (doc, ambiente);
+-- Contato do cliente no Asaas. O apoio só conta para a conta que tem o mesmo CPF/CNPJ E o mesmo
+-- celular ou e-mail: o CPF/CNPJ sozinho não basta, porque um CNPJ é público e qualquer pessoa
+-- poderia criar uma conta com ele para ver quanto aquela empresa apoiou.
+alter table public.apoios add column if not exists fone text;
+alter table public.apoios add column if not exists email text;
 alter table public.apoios enable row level security; -- sem políticas: ninguém do site acessa
 
 -- 8. Quais vanguardistas cadastrados cada apoio custeia (só o banco lê; o apoiador vê totais)
@@ -356,7 +361,9 @@ create trigger zz_indicacao_selo
 
 -- Números de um conjunto de apoios (uso interno): financeiro, vanguardistas custeados e regiões.
 -- Regiões e desempenho só saem com pelo menos 5 vanguardistas; estado ou cidade só aparecem com 5 ou mais.
-create or replace function public._impacto_dos_apoios(p_doc text, p_ambiente text)
+-- Os apoios da pessoa: mesmo CPF/CNPJ e mesmo celular ou e-mail do cadastro (ver a tabela apoios).
+drop function if exists public._impacto_dos_apoios(text, text);
+create or replace function public._impacto_dos_apoios(p_doc text, p_fone text, p_email text, p_ambiente text)
 returns jsonb
 language plpgsql
 stable
@@ -379,12 +386,14 @@ begin
     'desde', min(pago_em)
   ) into fin
   from public.apoios
-  where doc = p_doc and ambiente = p_ambiente and estornado_em is null;
+  where doc = p_doc and ambiente = p_ambiente and estornado_em is null
+    and (fone = p_fone or (nullif(email, '') is not null and email = lower(trim(coalesce(p_email, '')))));
 
   with m as (
     select distinct av.vanguardista_id as id
     from public.apoio_vanguardistas av join public.apoios ap on ap.pagamento_id = av.pagamento_id
     where ap.doc = p_doc and ap.ambiente = p_ambiente and ap.estornado_em is null
+      and (ap.fone = p_fone or (nullif(ap.email, '') is not null and ap.email = lower(trim(coalesce(p_email, '')))))
   )
   select count(*) into n from m;
 
@@ -395,6 +404,7 @@ begin
       select distinct av.vanguardista_id as id
       from public.apoio_vanguardistas av join public.apoios ap on ap.pagamento_id = av.pagamento_id
       where ap.doc = p_doc and ap.ambiente = p_ambiente and ap.estornado_em is null
+      and (ap.fone = p_fone or (nullif(ap.email, '') is not null and ap.email = lower(trim(coalesce(p_email, '')))))
     ),
     mp as (select p.* from public.perfis p join m on m.id = p.id),
     ufs as (select uf, count(*) as q from mp group by uf),
@@ -439,7 +449,7 @@ begin
   insert into public.apoiador_perfil (id) values (me.id) on conflict (id) do nothing;
   select codigo into cod from public.apoiador_perfil where id = me.id;
 
-  r := public._impacto_dos_apoios(me.doc, p_ambiente);
+  r := public._impacto_dos_apoios(me.doc, me.fone, me.email, p_ambiente);
   return r || jsonb_build_object(
     'codigo', cod,
     'visitas_selo', coalesce((select sum(visitas) from public.selo_visitas where codigo = cod), 0),
@@ -464,7 +474,7 @@ begin
   select * into ap from public.apoiador_perfil where codigo = lower(trim(coalesce(p_codigo, '')));
   if not found then return null; end if;
   select * into me from public.perfis where id = ap.id;
-  return public._impacto_dos_apoios(me.doc, p_ambiente) || jsonb_build_object(
+  return public._impacto_dos_apoios(me.doc, me.fone, me.email, p_ambiente) || jsonb_build_object(
     'marca', coalesce(nullif(trim(ap.marca), ''), split_part(me.nome, ' ', 1)),
     'selos', to_jsonb(ap.selos)
   );
@@ -492,7 +502,7 @@ revoke all on function public.alocar_apoios() from public, anon, authenticated;
 grant execute on function public.alocar_apoios() to service_role;
 revoke all on function public._alocar_ao_cadastrar() from public, anon, authenticated;
 revoke all on function public._indicacao_ao_cadastrar() from public, anon, authenticated;
-revoke all on function public._impacto_dos_apoios(text, text) from public, anon, authenticated;
+revoke all on function public._impacto_dos_apoios(text, text, text, text) from public, anon, authenticated;
 revoke all on function public.impacto_apoiador(text) from public, anon;
 grant execute on function public.impacto_apoiador(text) to authenticated;
 revoke all on function public.selo_publico(text, text) from public;

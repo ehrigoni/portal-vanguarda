@@ -130,11 +130,17 @@ async function registrarApoio(p) {
   const cliente = await asaas("GET", "/customers/" + encodeURIComponent(p.customer));
   const doc = String((cliente && cliente.cpfCnpj) || "").replace(/\D/g, "");
   if (doc.length !== 11 && doc.length !== 14) return { pulado: "cliente sem CPF/CNPJ" };
+  // celular e e-mail do cliente: o painel só conta o apoio para a conta com o mesmo CPF/CNPJ e o mesmo contato
+  let fone = String(cliente.mobilePhone || cliente.phone || "").replace(/\D/g, "");
+  if ((fone.length === 12 || fone.length === 13) && fone.startsWith("55")) fone = fone.slice(2);
+  const email = String(cliente.email || "").trim().toLowerCase();
   const pagoEm = String(p.clientPaymentDate || p.paymentDate || p.confirmedDate || hojeEmPortoAlegre()).slice(0, 10);
   await supabase("POST", "/rest/v1/apoios", {
     pagamento_id: p.id,
     ambiente: /sandbox/i.test(apiUrl()) ? "sandbox" : "producao",
     doc,
+    fone: fone.length === 10 || fone.length === 11 ? fone : null,
+    email: email || null,
     vanguardistas: a.n,
     meses: a.meses,
     valor: Number(p.value) || 0,
