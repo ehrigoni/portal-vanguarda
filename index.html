@@ -211,12 +211,17 @@ footer .notice{flex-basis:100%}
   .top nav a{white-space:nowrap}
 }
 .pagehead .in{padding-block:48px 8px;display:grid;gap:12px}
-.pagehead h1{font-size:clamp(30px,4.6vw,48px);line-height:1.08;font-weight:700;max-width:22ch}
-[data-view="apoiar"] .pagehead h1,[data-view="apoiar"] .pagehead .lede{max-width:none}
+.pagehead h1,.apoiar-topo h1{font-size:clamp(30px,4.6vw,48px);line-height:1.08;font-weight:700;max-width:22ch}
+[data-view="apoiar"] .pagehead h1,[data-view="apoiar"] .pagehead .lede,.apoiar-topo h1,.apoiar-topo .lede{max-width:none}
+/* Apoiar: topo da página e "Como funciona para Apoiadores" num só painel */
+section.band#apoiadores{border-top:0}
+section.band#apoiadores > .in{padding-top:48px}
 #como-funciona .head h2,#como-funciona .head .lede{max-width:none}
 .hero h1,.hero .lede{max-width:none}
 @media (min-width:861px){.hero h1{font-size:clamp(28px,3.4vw,44px)}}
 [data-view="simuladores"] .pagehead h1,[data-view="simuladores"] .pagehead .lede,#raio-x .head h2,#raio-x .head .lede,#raio-x-preco .head h2,#raio-x-preco .head .lede{max-width:none}
+/* Vanguardistas e Sobre: textos ocupam toda a largura da tela */
+#como-funciona-vanguardistas .head h2,[data-view="sobre"] .head h2,[data-view="sobre"] .head .lede{max-width:none}
 .sim-nota{font-size:15px;padding:14px 16px;border-style:solid}
 .sim-nota span{display:grid;gap:12px;justify-items:start}
 .sim-nota .btn{padding:8px 16px;font-size:14px}
@@ -261,6 +266,7 @@ footer .notice{flex-basis:100%}
 .signup .wide{grid-column:1/-1}
 .signup .note{font-size:13px;color:var(--muted)}
 .signup .btn-nota{margin:-6px 0 4px;text-align:center}
+.signup .nota-centro{text-align:center}
 #cd-btn{justify-self:center}
 #cd-entrar{text-align:center}
 .done{border:1px solid var(--glow);border-radius:12px;padding:18px 20px;display:grid;gap:10px;background:var(--panel)}
@@ -325,6 +331,11 @@ footer .notice{flex-basis:100%}
 .acc .wide{grid-column:1/-1}
 .acc .note{font-size:14px;color:var(--muted)}
 .acc .btn[type=submit]{justify-self:start}
+.entrar-band .in{padding-block:48px 64px}
+.entrar-painel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px;margin-inline:auto;width:100%}
+.entrar-head{display:grid;gap:8px;margin-bottom:6px}
+.entrar-head h1{font-size:clamp(26px,4vw,36px);line-height:1.1;font-weight:700}
+@media (max-width:560px){.entrar-painel{padding:20px}}
 .fields label.bad{border-color:var(--amber)}
 .footnav{display:flex;gap:16px;flex-wrap:wrap}
 .footnav a{color:var(--muted);text-decoration:none}
@@ -405,7 +416,7 @@ footer .notice{flex-basis:100%}
 <header class="top"><div class="in">
   <a class="brand" href="#inicio">Portal <span>Vanguarda</span></a>
   <nav aria-label="Páginas">
-    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#painel" data-nav="painel" data-apoiador hidden>Painel</a><a href="#sobre" data-nav="sobre">Sobre</a>
+    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#vanguardistas" data-nav="vanguardistas">Vanguardistas</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#painel" data-nav="painel" data-apoiador hidden>Painel</a><a href="#sobre" data-nav="sobre">Sobre</a>
   </nav>
   <div class="acc-top">
     <a class="enter" href="#entrar" data-guest>Entrar</a>
@@ -546,7 +557,7 @@ footer .notice{flex-basis:100%}
 </g>
 
 <!-- rótulos -->
-<g class="lab t d1"><line class="lead" x1="936" y1="118" x2="1010" y2="118"/><text x="1016" y="116" class="lbl-t">Vendas</text><text x="1016" y="134" class="lbl-v">R$ 15,00</text></g>
+<g class="lab t d1"><line class="lead" x1="936" y1="118" x2="1010" y2="118"/><text x="1016" y="112" class="lbl-t">Vendas</text><text x="1016" y="130" class="lbl-t">(Faturamento)</text><text x="1016" y="148" class="lbl-v">R$ 15,00</text></g>
 <g class="lab t d2">
   <text x="1016" y="182" class="lbl-t">Insumos</text><text x="1092" y="182" class="lbl-v">R$ 9,00</text>
   <line class="lead" x1="958" y1="214" x2="1010" y2="214"/><text x="1016" y="219" class="lbl-s">Pessoas</text>
@@ -586,7 +597,6 @@ footer .notice{flex-basis:100%}
       <span class="tag">Para quem é apoiador do portal</span>
       <ol class="checks"><li>Escolher apadrinhamento</li><li>Informações para a nota fiscal</li><li>Pagamento</li><li>Nota Fiscal Sem Burocracia</li></ol>
       <a class="btn go" href="#apoiar-cadastro" id="sim-go">Quero apoiar</a>
-      <p class="hint">Dúvidas: WhatsApp <a href="https://wa.me/5551992910038" target="_blank" rel="noopener">(51) 99291-0038</a></p>
     </article>
   </div>
 </div></section>
@@ -631,7 +641,7 @@ footer .notice{flex-basis:100%}
       </div>
     </form>
     <ul class="bones" id="bones">
-      <li class="head-bone"><small>Cabeça</small><b>Vendas</b><span class="v" data-k="venda"></span><span class="bar"><i data-b="venda"></i></span></li>
+      <li class="head-bone"><small>Cabeça</small><b>Vendas (Faturamento)</b><span class="v" data-k="venda"></span><span class="bar"><i data-b="venda"></i></span></li>
       <li><small>Costelas</small><b>Insumos: pessoas, recursos, conhecimento</b><span class="v" data-k="insumos"></span><span class="bar"><i data-b="insumos"></i></span></li>
       <li><small>Braço esquerdo</small><b>Comissão dos vendedores</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
       <li><small>Braço direito</small><b>Comissão dos trabalhadores</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
@@ -691,13 +701,12 @@ footer .notice{flex-basis:100%}
 </div></section>
 </div>
 <div data-view="apoiar">
-<section class="pagehead"><div class="in">
-  <p class="eyebrow">Apoiar · apoiadores e vanguardistas</p>
-  <h1>Apoie vanguardistas a partir de 1 mês</h1>
-  <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Cadastrar e Apoiar ou em Apenas Apoiar.</p>
-</div></section>
 <section class="band" id="apoiadores"><div class="in">
-  <div class="head"><p class="eyebrow">Como funciona para Apoiadores</p><h2>Do apadrinhamento à nota fiscal em quatro passos</h2></div>
+  <div class="head apoiar-topo">
+    <p class="eyebrow">Apoiar · apoiadores e vanguardistas</p>
+    <h1>Apoie vanguardistas a partir de 1 mês</h1>
+    <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Cadastrar e Apoiar ou em Apenas Apoiar.</p>
+  </div>
   <ol class="steps">
       <li><h3>Apadrinhamento</h3><p>Escolha do número de apadrinhados e período.</p></li>
       <li><h3>Informações para a nota fiscal</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ e endereço. Se quiser guardar seu cadastro, crie uma senha. Leva um minuto.</p></li>
@@ -735,8 +744,7 @@ footer .notice{flex-basis:100%}
       <p class="note btn-nota" data-guest>Suas informações ficam guardadas na sua conta para os próximos apoios.</p>
       <button class="btn go" type="submit" id="ap-btn-so" data-acao="apoiar">Apenas Apoiar</button>
       <p class="note btn-nota" data-guest>Nenhuma informação fica guardada no portal. Os dados servem só para este apoio e a nota fiscal.</p>
-      <p class="note">Dúvidas: WhatsApp <a href="https://wa.me/5551992910038" target="_blank" rel="noopener">(51) 99291-0038</a></p>
-      <p class="note">Usamos seus dados só para falar com você sobre o lançamento.</p>
+      <p class="note nota-centro">Usamos seus dados só para falar com você sobre o lançamento.</p>
     </form>
     <div class="aside">
       <div class="done" id="ap-done" hidden>
@@ -750,32 +758,17 @@ footer .notice{flex-basis:100%}
     </div>
   </div>
 </div></section>
-<section class="band" id="vanguardistas"><div class="in">
-  <div class="head"><p class="eyebrow">Como funciona para Vanguardistas</p><h2>Cadastre seu negócio e fique disponível para ser apadrinhado</h2></div>
+</div>
+<div data-view="vanguardistas">
+<section class="band" id="como-funciona-vanguardistas"><div class="in">
+  <div class="head"><p class="eyebrow">Como funciona para Vanguardistas</p><h2>Use os simuladores de maneira gratuita. Cadastre seu negócio para liberar mais funções. Fique disponível para ser apadrinhado</h2></div>
   <ol class="steps">
-      <li><h3>Cadastro</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ, cidade, estado e senha. Leva um minuto.</p></li>
-      <li><h3>Pagamento</h3><p>Você recebe o link para pagar por PIX, boleto ou cartão.</p></li>
-      <li><h3>Uso</h3><p>Acesso aos recursos do plano: simuladores avançados, selo, mentorias.</p></li>
-      <li><h3>Apadrinhamento</h3><p>O Vanguardista fica disponível para que seja apadrinhado na plataforma.</p></li>
+      <li><h3>Acesso ilimitado aos simuladores</h3><p>Gratuito aos simuladores básicos.</p></li>
+      <li><h3>Amplie a Comunidade</h3><p>Convide outros empreendedores a se tornarem vanguardistas, fortalecendo o portal.</p></li>
+      <li><h3>Contribuição com a comunidade</h3><p>Todo vanguardista pode se tornar um apoiador do portal, dispensando o apadrinhamento de outro vanguardista. Com isso ele pode se cadastrar no portal, armazenar histórico de simulações e ter acesso a simuladores mais avançados.</p></li>
+      <li><h3>Apadrinhamento</h3><p>Caso o vanguardista tenha se cadastrado no portal e não exercido seu apoio, este fica disponível para que seja apadrinhado na plataforma.</p></li>
     </ol>
-  <div class="loop" id="apoiar-vanguardista"><span class="eyebrow">Vanguardista</span><p><b>Crie sua conta e comece pelos simuladores.</b> Depois do lançamento, você escolhe o plano e fica disponível para ser apadrinhado.</p><a class="btn go" href="#cadastro" data-tipo="vanguardista">Cadastrar-se como vanguardista</a></div>
-</div></section>
-<section class="band" id="trilha"><div class="in">
-  <div class="head">
-    <p class="eyebrow">A trilha da emancipação</p>
-    <h2>Uma jornada com fim: de aprendiz a padrinho</h2>
-    <p class="lede">O objetivo é que a comunidade cresça a ponto de não depender mais de nós. Cada etapa devolve algo para quem vem depois.</p>
-  </div>
-  <ol class="trail">
-    <li><h3>Aprende</h3><p>Usa os simuladores e as trilhas de conteúdo sem pagar nada. Precifica, planeja e entende o próprio negócio.</p></li>
-    <li><h3>Convida</h3><p>Ao trazer outros 3 empreendedores, desbloqueia funções especiais do simulador e certificados artísticos.</p></li>
-    <li><h3>Ensina</h3><p>No espaço da comunidade, quem já usou as ferramentas e prosperou vira tutor de quem está chegando.</p></li>
-    <li><h3>Apadrinha</h3><p>Ao atingir a maturidade, recebe o status de Mentor Aluno: passa a financiar o projeto ou a formar novos integrantes.</p></li>
-  </ol>
-  <div class="loop">
-    <span class="eyebrow">Ciclo</span>
-    <p><b>Cada padrinho veio da trilha ou abre espaço para ela.</b> O portal cresce pelo boca a boca dos próprios empreendedores, sem depender de anúncios.</p>
-  </div>
+  <div class="loop" id="vanguardista-cadastro"><p><b>Crie sua conta e comece pelos simuladores.</b> Depois do lançamento, você escolhe o plano e fica disponível para ser apadrinhado.</p><a class="btn go" href="#cadastro" data-tipo="vanguardista">Cadastrar-se como vanguardista</a></div>
 </div></section>
 </div>
 <div data-view="painel">
@@ -896,14 +889,14 @@ footer .notice{flex-basis:100%}
 </div>
 
 <div data-view="entrar">
-<section class="pagehead"><div class="in">
-  <p class="eyebrow">Entrar</p>
-  <h1>Acesse sua conta</h1>
-</div></section>
-<section class="band"><div class="in">
-  <form class="acc" id="form-entrar" novalidate>
+<section class="entrar-band"><div class="in">
+  <form class="acc entrar-painel" id="form-entrar" novalidate>
+    <div class="entrar-head">
+      <p class="eyebrow">Entrar</p>
+      <h1>Acesse sua conta</h1>
+    </div>
     <div class="fields">
-      <label for="en-login"><span>Celular, WhatsApp ou e-mail</span><input id="en-login" type="text" required autocomplete="username"></label>
+      <label for="en-login"><span>Celular, WhatsApp ou e-mail</span><input id="en-login" type="text" required autocomplete="username" data-mask="login"></label>
       <label for="en-senha"><span>Senha</span><input id="en-senha" type="password" required autocomplete="current-password"></label>
     </div>
     <p class="err" id="en-err" hidden></p>
@@ -944,7 +937,6 @@ footer .notice{flex-basis:100%}
         <h3>Por que pedimos esses dados</h3>
         <p>O celular ou WhatsApp é o seu login e o canal para falarmos com você. O CPF ou CNPJ vai na nota fiscal. O e-mail é opcional: se você informar, também pode usá-lo para entrar e a nota fiscal chega nele.</p>
         <p>Seus dados ficam guardados no banco de dados do portal e são usados só para o Portal Vanguarda.</p>
-        <p>Dúvidas: WhatsApp (51) 99291-0038.</p>
       </div>
     </div>
   </div>
@@ -954,6 +946,23 @@ footer .notice{flex-basis:100%}
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Sobre</p>
   <h1>Como o Vanguarda funciona</h1>
+</div></section>
+<section class="band" id="trilha"><div class="in">
+  <div class="head">
+    <p class="eyebrow">A trilha da emancipação</p>
+    <h2>Uma jornada com fim: de aprendiz a padrinho</h2>
+    <p class="lede">O objetivo é que a comunidade cresça a ponto de não depender mais de nós. Cada etapa devolve algo para quem vem depois.</p>
+  </div>
+  <ol class="trail">
+    <li><h3>Aprenda</h3><p>Use os simuladores e as trilhas de desenvolvimento sem pagar nada. Precifique, planeje e entenda o próprio negócio.</p></li>
+    <li><h3>Convide</h3><p>Traga outros empreendedores, fortaleça a comunidade.</p></li>
+    <li><h3>Contribua</h3><p>Você pode a qualquer momento contribuir com a comunidade. Isso irá liberar créditos para que você adquira acesso a simuladores mais avançados.</p></li>
+    <li><h3>Apadrinhe</h3><p>Além de contribuir com a comunidade você tem a oportunidade de formar novos integrantes.</p></li>
+  </ol>
+  <div class="loop">
+    <span class="eyebrow">Ciclo</span>
+    <p><b>Cada padrinho ou veio da jornada ou é independente.</b> O portal cresce pelo boca a boca dos próprios empreendedores, sem depender de anúncios. Os padrinhos podem mostrar em suas redes o impacto que vêm causando.</p>
+  </div>
 </div></section>
 <section class="band" id="modelo"><div class="in">
   <div class="head">
@@ -965,7 +974,7 @@ footer .notice{flex-basis:100%}
     <article class="model rec">
       <span class="tag">Base do modelo</span>
       <h3>Freemium + apadrinhamento</h3>
-      <p>Conteúdo e simuladores básicos são livres. Apoiadores apadrinham vanguardistas pelo período que escolherem, a partir de 1 mês, e custeiam recursos avançados nos simuladores e mentorias.</p>
+      <p>Conteúdo e simuladores básicos são livres. Apoiadores apadrinham vanguardistas pelo período que escolherem, a partir de 1 mês, e custeiam recursos avançados nos simuladores.</p>
       <p class="who">Quem paga: padrinhos recorrentes</p>
     </article>
   </div>
@@ -982,7 +991,7 @@ footer .notice{flex-basis:100%}
 
 <footer><div class="in">
   <p class="notice" id="aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. O cadastro registra apenas interesse, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-  <nav class="footnav" aria-label="Rodapé"><a href="#simuladores">Simuladores</a><a href="#apoiar">Apoiar</a><a href="#sobre">Sobre</a></nav>
+  <nav class="footnav" aria-label="Rodapé"><a href="#simuladores">Simuladores</a><a href="#vanguardistas">Vanguardistas</a><a href="#apoiar">Apoiar</a><a href="#sobre">Sobre</a></nav>
   <span>WhatsApp (51) 99291-0038 · contato@vanguarda.social.br</span>
 </div></footer>
 
@@ -1050,7 +1059,10 @@ footer .notice{flex-basis:100%}
     if(d.length<=11)return d.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
     return d.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1/$2').replace(/(\d{4})(\d)/,'$1-$2');}
   function maskEmail(v){return String(v).replace(/\s+/g,'').toLowerCase();}
-  var MASK={fone:maskFone,doc:maskDoc,email:maskEmail};
+  /* login: só números vira (51) 90000-0000; com letras ou @ fica como e-mail */
+  function maskLogin(v){if(/^[\d\s()-]*$/.test(v))return maskFone(v);
+    return maskEmail(v.replace(/^\((\d{0,2})\)?\s?(\d*)-?(\d*)/,'$1$2$3'));}
+  var MASK={fone:maskFone,doc:maskDoc,email:maskEmail,login:maskLogin};
   document.querySelectorAll('[data-mask]').forEach(function(i){i.addEventListener('input',function(){var f=MASK[i.dataset.mask],v=f(i.value);if(v!==i.value)i.value=v;});});
   function foneOk(v){var d=dig(v);return d.length===10||d.length===11;}
   function emailOk(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);}
