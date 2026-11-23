@@ -103,3 +103,11 @@ revoke all on function public.email_de_login(text) from public;
 revoke all on function public.contato_em_uso(text, text) from public;
 grant execute on function public.email_de_login(text) to anon, authenticated;
 grant execute on function public.contato_em_uso(text, text) to anon, authenticated;
+revoke all on function public.criar_perfil() from public, anon, authenticated;
+
+-- 5. Permissões explícitas da Data API (versão atual do Supabase, Postgres 17).
+--    Projetos novos podem vir sem permissões automáticas nas tabelas novas; o site só lê e edita o próprio perfil
+--    (o RLS acima limita às linhas da pessoa). O cadastro grava pelo gatilho, que roda como dono da tabela.
+revoke all on public.perfis from anon, authenticated;
+grant select, update on public.perfis to authenticated;
+grant all on public.perfis to service_role;
