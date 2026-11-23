@@ -837,8 +837,8 @@ section.band#apoiadores > .in{padding-top:48px}
   </form>
 </div></section>
 <section class="band" id="pn-selos"><div class="in">
-  <div class="head"><p class="eyebrow">2 · Selos sociais</p><h2>Selos disponíveis para o seu apoio</h2><p class="lede">Os selos mostram ao mercado o impacto que o seu apoio gera. Todos exigem pelo menos 1 apoio pago confirmado no Asaas. Entre os liberados, os marcados como recomendados combinam melhor com o seu perfil. Selecione os que quiser usar na divulgação.</p></div>
-  <p class="notice" id="pn-selos-bloq" hidden><b>Bloqueados</b><span>Todos os selos ficam liberados depois que o Asaas confirmar pelo menos 1 apoio pago (e não estornado). Até lá, nenhum selo pode ser selecionado nem entra no material de divulgação. <a href="#pn-apoiar">Apadrinhar vanguardistas</a></span></p>
+  <div class="head"><p class="eyebrow">2 · Selos sociais</p><h2>Selos disponíveis para o seu apoio</h2><p class="lede">Os selos mostram ao mercado o impacto que o seu apoio gera. Todos exigem pelo menos 1 apoio pago. Entre os liberados, os marcados como recomendados combinam melhor com o seu perfil. Selecione os que quiser usar na divulgação.</p></div>
+  <p class="notice" id="pn-selos-bloq" hidden><b>Bloqueados</b><span>Todos os selos ficam liberados depois de pelo menos 1 apoio pago (e não estornado). Até lá, nenhum selo pode ser selecionado nem entra no material de divulgação. <a href="#pn-apoiar">Apadrinhar vanguardistas</a></span></p>
   <div class="selos" id="pn-lista-selos"></div>
   <div class="pn-acts"><span class="note" id="pn-selos-msg" aria-live="polite"></span></div>
 </div></section>
@@ -887,7 +887,7 @@ section.band#apoiadores > .in{padding-top:48px}
 </div>
 <div id="pn-aba-dh" role="tabpanel" aria-labelledby="pn-tab-dh" hidden>
 <section class="band" id="pn-dh"><div class="in">
-  <div class="head"><p class="eyebrow">Selos de desenvolvimento humano</p><h2>Selos conquistados com o seu apoio</h2><p class="lede">Educação, trabalho decente e menos desigualdade (ODS: 4 · 8 · 10). Estes selos só podem ser selecionados, gerados e divulgados depois que o Asaas confirma pelo menos 1 apoio pago, sem exceção. Como você já tem esse apoio, os três estão liberados para o seu material de divulgação e para destacar o seu compromisso ESG.</p></div>
+  <div class="head"><p class="eyebrow">Selos de desenvolvimento humano</p><h2>Selos conquistados com o seu apoio</h2><p class="lede">Educação, trabalho decente e menos desigualdade (ODS: 4 · 8 · 10). Estes selos só podem ser selecionados, gerados e divulgados depois de pelo menos 1 apoio pago, sem exceção. Como você já tem esse apoio, os três estão liberados para o seu material de divulgação e para destacar o seu compromisso ESG.</p></div>
   <div class="selos" id="pn-dh-lista"></div>
   <p class="note" id="pn-dh-nota"></p>
 </div></section>
@@ -1368,36 +1368,36 @@ section.band#apoiadores > .in{padding-top:48px}
   var SITE='https://www.vanguarda.social.br';
   var ANO=new Date().getFullYear();
 
-  /* catálogo de selos (docs/selos.md). Todo selo exige pelo menos 1 apoio pago e não estornado confirmado no Asaas. */
+  /* catálogo de selos (docs/selos.md). Todo selo exige pelo menos 1 apoio pago e não estornado. */
   var SELOS=[
     {id:'madrinha',nome:'Empresa Madrinha',curto:'Empresa Madrinha',sigla:'EM',cat:'Meta social',
      desc:'Reconhece empresas que apadrinham o ecossistema e apoiam a formação empreendedora.',
      frase:'mantém ferramentas gratuitas de gestão para pequenos empreendedores',
-     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
+     cond:'Ter pelo menos 1 apoio pago e não estornado.'},
     {id:'educacao',nome:'Investidora em Educação Empreendedora',curto:'Educação Empreendedora',sigla:'EE',cat:'Meta social',
      desc:'Destinado a apoiadores com foco direto no incentivo à capacitação e desenvolvimento educacional.',
      frase:'financia educação empreendedora e novas trilhas de aprendizado',
-     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
+     cond:'Ter pelo menos 1 apoio pago e não estornado.'},
     {id:'periferia',nome:'Aceleradora de Negócios Periféricos',curto:'Negócios Periféricos',sigla:'NP',cat:'Meta social',
      desc:'Voltado para organizações e apoiadores que impulsionam iniciativas em regiões periféricas.',
      frase:'acelera microempreendedores de comunidades e periferias',
-     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
+     cond:'Ter pelo menos 1 apoio pago e não estornado.'},
     {id:'ods8',nome:'Parceiro ODS 8 - Trabalho Decente e Crescimento Econômico',curto:'Parceiro ODS 8',sigla:'ODS 8',cat:'Agenda ONU',
      desc:'Foco no Objetivo de Desenvolvimento Sustentável 8 (Trabalho Decente e Crescimento Econômico).',
      frase:'investe em trabalho decente e crescimento econômico (ODS 8)',
-     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
+     cond:'Ter pelo menos 1 apoio pago e não estornado.'},
     {id:'ods4',nome:'Parceiro ODS 4 - Educação de Qualidade',curto:'Parceiro ODS 4',sigla:'ODS 4',cat:'Agenda ONU',
      desc:'Foco no Objetivo de Desenvolvimento Sustentável 4 (Educação de Qualidade).',
      frase:'apoia educação de qualidade e acesso gratuito ao conhecimento (ODS 4)',
-     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
+     cond:'Ter pelo menos 1 apoio pago e não estornado.'},
     {id:'ods10',nome:'Parceiro ODS 10 - Redução das Desigualdades',curto:'Parceiro ODS 10',sigla:'ODS 10',cat:'Agenda ONU',
      desc:'Foco no Objetivo de Desenvolvimento Sustentável 10 (Redução das Desigualdades).',
      frase:'ajuda a reduzir desigualdades entre pequenos e grandes negócios (ODS 10)',
-     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
+     cond:'Ter pelo menos 1 apoio pago e não estornado.'},
     {id:'techbem',nome:'Tecnologia para o Bem',curto:'Tecnologia para o Bem',sigla:'TB',cat:'Visibilidade digital',
      desc:'Destinado a empresas e profissionais que aplicam soluções tecnológicas com impacto social.',
      frase:'apoia tecnologia aberta e gratuita para quem empreende',
-     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
+     cond:'Ter pelo menos 1 apoio pago e não estornado.'},
     {id:'powered',nome:'Powered by Vanguarda',curto:'Powered by Vanguarda',sigla:'PB',cat:'Visibilidade digital',
      desc:'Selo de alta relevância para apoiadores de longo prazo ou de grande volume de impacto.',
      frase:'mantém um simulador do Portal Vanguarda com a própria marca',
@@ -1485,14 +1485,14 @@ section.band#apoiadores > .in{padding-top:48px}
   });
 
   /* 2. selos */
-  /* regra geral: nenhum selo é livre. Todo selo exige pelo menos 1 apoio pago e não estornado confirmado no Asaas
+  /* regra geral: nenhum selo é livre. Todo selo exige pelo menos 1 apoio pago e não estornado
      (st.fin.apoios, de impacto_apoiador). Powered by exige, além disso, 180 meses de uso apadrinhados somando os apoios. */
   function mesesPagos(){return st.fin?Number(st.fin.meses_vanguardista)||0:0;}
   function liberado(id){var s=SELO[id];return !!s&&temApoio()&&(!s.req||mesesPagos()>=s.req.meses);}
   /* condição para desbloquear (docs/selos.md), escrita em todo selo: painel, aba Desenvolvimento humano e página pública */
   function condHtml(s,status){return '<p class="req"><b>Condição para desbloquear:</b> '+esc(s.cond)+(status?' '+esc(status):'')+'</p>';}
   function faltaSelo(s){
-    var t=!temApoio()?'Ainda não cumprida: falta confirmar o primeiro apoio pago no Asaas.':'Ainda não cumprida.';
+    var t=!temApoio()?'Ainda não cumprida: falta o primeiro apoio pago.':'Ainda não cumprida.';
     if(s.req)t+=' Você tem '+mesesPagos().toLocaleString('pt-BR')+' de '+s.req.meses+' meses.';
     return t+' Até lá, o selo não pode ser selecionado nem entra no material de divulgação.';
   }
@@ -1723,7 +1723,7 @@ section.band#apoiadores > .in{padding-top:48px}
   var ultimoTexto='';
   function material(){
     var sel=(st.ap.selos||[]).filter(liberado);
-    $('pn-mat-vazio-txt').textContent=temApoio()?'Selecione pelo menos um selo liberado acima para gerar o material.':'O material de divulgação fica disponível depois que o Asaas confirmar pelo menos 1 apoio pago e você selecionar um selo.';
+    $('pn-mat-vazio-txt').textContent=temApoio()?'Selecione pelo menos um selo liberado acima para gerar o material.':'O material de divulgação fica disponível depois de pelo menos 1 apoio pago e de você selecionar um selo.';
     $('pn-mat-vazio').hidden=!!sel.length;$('pn-mat').hidden=!sel.length;if(!sel.length)return;
     var ss=$('pn-mat-selo'),atual=ss.value;
     ss.innerHTML=sel.map(function(id){return '<option value="'+id+'">'+esc(SELO[id].nome)+'</option>';}).join('');
