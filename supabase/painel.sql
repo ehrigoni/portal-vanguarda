@@ -465,6 +465,11 @@ begin
   select * into me from public.perfis where id = ap.id;
   r := public._impacto_dos_apoios(me.doc, me.fone, me.email, p_ambiente);
   selos := coalesce(ap.selos, '{}');
+  -- Nenhum selo é livre: sem pelo menos 1 apoio pago e não estornado confirmado no Asaas, a página pública não mostra
+  -- nenhum selo. A escolha continua salva em apoiador_perfil e volta a aparecer quando o pagamento for regularizado.
+  if coalesce((r #>> '{financeiro,apoios}')::integer, 0) < 1 then
+    selos := '{}';
+  end if;
   -- Powered by só aparece para quem pagou pelo menos 180 meses de uso (vanguardistas x meses, somando os apoios)
   if coalesce((r #>> '{financeiro,meses_vanguardista}')::integer, 0) < 180 then
     selos := array_remove(selos, 'powered');
@@ -475,6 +480,52 @@ begin
   );
 end;
 $$;
+
+-- 12. Validação dos selos escolhidos: o banco confere os apoios do Asaas antes de aceitar um selo novo.
+--     Selo novo sem pelo menos 1 apoio pago e não estornado (em qualquer ambiente) é descartado; Powered by novo
+--     também é descartado sem 180 meses de uso apadrinhados. Selos que já estavam salvos ficam salvos (a escolha
+--     persiste se o apoio for estornado); a exibição pública é filtrada em selo_publico.
+create or replace function public._validar_selos()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  me public.perfis;
+  novos text[];
+  amb text;
+  f jsonb;
+  n_apoios integer := 0;
+  n_meses integer := 0;
+begin
+  novos := array(
+    select unnest(coalesce(new.selos, '{}'))
+    except
+    select unnest(case when tg_op = 'UPDATE' then coalesce(old.selos, '{}') else '{}'::text[] end)
+  );
+  if coalesce(array_length(novos, 1), 0) = 0 then return new; end if;
+  select * into me from public.perfis where id = new.id;
+  if found then
+    foreach amb in array array['producao', 'sandbox'] loop
+      f := public._impacto_dos_apoios(me.doc, me.fone, me.email, amb) -> 'financeiro';
+      n_apoios := greatest(n_apoios, coalesce((f ->> 'apoios')::integer, 0));
+      n_meses := greatest(n_meses, coalesce((f ->> 'meses_vanguardista')::integer, 0));
+    end loop;
+  end if;
+  if n_apoios < 1 then
+    new.selos := array(select x from unnest(new.selos) x where not (x = any(novos)));
+  elsif n_meses < 180 and 'powered' = any(novos) then
+    new.selos := array_remove(new.selos, 'powered');
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists validar_selos on public.apoiador_perfil;
+create trigger validar_selos
+  before insert or update of selos on public.apoiador_perfil
+  for each row execute function public._validar_selos();
 
 -- Conta uma visita à página do selo (o navegador conta no máximo uma por dia por código).
 create or replace function public.registrar_visita_selo(p_codigo text)
@@ -497,6 +548,7 @@ revoke all on function public.alocar_apoios() from public, anon, authenticated;
 grant execute on function public.alocar_apoios() to service_role;
 revoke all on function public._alocar_ao_cadastrar() from public, anon, authenticated;
 revoke all on function public._indicacao_ao_cadastrar() from public, anon, authenticated;
+revoke all on function public._validar_selos() from public, anon, authenticated;
 revoke all on function public._impacto_dos_apoios(text, text, text, text) from public, anon, authenticated;
 revoke all on function public._perfil_somado(uuid[]) from public, anon, authenticated;
 revoke all on function public.impacto_apoiador(text) from public, anon;
