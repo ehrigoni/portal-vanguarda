@@ -1372,28 +1372,36 @@ section.band#apoiadores > .in{padding-top:48px}
   var SELOS=[
     {id:'madrinha',nome:'Empresa Madrinha',curto:'Empresa Madrinha',sigla:'EM',cat:'Meta social',
      desc:'Reconhece empresas que apadrinham o ecossistema e apoiam a formação empreendedora.',
-     frase:'mantém ferramentas gratuitas de gestão para pequenos empreendedores'},
+     frase:'mantém ferramentas gratuitas de gestão para pequenos empreendedores',
+     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
     {id:'educacao',nome:'Investidora em Educação Empreendedora',curto:'Educação Empreendedora',sigla:'EE',cat:'Meta social',
      desc:'Destinado a apoiadores com foco direto no incentivo à capacitação e desenvolvimento educacional.',
-     frase:'financia educação empreendedora e novas trilhas de aprendizado'},
+     frase:'financia educação empreendedora e novas trilhas de aprendizado',
+     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
     {id:'periferia',nome:'Aceleradora de Negócios Periféricos',curto:'Negócios Periféricos',sigla:'NP',cat:'Meta social',
      desc:'Voltado para organizações e apoiadores que impulsionam iniciativas em regiões periféricas.',
-     frase:'acelera microempreendedores de comunidades e periferias'},
+     frase:'acelera microempreendedores de comunidades e periferias',
+     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
     {id:'ods8',nome:'Parceiro ODS 8 - Trabalho Decente e Crescimento Econômico',curto:'Parceiro ODS 8',sigla:'ODS 8',cat:'Agenda ONU',
      desc:'Foco no Objetivo de Desenvolvimento Sustentável 8 (Trabalho Decente e Crescimento Econômico).',
-     frase:'investe em trabalho decente e crescimento econômico (ODS 8)'},
+     frase:'investe em trabalho decente e crescimento econômico (ODS 8)',
+     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
     {id:'ods4',nome:'Parceiro ODS 4 - Educação de Qualidade',curto:'Parceiro ODS 4',sigla:'ODS 4',cat:'Agenda ONU',
      desc:'Foco no Objetivo de Desenvolvimento Sustentável 4 (Educação de Qualidade).',
-     frase:'apoia educação de qualidade e acesso gratuito ao conhecimento (ODS 4)'},
+     frase:'apoia educação de qualidade e acesso gratuito ao conhecimento (ODS 4)',
+     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
     {id:'ods10',nome:'Parceiro ODS 10 - Redução das Desigualdades',curto:'Parceiro ODS 10',sigla:'ODS 10',cat:'Agenda ONU',
      desc:'Foco no Objetivo de Desenvolvimento Sustentável 10 (Redução das Desigualdades).',
-     frase:'ajuda a reduzir desigualdades entre pequenos e grandes negócios (ODS 10)'},
+     frase:'ajuda a reduzir desigualdades entre pequenos e grandes negócios (ODS 10)',
+     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
     {id:'techbem',nome:'Tecnologia para o Bem',curto:'Tecnologia para o Bem',sigla:'TB',cat:'Visibilidade digital',
      desc:'Destinado a empresas e profissionais que aplicam soluções tecnológicas com impacto social.',
-     frase:'apoia tecnologia aberta e gratuita para quem empreende'},
+     frase:'apoia tecnologia aberta e gratuita para quem empreende',
+     cond:'Ter pelo menos 1 apoio pago e não estornado confirmado no Asaas.'},
     {id:'powered',nome:'Powered by Vanguarda',curto:'Powered by Vanguarda',sigla:'PB',cat:'Visibilidade digital',
      desc:'Selo de alta relevância para apoiadores de longo prazo ou de grande volume de impacto.',
      frase:'mantém um simulador do Portal Vanguarda com a própria marca',
+     cond:'Ter pelo menos 180 meses de uso apadrinhados (somando apoios pagos e não estornados no Asaas).',
      req:{meses:180}}
   ];
   var SELO={};SELOS.forEach(function(s){SELO[s.id]=s;});
@@ -1481,10 +1489,11 @@ section.band#apoiadores > .in{padding-top:48px}
      (st.fin.apoios, de impacto_apoiador). Powered by exige, além disso, 180 meses de uso apadrinhados somando os apoios. */
   function mesesPagos(){return st.fin?Number(st.fin.meses_vanguardista)||0:0;}
   function liberado(id){var s=SELO[id];return !!s&&temApoio()&&(!s.req||mesesPagos()>=s.req.meses);}
-  function condSelo(s){return s.req?'ter pelo menos '+s.req.meses+' meses de uso apadrinhados, somando os apoios pagos e não estornados no Asaas, com qualquer número de vanguardistas':'ter pelo menos 1 apoio pago e não estornado confirmado no Asaas';}
+  /* condição para desbloquear (docs/selos.md), escrita em todo selo: painel, aba Desenvolvimento humano e página pública */
+  function condHtml(s,status){return '<p class="req"><b>Condição para desbloquear:</b> '+esc(s.cond)+(status?' '+esc(status):'')+'</p>';}
   function faltaSelo(s){
-    var t=!temApoio()?'Disponível depois de confirmar pelo menos 1 apoio pago no Asaas.':'';
-    if(s.req)t+=(t?' Depois disso, ':'Disponível depois de ')+'apadrinhar pelo menos '+s.req.meses+' meses de uso do portal, somando todos os seus apoios. Você tem '+mesesPagos().toLocaleString('pt-BR')+' de '+s.req.meses+' meses.';
+    var t=!temApoio()?'Ainda não cumprida: falta confirmar o primeiro apoio pago no Asaas.':'Ainda não cumprida.';
+    if(s.req)t+=' Você tem '+mesesPagos().toLocaleString('pt-BR')+' de '+s.req.meses+' meses.';
     return t+' Até lá, o selo não pode ser selecionado nem entra no material de divulgação.';
   }
   function desenharSelos(){
@@ -1492,11 +1501,10 @@ section.band#apoiadores > .in{padding-top:48px}
     var ord=SELOS.slice().sort(function(a,b){var ta=top.indexOf(a.id),tb=top.indexOf(b.id);if(ta>=0||tb>=0)return (ta<0?9:ta)-(tb<0?9:tb);return 0;});
     $('pn-lista-selos').innerHTML=ord.map(function(s){
       var bloq=!liberado(s.id),rec=!bloq&&top.indexOf(s.id)>=0,on=!bloq&&sel.indexOf(s.id)>=0,por=R[s.id].por.filter(Boolean).slice(0,2);
-      var falta=bloq?'<p class="req">'+esc(faltaSelo(s))+'</p>':'';
       return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':'')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
         '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
         '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
-        '<p>'+esc(s.desc)+'</p>'+falta+(bloq?'':'<p class="por">Condição para usar: '+esc(condSelo(s))+'. Cumprida.</p>')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+'</label>';
+        '<p>'+esc(s.desc)+'</p>'+condHtml(s,bloq?faltaSelo(s):'Cumprida.')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+'</label>';
     }).join('');
     $('pn-selos-bloq').hidden=temApoio();
     $('pn-selos-msg').textContent=top.length?'':'Preencha o passo 1 para ver os selos recomendados para você.';
@@ -1590,7 +1598,7 @@ section.band#apoiadores > .in{padding-top:48px}
     $('pn-dh-lista').innerHTML=DH.filter(function(id){return SELO[id];}).map(function(id){var s=SELO[id],on=sel.indexOf(id)>=0;
       return '<div class="selo dh"><div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
         '<div class="tags"><span class="tag">'+esc(s.cat)+'</span><span class="tag sel">Conquistado'+(quando?' em '+esc(quando):'')+'</span></div>'+
-        '<p>'+esc(s.desc)+'</p>'+
+        '<p>'+esc(s.desc)+'</p>'+condHtml(s,'Cumprida.')+
         '<button type="button" class="btn'+(on?'':' go')+'" data-dh="'+id+'">'+(on?'Ver no material':'Usar no material')+'</button></div>';
     }).join('');
     $('pn-dh-nota').textContent='O selo vale enquanto houver apoio pago e sai se o pagamento for estornado.'+(st.ambiente==='sandbox'?' Ambiente de teste: os apoios são do sandbox do Asaas.':'');
@@ -1832,7 +1840,7 @@ section.band#apoiadores > .in{padding-top:48px}
       $('sp-impacto').hidden=false;$('sp-erro').hidden=true;
       $('sp-selos').innerHTML=(d.selos||[]).filter(function(id){return SELO[id];}).map(function(id){var s=SELO[id];
         return '<div class="selo on"><div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
-          '<div class="tags"><span class="tag">'+esc(s.cat)+'</span></div><p>'+esc(m)+' '+esc(s.frase)+'.</p></div>';}).join('');
+          '<div class="tags"><span class="tag">'+esc(s.cat)+'</span></div><p>'+esc(m)+' '+esc(s.frase)+'.</p>'+condHtml(s,'Cumprida.')+'</div>';}).join('');
     });
   }
   function noSelo(){return location.hash==='#selo';}
