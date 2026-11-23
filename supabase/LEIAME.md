@@ -39,3 +39,7 @@ O site guarda as contas de vanguardistas e apoiadores no Supabase. Enquanto as c
 
 - Vanguardista: entra direto na área de simuladores (`#simuladores`).
 - Apoiador: entra direto no painel do apoiador (`#painel`): selos sociais recomendados, material de divulgação e grupos de vanguardistas.
+
+## Versão do Supabase
+
+Testado no Supabase atual (imagem `supabase/postgres:17.12.0.002`, Postgres 17.12), com o cadastro feito pelo papel do Auth (`supabase_auth_admin`), o apoiador logado (`authenticated`), visitante (`anon`) e o webhook (`service_role`). Os dois arquivos dão as permissões das tabelas explicitamente, então funcionam também em projetos novos com "expor tabelas novas automaticamente" desligado na Data API: o site só lê e edita o próprio perfil, o perfil de apoiador e os grupos; `apoios`, `apoio_vanguardistas` e `selo_visitas` ficam só para a chave de serviço e as funções do banco.

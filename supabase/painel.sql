@@ -220,8 +220,8 @@ $$;
 
 revoke all on function public._membros_grupo(text, text, text) from public, anon, authenticated;
 revoke all on function public._grupo_seguro(text, text, text, integer) from public, anon, authenticated;
-revoke all on function public.contar_grupo(text, text, text) from public;
-revoke all on function public.painel_grupo(uuid) from public;
+revoke all on function public.contar_grupo(text, text, text) from public, anon;
+revoke all on function public.painel_grupo(uuid) from public, anon;
 grant execute on function public.contar_grupo(text, text, text) to authenticated;
 grant execute on function public.painel_grupo(uuid) to authenticated;
 
@@ -557,3 +557,15 @@ revoke all on function public.selo_publico(text, text) from public;
 grant execute on function public.selo_publico(text, text) to anon, authenticated;
 revoke all on function public.registrar_visita_selo(text) from public;
 grant execute on function public.registrar_visita_selo(text) to anon, authenticated;
+
+-- 13. Permissões explícitas da Data API (versão atual do Supabase, Postgres 17).
+--     Projetos novos podem vir com "expor tabelas novas automaticamente" desligado; aí as tabelas não recebem
+--     permissão nenhuma para anon/authenticated e o painel quebra. Nos projetos antigos, as permissões padrão dão
+--     tudo a todos (o RLS é que segura). Aqui cada papel recebe só o que o site usa, nos dois casos.
+revoke all on public.apoiador_perfil from anon, authenticated;
+grant select, insert, update on public.apoiador_perfil to authenticated;
+revoke all on public.grupos from anon, authenticated;
+grant select, insert, delete on public.grupos to authenticated;
+-- Só o webhook do Asaas (chave de serviço) e as funções do banco mexem nestas:
+revoke all on public.apoios, public.apoio_vanguardistas, public.selo_visitas from anon, authenticated;
+grant all on public.apoios, public.apoio_vanguardistas, public.selo_visitas to service_role;
