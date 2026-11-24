@@ -84,6 +84,21 @@ Os selos exibem etiquetas e comportamentos específicos de acordo com a situaç�
 | **Liberado**              | O requisito financeiro mínimo foi atingido.           | O apoiador pode clicar, selecionar e utilizar nos seus materiais.                                                                             |
 | **Recomendado para você** | O sistema sugere o selo com base no perfil.           | Exibido apenas em selos liberados que combinam com as respostas do cadastro. Selos bloqueados não recebem esta tag.                           |
 
+## Condição para desbloquear (escrita em todo selo)
+
+Todo cartão de selo mostra a linha **"Condição para desbloquear: …"** no painel (lista principal), na aba Desenvolvimento humano e na página pública (#selo):
+
+- Selos de entrada, ODS e Tecnologia para o Bem: "Condição para desbloquear: Ter pelo menos 1 apoio pago e não estornado."
+- Powered by: "Condição para desbloquear: Ter pelo menos 180 meses de uso apadrinhados (somando apoios pagos e não estornados)."
+
+Depois da condição vem a situação:
+
+- Cumprida: "Cumprida."
+- Sem nenhum apoio pago: "Ainda não cumprida: falta o primeiro apoio pago. Até lá, o selo não pode ser selecionado nem entra no material de divulgação."
+- Com apoio pago, mas sem a meta do Powered by: "Ainda não cumprida. Você tem N de 180 meses. Até lá, o selo não pode ser selecionado nem entra no material de divulgação."
+
+Os textos do site não citam o Asaas; a confirmação do pagamento pelo Asaas continua sendo a fonte dos apoios no banco.
+
 ## Selo bloqueado
 
 Enquanto não houver a confirmação no Asaas de pelo menos 1 apoio pago (e não estornado), todos os selos de entrada, ODS e especiais permanecem desabilitados no painel. O botão de seleção fica inativo e uma mensagem informativa indica a necessidade de confirmação do apoio.
