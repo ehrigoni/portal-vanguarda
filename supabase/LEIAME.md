@@ -14,7 +14,7 @@ O site guarda as contas de vanguardistas e apoiadores no Supabase. Enquanto as c
 
 ## Onde ficam os dados
 
-- Tabela `perfis`: tipo (vanguardista ou apoiador), nome, celular, e-mail (opcional), CPF ou CNPJ, cidade e estado. Vanguardistas também podem informar, de forma opcional, porte, tipo de negócio e faixa de faturamento. Cada pessoa só lê e altera o próprio perfil.
+- Tabela `perfis`: tipo (vanguardista ou apoiador), nome, celular, e-mail, CPF ou CNPJ, CEP, rua, bairro, número, complemento, cidade e estado. Ao mudar o `schema.sql`, rode-o de novo no SQL Editor (não apaga dados). Vanguardistas também podem informar, de forma opcional, porte, tipo de negócio e faixa de faturamento. Cada pessoa só lê e altera o próprio perfil.
 - As senhas ficam no Supabase Auth, nunca na tabela.
 - Tabela `apoiador_perfil`: marca, número de apadrinhados, porte, setor, objetivos e selos escolhidos pelo apoiador (usados na recomendação de selos e no material de divulgação). Cada apoiador só lê e altera o próprio.
 - Tabela `atividades`: desativada. O `painel.sql` apaga a tabela e o site não registra mais o uso dos simuladores (LGPD, minimização de dados).
