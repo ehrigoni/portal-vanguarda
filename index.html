@@ -1153,7 +1153,7 @@ section.band#apoiadores > .in{padding-top:48px}
     document.querySelectorAll('[data-user]').forEach(function(el){el.hidden=!c;});
     document.querySelectorAll('[data-apoiador]').forEach(function(el){el.hidden=!(c&&c.tipo==='apoiador');});
     try{document.dispatchEvent(new CustomEvent('vg:perfil',{detail:c}));}catch(e){}
-    document.getElementById('ap-btn-so').textContent=(c?'Apoiar':'Apenas Apoiar')+(cobranca.ambiente==='sandbox'?' (teste)':'');
+    document.getElementById('ap-btn-so').textContent=(c?'Apoiar e atualizar dados':'Apenas Apoiar')+(cobranca.ambiente==='sandbox'?' (teste)':'');
     if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];
       preencherApoio();}
   }
@@ -1328,6 +1328,24 @@ section.band#apoiadores > .in{padding-top:48px}
       return falha(/password/i.test(m)?'Escolha uma senha mais forte, com pelo menos 6 caracteres.':/database|duplicate|unique/i.test(m)?'Já existe uma conta com esse celular ou e-mail. Use Entrar ou clique em Apenas Apoiar.':'Não foi possível criar o cadastro agora. Tente de novo em instantes ou use Apenas Apoiar.');
     }).then(function(r){solta();return r;});
   }
+  /* logado: Apoiar e atualizar dados grava no cadastro o que foi preenchido para a nota fiscal
+     (nome, celular, e-mail, CPF/CNPJ, cidade e estado). Endereço e CEP vão só para a cobrança. */
+  function atualizarCadastro(errEl){
+    function g(id){return document.getElementById(id);}
+    if(!sb||!perfil||!perfil.id)return Promise.resolve(true);
+    var ci=cidadeUf(g('ap-cidade').value),novo={nome:g('ap-nome').value.trim(),fone:dig(g('ap-whats').value),email:maskEmail(g('ap-email').value)||null,doc:dig(g('ap-doc').value)};
+    if(ci){novo.cidade=ci.cidade;novo.uf=ci.uf;}
+    var mudou=Object.keys(novo).filter(function(k){return String(novo[k]||'')!==String(perfil[k]||'');});
+    if(!mudou.length)return Promise.resolve(true);
+    var upd={};mudou.forEach(function(k){upd[k]=novo[k];});
+    return sb.from('perfis').update(upd).eq('id',perfil.id).then(function(r){
+      if(!r.error){Object.assign(perfil,upd);return true;}
+      var m=String(r.error.message||'')+' '+String(r.error.details||'');
+      if(/fone/i.test(m)&&/duplicate|unique/i.test(m)){errEl.textContent='Esse celular já está em outra conta. Use o celular do seu cadastro.';errEl.hidden=false;g('ap-whats').focus();return false;}
+      if(/email/i.test(m)&&/duplicate|unique/i.test(m)){errEl.textContent='Esse e-mail já está em outra conta. Use outro e-mail.';errEl.hidden=false;g('ap-email').focus();return false;}
+      console.error('cadastro não atualizado',r.error);return true; /* outra falha não impede o apoio */
+    },function(){return true;});
+  }
   /* cadastro */
   document.querySelectorAll('[data-form]').forEach(function(f){
     var p=f.dataset.form;
@@ -1346,7 +1364,8 @@ section.band#apoiadores > .in{padding-top:48px}
       if(ce){conferirCep(false).then(function(r){if(r.ok===false){errEl.textContent='CEP não encontrado. Confira os números.';errEl.hidden=false;ce.focus();return;}cadastrar();});return;}
       cadastrar();
       function cadastrar(){if(!comConta)return seguir();criarContaApoiador(errEl,btn).then(function(r){if(!r)return;contaMsg=r.msg;seguir();});}
-      function seguir(){if(p==='ap'&&cobranca.ativo)pagar(errEl,concluir,btn);else concluir();}
+      function seguir(){if(p==='ap'&&perfil&&!comConta)return atualizarCadastro(errEl).then(function(ok){if(ok)cobrar();});cobrar();}
+      function cobrar(){if(p==='ap'&&cobranca.ativo)pagar(errEl,concluir,btn);else concluir();}
       function concluir(){
       var lines=[];f.querySelectorAll('.fields label').forEach(function(l){if(l.hidden||l.closest('.chips'))return;var i=l.querySelector('input,select');if(i&&i.type==='password')return;if(i)lines.push(l.querySelector('span').textContent.replace(/ \(.*\)/,'')+': '+(i.tagName==='SELECT'?i.options[i.selectedIndex].text:i.value.trim()));});
       if(p==='ap'){var mm=meses(apP(),apM);lines.splice(1,0,'Durante: '+mm+(mm===1?' mês':' meses'));lines.push('Total em recursos: '+document.getElementById('ap-total').textContent);}
