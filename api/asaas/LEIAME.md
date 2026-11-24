@@ -28,6 +28,14 @@ Opcionais: `ASAAS_VALOR_MINIMO` (padrão 5, o mínimo que o Asaas aceita por cob
 3. Na fatura do sandbox, pague com o PIX de teste ou com o cartão de teste do Asaas.
 4. A cobrança aparece em **Cobranças** no painel do sandbox, com a referência `apoio:<apadrinhados>x<meses>m`.
 
+## Formas de pagamento e assinatura
+
+- Toda cobrança sai com `billingType: UNDEFINED`: na fatura, o apoiador escolhe PIX, boleto ou cartão de crédito. Para isso, as três formas precisam estar liberadas na conta (Minha Conta > Formas de recebimento, ou o que o Asaas pedir para o cartão).
+- No Apoiar, o período **Todo mês (assinatura)** cria uma assinatura mensal (`POST /subscriptions`, `cycle: MONTHLY`) com `externalReference` `apoio:<n>x1m`. O Asaas gera uma cobrança por mês; o webhook trata cada uma como um apoio de 1 mês (registro no painel e uma NFS-e por pagamento). Mínimo de R$ 5 por mês, ou seja, 5 vanguardistas.
+- No painel do apoiador, **Transformar em assinatura mensal** abre o Apoiar com o mesmo número de apadrinhados e o período Todo mês.
+- Cancelar uma assinatura: no painel do Asaas, em Cobranças > Assinaturas, ou pela API (`DELETE /subscriptions/{id}`). O site ainda não tem botão de cancelar; o apoiador pede pelo WhatsApp.
+- Não ligue a nota por assinatura (`/subscriptions/{id}/invoiceSettings`): o webhook já emite uma nota por pagamento.
+
 ## Notas fiscais (NFS-e)
 
 Quando o pagamento é confirmado, o Asaas chama `POST /api/asaas/webhook` (`webhook.js`, também na Vercel). A função agenda a NFS-e daquele pagamento no próprio Asaas, que transmite ao Sistema Nacional da NFS-e, obrigatório em Porto Alegre. Não há envio separado à prefeitura. Uma nota por pagamento: antes de agendar, a função confere no Asaas se o pagamento já tem nota.

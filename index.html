@@ -777,9 +777,10 @@ section.band#apoiadores > .in{padding-top:48px}
           <label><input type="radio" name="ap-p" value="6"><span>6 meses</span></label>
           <label><input type="radio" name="ap-p" value="12" checked><span>12 meses</span></label>
           <label><input type="radio" name="ap-p" value="N"><span>N meses</span></label>
+          <label><input type="radio" name="ap-p" value="A"><span>Todo mês (assinatura)</span></label>
           <label class="nmeses" hidden><input id="ap-meses" type="number" min="1" step="1" value="24" inputmode="numeric" aria-label="Número de meses"><span>meses</span></label>
         </fieldset>
-        <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 12,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 1,00</b> por mês.</p></div>
+        <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 12,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 1,00</b> por mês.</p><p class="note" id="ap-assin-nota" hidden>Assinatura: a cobrança se repete todo mês, no mesmo dia, e cada pagamento gera a sua nota fiscal. Você escolhe PIX, boleto ou cartão em cada fatura e pode cancelar quando quiser pelo WhatsApp (51) 99291-0038.</p></div>
         <label for="ap-nome"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
         <label for="ap-email"><span>E-mail (para a nota fiscal)</span><input id="ap-email" type="email" required autocomplete="email" inputmode="email" data-mask="email"></label>
         <label for="ap-whats"><span>Celular ou WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
@@ -921,6 +922,7 @@ section.band#apoiadores > .in{padding-top:48px}
     <div class="impacto-top"><h3>Seu impacto, atualizado a cada apoio</h3><button type="button" class="copy" id="pn-imp-atualizar">Atualizar</button></div>
     <div class="kpis" id="pn-imp-kpis"><div class="kpi"><b>…</b><small>carregando</small></div></div>
     <p class="note" id="pn-imp-nota"></p>
+    <p class="note" id="pn-assinar" hidden><button type="button" class="btn" id="pn-assinar-btn">Transformar em assinatura mensal</button> Mantém o mesmo número de apadrinhados com uma cobrança por mês, sem precisar voltar ao site.</p>
   </div>
   <p class="notice" id="pn-mat-vazio"><b>Selos</b><span id="pn-mat-vazio-txt">Selecione pelo menos um selo acima para gerar o material.</span></p>
   <div class="mat" id="pn-mat" hidden>
@@ -1104,10 +1106,11 @@ section.band#apoiadores > .in{padding-top:48px}
   document.querySelectorAll('[data-vg-empty]').forEach(function(el){el.hidden=VG.total>0;});
   document.querySelectorAll('[data-custo]').forEach(function(el){el.textContent=fmt.format(CUSTO_MEDIO);});
   function int(el,d){var n=parseInt(el.value,10);return n>0?n:d;}
-  function meses(p,m){return p==='N'?int(m,1):parseInt(p,10);}
+  function meses(p,m){return p==='A'?1:p==='N'?int(m,1):parseInt(p,10);} /* assinatura: cada cobrança paga 1 mês */
   var apN=document.getElementById('ap-n'),apM=document.getElementById('ap-meses');
   function apP(){return document.querySelector('input[name="ap-p"]:checked').value;}
-  function ap(){apM.closest('label').hidden=apP()!=='N';document.getElementById('ap-total').textContent=fmt.format(int(apN,1)*meses(apP(),apM)*CUSTO_MEDIO);}
+  function ap(){var a=apP()==='A';apM.closest('label').hidden=apP()!=='N';document.getElementById('ap-assin-nota').hidden=!a;
+    document.getElementById('ap-total').textContent=fmt.format(int(apN,1)*meses(apP(),apM)*CUSTO_MEDIO)+(a?' por mês':'');}
   [apN,apM].forEach(function(el){el.addEventListener('input',ap);});
   document.querySelectorAll('input[name="ap-p"]').forEach(function(r){r.addEventListener('change',ap);});
   ap();
@@ -1142,7 +1145,9 @@ section.band#apoiadores > .in{padding-top:48px}
     if(!location.hash)history.replaceState(null,'',location.pathname+location.search+'#selo');})();
   function refSelo(){try{var r=JSON.parse(localStorage.getItem(REF)||'null');return r&&r.c&&Date.now()-r.t<30*864e5?r.c:null;}catch(e){return null;}}
   try{if(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){sb=null;}
-  window.VG={sb:sb,perfil:function(){return perfil;},ref:refSelo}; /* usado pelo painel do apoiador e pela página do selo */
+  window.VG={sb:sb,perfil:function(){return perfil;},ref:refSelo,
+    /* painel: Transformar em assinatura abre o Apoiar com o mesmo número de apadrinhados e o período Todo mês */
+    assinar:function(n){if(n>0)apN.value=n;var r=document.querySelector('input[name="ap-p"][value="A"]');if(r)r.checked=true;ap();location.hash='apoiar-cadastro';}}; /* usado pelo painel do apoiador e pela página do selo */
   var FORA='O cadastro está sendo ligado e volta em breve. Enquanto isso, fale com a gente pelo WhatsApp (51) 99291-0038.';
   var perfil=null,cobranca={ativo:false,ambiente:''};
   function destino(c){return c.tipo==='vanguardista'?'simuladores':'painel';}
@@ -1316,12 +1321,13 @@ section.band#apoiadores > .in{padding-top:48px}
     var v=function(id){return document.getElementById(id).value.trim();};
     var apBtn=btn||apBtns[1],txtBtn=apBtn.textContent;apBtn.disabled=true;apBtn.textContent='Gerando o pagamento…';
     fetch('/api/asaas/cobranca',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      vanguardistas:int(apN,1),meses:meses(apP(),apM),nome:v('ap-nome'),email:v('ap-email'),fone:v('ap-whats'),doc:v('ap-doc'),
+      vanguardistas:int(apN,1),meses:meses(apP(),apM),assinatura:apP()==='A',nome:v('ap-nome'),email:v('ap-email'),fone:v('ap-whats'),doc:v('ap-doc'),
       cep:v('ap-cep'),endereco:v('ap-rua'),bairro:v('ap-bairro'),numero:v('ap-num'),complemento:v('ap-comp')})})
     .then(function(r){return r.json().catch(function(){return {};});})
     .then(function(j){
       apBtn.disabled=false;apBtn.textContent=txtBtn;
       if(j.ok&&j.link){location.href=j.link;return;}
+      if(j.ok){errEl.textContent='Assinatura criada. A primeira fatura chega no seu e-mail em instantes.';errEl.hidden=false;return;}
       if(j.codigo==='sem_chave'){cobranca.ativo=false;apBtns.forEach(function(b){b.textContent=b.textContent.replace(' (teste)','');});document.getElementById('ap-aviso').hidden=false;document.getElementById('ap-aviso-pag').hidden=true;semCobranca();return;}
       errEl.textContent=j.erro||'Não foi possível gerar o pagamento agora. Tente de novo em instantes.';errEl.hidden=false;
     },function(){apBtn.disabled=false;apBtn.textContent=txtBtn;errEl.textContent='Sem conexão com o servidor. Tente de novo em instantes.';errEl.hidden=false;});
@@ -1395,7 +1401,7 @@ section.band#apoiadores > .in{padding-top:48px}
       function cobrar(){if(p==='ap'&&cobranca.ativo)pagar(errEl,concluir,btn);else concluir();}
       function concluir(){
       var lines=[];f.querySelectorAll('.fields label').forEach(function(l){if(l.hidden||l.closest('.chips'))return;var i=l.querySelector('input,select');if(i&&i.type==='password')return;if(i)lines.push(l.querySelector('span').textContent.replace(/ \(.*\)/,'')+': '+(i.tagName==='SELECT'?i.options[i.selectedIndex].text:i.value.trim()));});
-      if(p==='ap'){var mm=meses(apP(),apM);lines.splice(1,0,'Durante: '+mm+(mm===1?' mês':' meses'));lines.push('Total em recursos: '+document.getElementById('ap-total').textContent);}
+      if(p==='ap'){var mm=meses(apP(),apM);lines.splice(1,0,'Durante: '+(apP()==='A'?'todo mês (assinatura)':mm+(mm===1?' mês':' meses')));lines.push('Total em recursos: '+document.getElementById('ap-total').textContent);}
       if(p==='vg')lines.unshift('Perfil: Vanguardista');
       var txt='Olá! Tenho interesse no Portal Vanguarda.\n'+lines.join('\n');
       document.getElementById(p+'-resumo').textContent=txt;
@@ -1626,7 +1632,9 @@ section.band#apoiadores > .in{padding-top:48px}
     else if(st.fin&&st.fin.vanguardistas_total)nota.push('Região, porte, tipo de negócio e faturamento aparecem quando o seu apoio custear pelo menos 5 vanguardistas cadastrados. Abaixo disso, nada é mostrado, para que ninguém seja identificado.');
     if(st.ambiente==='sandbox')nota.push('Ambiente de teste: os apoios são do sandbox do Asaas.');
     $('pn-imp-nota').textContent=nota.join(' ');
+    $('pn-assinar').hidden=!(st.fin&&st.fin.vanguardistas_total>0&&VG.assinar);
   }
+  $('pn-assinar-btn').addEventListener('click',function(){var f=st.fin||{};VG.assinar(Number(f.vanguardistas_ativos)||Number(f.vanguardistas_total)||5);});
   /* ambiente da cobrança (sandbox ou produção), para contar só os apoios do ambiente ligado */
   var ambienteP=null;
   function ambiente(){

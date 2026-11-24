@@ -9,7 +9,8 @@
 //
 // Uma nota por pagamento: antes de agendar, a função pergunta ao Asaas se aquele pagamento
 // já tem nota (GET /invoices?payment=...). Cartão gera CONFIRMED e depois RECEIVED; só o
-// primeiro agenda.
+// primeiro agenda. Assinaturas: cada cobrança mensal passa por aqui como um pagamento comum
+// (apoio de 1 mês e uma nota por mês).
 //
 // Variáveis de ambiente na Vercel (as mesmas da cobrança):
 //   ASAAS_API_KEY        chave de API
@@ -162,6 +163,18 @@ async function estornarApoio(p) {
 
 const ESTORNOS = ["PAYMENT_REFUNDED", "PAYMENT_CHARGEBACK_REQUESTED", "PAYMENT_DELETED"];
 
+// Cobrança gerada por assinatura: se vier sem externalReference, usa o da assinatura
+// ("apoio:<n>x1m"), para registrar o apoio e escolher o serviço da nota como numa cobrança avulsa.
+async function completarReferencia(p) {
+  if (p.externalReference || !p.subscription) return;
+  try {
+    const a = await asaas("GET", "/subscriptions/" + encodeURIComponent(p.subscription));
+    if (a && a.externalReference) p.externalReference = a.externalReference;
+  } catch (e) {
+    console.error("assinatura", p.subscription, String(e));
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -184,6 +197,7 @@ module.exports = async function handler(req, res) {
   if (!corpo || !corpo.event) return res.status(400).send("corpo inválido");
 
   try {
+    if (corpo.payment && corpo.event.startsWith("PAYMENT_")) await completarReferencia(corpo.payment);
     if ((corpo.event === "PAYMENT_CONFIRMED" || corpo.event === "PAYMENT_RECEIVED") && corpo.payment) {
       // Registro do apoio e nota são independentes: um erro num não impede o outro. Falha temporária
       // do banco (rede ou 5xx) responde 500 no fim para o Asaas reenviar; os dois passos não duplicam.
