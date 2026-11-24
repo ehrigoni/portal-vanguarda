@@ -6,6 +6,8 @@
 //   2. procura o cliente no Asaas pelo CPF/CNPJ e cria se não existir;
 //   3. cria a cobrança com billingType UNDEFINED (o apoiador escolhe PIX, boleto ou cartão);
 //   4. devolve o link da fatura (invoiceUrl) para o site abrir.
+//   Com assinatura: true, cria uma assinatura mensal (POST /subscriptions) em vez de uma cobrança
+//   avulsa e devolve o link da primeira fatura.
 //
 // O externalReference sai como "apoio:<n>x<meses>m", o mesmo prefixo que o webhook
 // de notas fiscais (supabase/functions/asaas-webhook) usa para escolher o serviço da NFS-e.
@@ -138,7 +140,8 @@ module.exports = async function handler(req, res) {
   if (!b || typeof b !== "object") return res.status(400).json({ erro: "Dados inválidos." });
 
   const n = inteiro(b.vanguardistas, MAX_VANGUARDISTAS);
-  const meses = inteiro(b.meses, MAX_MESES);
+  const assinatura = b.assinatura === true;
+  const meses = assinatura ? 1 : inteiro(b.meses, MAX_MESES); // assinatura: cada cobrança mensal paga 1 mês
   const d = {
     nome: txt(b.nome, 120),
     email: txt(b.email, 120).toLowerCase(),
@@ -169,7 +172,7 @@ module.exports = async function handler(req, res) {
   if (valor < minimo) {
     const fmt = (v) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     return res.status(400).json({
-      erro: "O valor mínimo por pagamento é " + fmt(minimo) + ". Aumente o número de apadrinhados ou o período.",
+      erro: "O valor mínimo por pagamento é " + fmt(minimo) + (assinatura ? ". Na assinatura, apadrinhe pelo menos " + Math.ceil(minimo / CUSTO_MEDIO) + " vanguardistas." : ". Aumente o número de apadrinhados ou o período."),
       codigo: "abaixo_do_minimo",
     });
   }
@@ -177,6 +180,29 @@ module.exports = async function handler(req, res) {
   try {
     const customer = await clienteAsaas(d);
     const plural = (q, s, p) => q + " " + (q === 1 ? s : p);
+    if (assinatura) {
+      // Assinatura mensal: o Asaas gera uma cobrança por mês com o mesmo externalReference, e o
+      // webhook trata cada pagamento como um apoio de 1 mês (registro no painel e NFS-e).
+      const ass = await asaas("POST", "/subscriptions", {
+        customer,
+        billingType: "UNDEFINED",
+        value: valor,
+        nextDueDate: vencimento(),
+        cycle: "MONTHLY",
+        description: "Apoio mensal ao Portal Vanguarda: " + plural(n, "vanguardista apadrinhado", "vanguardistas apadrinhados") + " por mês.",
+        externalReference: "apoio:" + n + "x1m",
+      });
+      const pags = await asaas("GET", "/subscriptions/" + encodeURIComponent(ass.id) + "/payments?limit=1").catch(() => null);
+      const primeira = pags && Array.isArray(pags.data) && pags.data[0];
+      return res.status(200).json({
+        ok: true,
+        ambiente: ambiente(),
+        valor,
+        assinatura: ass.id,
+        link: primeira ? primeira.invoiceUrl : null,
+        id: primeira ? primeira.id : null,
+      });
+    }
     const cobranca = await asaas("POST", "/payments", {
       customer,
       billingType: "UNDEFINED",

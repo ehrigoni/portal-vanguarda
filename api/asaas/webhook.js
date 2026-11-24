@@ -9,7 +9,8 @@
 //
 // Uma nota por pagamento: antes de agendar, a função pergunta ao Asaas se aquele pagamento
 // já tem nota (GET /invoices?payment=...). Cartão gera CONFIRMED e depois RECEIVED; só o
-// primeiro agenda.
+// primeiro agenda. Assinaturas: cada cobrança mensal passa por aqui como um pagamento comum
+// (apoio de 1 mês e uma nota por mês).
 //
 // Variáveis de ambiente na Vercel (as mesmas da cobrança):
 //   ASAAS_API_KEY        chave de API
@@ -105,9 +106,13 @@ function chaveServico() {
 
 async function supabase(method, path, body, prefer) {
   const k = chaveServico();
+  // Chave legada (JWT "eyJ...") vai em apikey e Authorization. A chave nova (sb_secret_...) não é JWT:
+  // vai só em apikey, porque o Supabase recusa (401) um Authorization: Bearer que não seja JWT.
+  const headers = { apikey: k, "Content-Type": "application/json", Prefer: prefer || "return=minimal" };
+  if (/^eyJ/.test(k)) headers.Authorization = "Bearer " + k;
   const r = await fetch(SUPABASE_URL + path, {
     method,
-    headers: { apikey: k, Authorization: "Bearer " + k, "Content-Type": "application/json", Prefer: prefer || "return=minimal" },
+    headers,
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!r.ok) {
@@ -117,6 +122,7 @@ async function supabase(method, path, body, prefer) {
     try { codigo = String(JSON.parse(t).code || ""); } catch (_) {}
     const e = new Error("Supabase " + r.status + (codigo ? " " + codigo : ""));
     e.supabase = true;
+    e.status = r.status; // 4xx (chave errada, tabela ausente) não melhora com reenvio: o handler responde 200
     throw e;
   }
 }
@@ -162,6 +168,18 @@ async function estornarApoio(p) {
 
 const ESTORNOS = ["PAYMENT_REFUNDED", "PAYMENT_CHARGEBACK_REQUESTED", "PAYMENT_DELETED"];
 
+// Cobrança gerada por assinatura: se vier sem externalReference, usa o da assinatura
+// ("apoio:<n>x1m"), para registrar o apoio e escolher o serviço da nota como numa cobrança avulsa.
+async function completarReferencia(p) {
+  if (p.externalReference || !p.subscription) return;
+  try {
+    const a = await asaas("GET", "/subscriptions/" + encodeURIComponent(p.subscription));
+    if (a && a.externalReference) p.externalReference = a.externalReference;
+  } catch (e) {
+    console.error("assinatura", p.subscription, String(e));
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -184,6 +202,7 @@ module.exports = async function handler(req, res) {
   if (!corpo || !corpo.event) return res.status(400).send("corpo inválido");
 
   try {
+    if (corpo.payment && corpo.event.startsWith("PAYMENT_")) await completarReferencia(corpo.payment);
     if ((corpo.event === "PAYMENT_CONFIRMED" || corpo.event === "PAYMENT_RECEIVED") && corpo.payment) {
       // Registro do apoio e nota são independentes: um erro num não impede o outro. Falha temporária
       // do banco (rede ou 5xx) responde 500 no fim para o Asaas reenviar; os dois passos não duplicam.
@@ -193,15 +212,20 @@ module.exports = async function handler(req, res) {
         console.log("apoio", corpo.event, corpo.payment.id, JSON.stringify(ap));
       } catch (e) {
         console.error("apoio", corpo.event, corpo.payment.id, String(e));
-        const st = Number((/Supabase (\d+)/.exec(String(e)) || [])[1]);
-        if (!st || st >= 500) reenviar = true;
+        if (!(e.status >= 400 && e.status < 500)) reenviar = true; // só rede ou 5xx pede reenvio
       }
       const r = await emitirNota(corpo.payment);
       console.log("nfse", corpo.event, corpo.payment.id, JSON.stringify(r));
       if (reenviar) return res.status(500).send("apoio não registrado; tente de novo");
     } else if (ESTORNOS.includes(corpo.event) && corpo.payment) {
-      await estornarApoio(corpo.payment);
-      console.log("apoio estornado", corpo.event, corpo.payment.id);
+      try {
+        await estornarApoio(corpo.payment);
+        console.log("apoio estornado", corpo.event, corpo.payment.id);
+      } catch (e) {
+        console.error("apoio", corpo.event, corpo.payment.id, String(e));
+        // só falha temporária do banco (rede ou 5xx) pede reenvio; o resto fica no log
+        if (!(e.status >= 400 && e.status < 500)) return res.status(500).send("estorno não registrado; tente de novo");
+      }
     } else if (String(corpo.event).startsWith("INVOICE_") && corpo.invoice) {
       const n = corpo.invoice;
       const log = corpo.event === "INVOICE_ERROR" ? console.error : console.log;
