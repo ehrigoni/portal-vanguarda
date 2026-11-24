@@ -726,7 +726,7 @@ section.band#apoiadores > .in{padding-top:48px}
   </div>
   <ol class="steps">
       <li><h3>Apadrinhamento</h3><p>Escolha do número de apadrinhados e período.</p></li>
-      <li><h3>Informações para a nota fiscal</h3><p>Nome, celular ou WhatsApp, e-mail (opcional), CPF ou CNPJ e endereço. Se quiser guardar seu cadastro, crie uma senha. Leva um minuto.</p></li>
+      <li><h3>Informações para a nota fiscal</h3><p>Nome, celular ou WhatsApp, e-mail, CPF ou CNPJ e endereço. Se quiser guardar seu cadastro, crie uma senha. Leva um minuto.</p></li>
       <li><h3>Pagamento</h3><p>Você recebe o link e apoia por PIX, boleto ou cartão. O pagamento compensa e o sistema de cobrança registra o valor.</p></li>
       <li><h3>Nota fiscal sem burocracia</h3><p>A NFS-e é emitida direto com a prefeitura, por integração, e chega no seu e-mail a cada pagamento, sem ninguém abrir sistema do governo.</p></li>
     </ol>
@@ -945,7 +945,7 @@ section.band#apoiadores > .in{padding-top:48px}
       <div class="fields two">
         <label for="cd-nome" class="wide"><span>Seu nome</span><input id="cd-nome" type="text" required autocomplete="name"></label>
         <label for="cd-fone"><span>Celular, WhatsApp ou telefone</span><input id="cd-fone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
-        <label for="cd-email"><span>E-mail (opcional)</span><input id="cd-email" type="email" autocomplete="email" inputmode="email" placeholder="nome@exemplo.com" data-mask="email"></label>
+        <label for="cd-email"><span>E-mail</span><input id="cd-email" type="email" required autocomplete="email" inputmode="email" placeholder="nome@exemplo.com" data-mask="email"></label>
         <label for="cd-doc" class="wide"><span>CPF ou CNPJ</span><input id="cd-doc" type="text" required inputmode="numeric" placeholder="000.000.000-00" data-mask="doc"></label>
         <label for="cd-cidade"><span>Cidade</span><input id="cd-cidade" type="text" required autocomplete="address-level2"></label>
         <label for="cd-uf"><span>Estado</span><select id="cd-uf" required autocomplete="address-level1"><option value="" selected disabled>Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
@@ -965,7 +965,7 @@ section.band#apoiadores > .in{padding-top:48px}
     <div class="aside">
       <div class="people">
         <h3>Por que pedimos esses dados</h3>
-        <p>O celular ou WhatsApp é o seu login e o canal para falarmos com você. O CPF ou CNPJ vai na nota fiscal. O e-mail é opcional: se você informar, também pode usá-lo para entrar e a nota fiscal chega nele.</p>
+        <p>O celular ou WhatsApp é o seu login e o canal para falarmos com você. O CPF ou CNPJ vai na nota fiscal. O e-mail também serve para entrar, e é nele que a nota fiscal chega.</p>
         <p>Seus dados ficam guardados no banco de dados do portal e são usados só para o Portal Vanguarda.</p>
       </div>
     </div>
@@ -1168,7 +1168,7 @@ section.band#apoiadores > .in{padding-top:48px}
     if(!tipo)return erro('cd-err','Escolha se você é vanguardista ou apoiador.',document.querySelector('input[name="cd-tipo"]'));
     if(!g('cd-nome').value.trim())return erro('cd-err','Informe seu nome.',g('cd-nome'));
     if(!foneOk(g('cd-fone').value))return erro('cd-err','Informe um celular, WhatsApp ou telefone com DDD.',g('cd-fone'));
-    var email=maskEmail(g('cd-email').value);if(email&&!emailOk(email))return erro('cd-err','Confira o e-mail ou deixe o campo em branco.',g('cd-email'));
+    var email=maskEmail(g('cd-email').value);if(!email)return erro('cd-err','Informe seu e-mail.',g('cd-email'));if(!emailOk(email))return erro('cd-err','Confira o e-mail.',g('cd-email'));
     if(!docOk(g('cd-doc').value))return erro('cd-err','Confira o CPF ou CNPJ.',g('cd-doc'));
     if(!g('cd-cidade').value.trim())return erro('cd-err','Informe sua cidade.',g('cd-cidade'));
     if(!g('cd-uf').value)return erro('cd-err','Escolha o estado.',g('cd-uf'));
