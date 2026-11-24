@@ -106,9 +106,13 @@ function chaveServico() {
 
 async function supabase(method, path, body, prefer) {
   const k = chaveServico();
+  // Chave legada (JWT "eyJ...") vai em apikey e Authorization. A chave nova (sb_secret_...) não é JWT:
+  // vai só em apikey, porque o Supabase recusa (401) um Authorization: Bearer que não seja JWT.
+  const headers = { apikey: k, "Content-Type": "application/json", Prefer: prefer || "return=minimal" };
+  if (/^eyJ/.test(k)) headers.Authorization = "Bearer " + k;
   const r = await fetch(SUPABASE_URL + path, {
     method,
-    headers: { apikey: k, Authorization: "Bearer " + k, "Content-Type": "application/json", Prefer: prefer || "return=minimal" },
+    headers,
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!r.ok) {
@@ -118,6 +122,7 @@ async function supabase(method, path, body, prefer) {
     try { codigo = String(JSON.parse(t).code || ""); } catch (_) {}
     const e = new Error("Supabase " + r.status + (codigo ? " " + codigo : ""));
     e.supabase = true;
+    e.status = r.status; // 4xx (chave errada, tabela ausente) não melhora com reenvio: o handler responde 200
     throw e;
   }
 }
@@ -207,15 +212,20 @@ module.exports = async function handler(req, res) {
         console.log("apoio", corpo.event, corpo.payment.id, JSON.stringify(ap));
       } catch (e) {
         console.error("apoio", corpo.event, corpo.payment.id, String(e));
-        const st = Number((/Supabase (\d+)/.exec(String(e)) || [])[1]);
-        if (!st || st >= 500) reenviar = true;
+        if (!(e.status >= 400 && e.status < 500)) reenviar = true; // só rede ou 5xx pede reenvio
       }
       const r = await emitirNota(corpo.payment);
       console.log("nfse", corpo.event, corpo.payment.id, JSON.stringify(r));
       if (reenviar) return res.status(500).send("apoio não registrado; tente de novo");
     } else if (ESTORNOS.includes(corpo.event) && corpo.payment) {
-      await estornarApoio(corpo.payment);
-      console.log("apoio estornado", corpo.event, corpo.payment.id);
+      try {
+        await estornarApoio(corpo.payment);
+        console.log("apoio estornado", corpo.event, corpo.payment.id);
+      } catch (e) {
+        console.error("apoio", corpo.event, corpo.payment.id, String(e));
+        // só falha temporária do banco (rede ou 5xx) pede reenvio; o resto fica no log
+        if (!(e.status >= 400 && e.status < 500)) return res.status(500).send("estorno não registrado; tente de novo");
+      }
     } else if (String(corpo.event).startsWith("INVOICE_") && corpo.invoice) {
       const n = corpo.invoice;
       const log = corpo.event === "INVOICE_ERROR" ? console.error : console.log;
