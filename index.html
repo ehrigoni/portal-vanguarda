@@ -428,6 +428,21 @@ section.band#apoiadores > .in{padding-top:48px}
 .kpi.txt b{font-size:16px;line-height:1.35;padding-top:4px}
 .kpi small{color:var(--muted);font-size:12.5px;line-height:1.35}
 .grupo .pouco{color:var(--muted);font-size:14px}
+/* Manifesto (página inicial) */
+.mf-top{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:28px;align-items:start}
+.mf-top h2{max-width:none}
+.mf-txt{display:grid;gap:14px;color:var(--muted);font-size:17px}
+.mf-txt b{color:var(--fg);font-weight:600}
+.mf-pilares{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:14px}
+@media (min-width:640px){.mf-pilares{grid-template-columns:repeat(2,minmax(0,1fr))}.mf-pilares li.mf-dest{grid-column:span 2}}
+@media (min-width:1100px){.mf-pilares{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.mf-pilares li{border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:8px;align-content:start;background:var(--panel)}
+.mf-pilares li .tag{border-color:var(--glow);color:var(--glow)}
+.mf-pilares p{color:var(--muted);font-size:15px}
+.mf-pilares p b{color:var(--fg);font-weight:500}
+.mf-pilares li.mf-dest{border-color:var(--amber)}
+.mf-pilares li.mf-dest .tag{border-color:var(--amber);color:var(--amber)}
+@media (max-width:860px){.mf-top{grid-template-columns:1fr;gap:16px}}
 </style>
 <style>body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
 </head>
@@ -598,6 +613,25 @@ section.band#apoiadores > .in{padding-top:48px}
     <div><b>100% gratuito</b><small>simuladores e trilhas para quem empreende</small></div>
     <div><b>Apoio Facilitado</b><small>no lançamento, cada apoio vai gerar a NFS-e sozinho</small></div>
     <div><b>Desenvolvimento Humano</b><small>educação, trabalho decente e menos desigualdade (ODS: 4 · 8 · 10).</small></div>
+</div></section>
+<section class="band" id="manifesto"><div class="in">
+  <div class="mf-top">
+    <div class="head"><p class="eyebrow">Manifesto · Arquitetura para negócios sustentáveis</p><h2>Construir um negócio não deveria ser um salto no escuro.</h2></div>
+    <div class="mf-txt">
+      <p>Quem empreende no Brasil, do autônomo ao pequeno e médio empresário, conhece bem a rotina: falta tempo para planejar e sobra urgência para apagar incêndios. Enquanto grandes corporações contam com equipes inteiras para desenhar suas estratégias, quem está na linha de frente muitas vezes precisa decidir no instinto.</p>
+      <p>O <b>Portal Vanguarda</b> nasce para mudar essa realidade. Nossa missão é democratizar a arquitetura de negócios sustentáveis, transformando planejamento estratégico e operacional em ferramentas práticas, visíveis e acessíveis para quem faz a economia girar todos os dias.</p>
+    </div>
+  </div>
+  <div class="head"><p class="eyebrow">Nossos pilares</p></div>
+  <ul class="mf-pilares">
+    <li><span class="tag">Diagnóstico</span><h3>Raio-X em 5 minutos</h3><p>Antes mesmo de escolher um simulador, você responde a 5 perguntas rápidas sobre o momento atual da empresa (ex.: <i>caixa apertado</i>, <i>querendo crescer</i>, <i>organizando preços</i>) e o portal recomenda exatamente qual simulador usar primeiro.</p></li>
+    <li><span class="tag">Simular</span><h3>Clareza antes do risco</h3><p>Todo empreendedor merece enxergar o futuro da sua operação antes de investir seu tempo e dinheiro. Por isso, começamos pelo <b>uso prático de simuladores</b>, permitindo testar cenários reais de forma simples e direta.</p></li>
+    <li><span class="tag">Construir</span><h3>Evolução passo a passo</h3><p>Não basta apenas simular; é preciso construir. Nossa jornada evolui para <b>trilhas de estruturação de negócios</b>, <b>materiais didáticos</b> e <b>cursos</b> desenhados para caber na rotina corrida de quem empreende.</p></li>
+    <li><span class="tag">Grátis</span><h3>Acesso livre ao essencial</h3><p>Nossos simuladores principais são e sempre serão <b>gratuitos</b>. Ferramentas avançadas são desbloqueadas com um simples cadastro, garantindo que a falta de orçamento nunca seja uma barreira para começar a organizar a casa.</p></li>
+    <li class="mf-dest"><span class="tag">Apoiadores</span><h3>Crescimento impulsionado por quem acredita e divulga</h3><p>O Vanguarda se sustenta por meio de uma corrente de valor. <b>Vanguardistas Apoiadores</b> financiam meses de operação da plataforma e também podem ajudar na divulgação do portal. Em troca, conquistam <b>selos de reconhecimento e de promoção do portal</b> para exibir em suas redes (LinkedIn, Instagram, WhatsApp e Facebook), fortalecendo sua marca e provando na prática seu compromisso com o ecossistema empreendedor.</p></li>
+    <li><span class="tag">Indicação</span><h3>Traga um Vizinho</h3><p>Incentivamos que cada empreendedor convide outro comerciante ou prestador de serviço da sua região para utilizar o portal, fortalecendo o senso de rede local e o crescimento mútuo.</p></li>
+    <li><span class="tag">Dados abertos</span><h3>Transparência radical</h3><p>Confiança se constrói com dados abertos. Mantemos em tempo real o placar de impacto do portal: quantos negócios estão sendo transformados e como cada apoio se converte em novas ferramentas para a comunidade.</p></li>
+  </ul>
 </div></section>
 <section class="band" id="como-funciona"><div class="in">
   <div class="head"><p class="eyebrow">Como vai funcionar</p><h2>Quem empreende usa de graça. Quem apoia custeia vanguardistas.</h2><p class="lede">Hoje o portal está em fase de estruturação. Os números abaixo começam a contar no lançamento oficial.</p></div>
