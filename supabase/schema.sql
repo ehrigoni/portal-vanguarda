@@ -23,6 +23,14 @@ alter table public.perfis add column if not exists ramo text
 alter table public.perfis add column if not exists faturamento text
   check (faturamento in ('ate5k', '5a20k', '20a50k', '50a100k', 'acima100k'));
 
+-- Endereço (CEP, rua, bairro, número, complemento). Obrigatório nos cadastros novos pelo site;
+-- fica vazio nas contas antigas até a pessoa atualizar (por exemplo, ao apoiar logada).
+alter table public.perfis add column if not exists cep         text check (cep ~ '^[0-9]{8}$');
+alter table public.perfis add column if not exists rua         text;
+alter table public.perfis add column if not exists bairro      text;
+alter table public.perfis add column if not exists numero      text;
+alter table public.perfis add column if not exists complemento text;
+
 alter table public.perfis enable row level security;
 
 drop policy if exists "ver o proprio perfil" on public.perfis;
@@ -41,7 +49,8 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.perfis (id, tipo, nome, fone, email, doc, cidade, uf, porte_negocio, ramo, faturamento)
+  insert into public.perfis (id, tipo, nome, fone, email, doc, cidade, uf, porte_negocio, ramo, faturamento,
+                             cep, rua, bairro, numero, complemento)
   values (
     new.id,
     new.raw_user_meta_data ->> 'tipo',
@@ -56,7 +65,12 @@ begin
     case when new.raw_user_meta_data ->> 'ramo' in ('comercio', 'alimentacao', 'servicos', 'tecnologia', 'industria', 'educacao', 'saude', 'financas', 'construcao', 'outro')
          then new.raw_user_meta_data ->> 'ramo' end,
     case when new.raw_user_meta_data ->> 'faturamento' in ('ate5k', '5a20k', '20a50k', '50a100k', 'acima100k')
-         then new.raw_user_meta_data ->> 'faturamento' end
+         then new.raw_user_meta_data ->> 'faturamento' end,
+    (select c from (select regexp_replace(coalesce(new.raw_user_meta_data ->> 'cep', ''), '[^0-9]', '', 'g') as c) x where c ~ '^[0-9]{8}$'),
+    nullif(left(trim(coalesce(new.raw_user_meta_data ->> 'rua', '')), 160), ''),
+    nullif(left(trim(coalesce(new.raw_user_meta_data ->> 'bairro', '')), 80), ''),
+    nullif(left(trim(coalesce(new.raw_user_meta_data ->> 'numero', '')), 10), ''),
+    nullif(left(trim(coalesce(new.raw_user_meta_data ->> 'complemento', '')), 60), '')
   );
   return new;
 end;

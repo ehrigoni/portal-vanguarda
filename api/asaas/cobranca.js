@@ -100,6 +100,7 @@ async function clienteAsaas(d) {
     mobilePhone: d.fone,
     postalCode: d.cep,
     address: d.endereco,
+    province: d.bairro,
     addressNumber: d.numero,
     complement: d.complemento || undefined,
     externalReference: "portal-vanguarda",
@@ -145,6 +146,7 @@ module.exports = async function handler(req, res) {
     doc: dig(b.doc),
     cep: dig(b.cep),
     endereco: txt(b.endereco, 160),
+    bairro: txt(b.bairro, 80),
     numero: txt(b.numero, 10),
     complemento: txt(b.complemento, 60),
   };
@@ -155,7 +157,8 @@ module.exports = async function handler(req, res) {
   if (d.fone.length !== 10 && d.fone.length !== 11) faltando.push("celular");
   if (!cpfOk(d.doc) && !cnpjOk(d.doc)) faltando.push("CPF ou CNPJ");
   if (d.cep.length !== 8) faltando.push("CEP");
-  if (!d.endereco) faltando.push("endereço");
+  if (!d.endereco) faltando.push("rua");
+  if (!d.bairro) faltando.push("bairro");
   if (!d.numero) faltando.push("número");
   // o Asaas só emite a NFS-e se o cliente tiver e-mail
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) faltando.push("e-mail");
