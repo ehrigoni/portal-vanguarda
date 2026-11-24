@@ -268,7 +268,9 @@ section.band#apoiadores > .in{padding-top:48px}
 .signup .btn-nota{margin:-6px 0 4px;text-align:center}
 .signup .nota-centro{text-align:center}
 #cd-btn{justify-self:center}
-#cd-entrar{text-align:center}
+.cadastro-vg{margin-top:48px;display:grid;gap:18px}
+.cadastro-vg .signup{grid-template-columns:1fr;max-width:760px}
+.cd-entrar{display:grid;justify-items:center;gap:8px}
 .done{border:1px solid var(--glow);border-radius:12px;padding:18px 20px;display:grid;gap:10px;background:var(--panel)}
 .done p{color:var(--muted);font-size:14px}
 .done pre{margin:0;white-space:pre-wrap;font-family:var(--mono);font-size:12.5px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-wrap:anywhere}
@@ -608,7 +610,7 @@ section.band#apoiadores > .in{padding-top:48px}
     <article class="who-box">
       <span class="tag">Quer se tornar um Vanguardista</span>
       <ol class="checks"><li>Obtenha acesso aos simuladores.</li><li>Uso gratuito e ininterrupto.</li><li>Caso queira armazenar o seu histórico, realize o seu cadastro.</li></ol>
-      <a class="btn go" href="#cadastro" data-tipo="vanguardista">Quero me cadastrar</a>
+      <a class="btn go" href="#cadastro">Quero me cadastrar</a>
     </article>
     <article class="who-box feat" id="simular-apoio">
       <span class="tag">Para quem é apoiador do portal</span>
@@ -785,7 +787,37 @@ section.band#apoiadores > .in{padding-top:48px}
       <li><h3>Contribua com o portal</h3><p>Todo vanguardista pode se tornar um apoiador do portal, dispensando o apadrinhamento de outro vanguardista. Com isso ele pode se cadastrar no portal, armazenar histórico de simulações e ter acesso a simuladores mais avançados.</p></li>
       <li><h3>Apadrinhamento</h3><p>Caso o vanguardista tenha se cadastrado no portal e não exercido seu apoio, este fica disponível para que seja apadrinhado na plataforma.</p></li>
     </ol>
-  <div class="loop" id="vanguardista-cadastro"><p><b>Use os simuladores de maneira ilimitada.</b> Caso você venha a se cadastrar, poderá apoiar a comunidade, ou caso queira, ficar disponível para ser apadrinhado.</p><a class="btn go" href="#cadastro" data-tipo="vanguardista">Cadastrar-se como vanguardista</a></div>
+  <div class="cadastro-vg" id="cadastro">
+  <div class="head"><p class="eyebrow">Cadastrar-se</p><h2>Crie sua conta em um minuto</h2></div>
+  <div class="signup">
+    <form class="acc" id="form-cadastro" novalidate>
+      <div class="people">
+        <h3>Por que pedimos esses dados</h3>
+        <p>O celular ou WhatsApp é o seu login e o canal para falarmos com você. O CPF ou CNPJ vai na nota fiscal. O e-mail é opcional: se você informar, também pode usá-lo para entrar e a nota fiscal chega nele.</p>
+        <p>Seus dados ficam guardados no banco de dados do portal e são usados só para o Portal Vanguarda.</p>
+      </div>
+      <div class="fields two">
+        <label for="cd-nome" class="wide"><span>Seu nome</span><input id="cd-nome" type="text" required autocomplete="name"></label>
+        <label for="cd-fone"><span>Celular, WhatsApp ou telefone</span><input id="cd-fone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
+        <label for="cd-email"><span>E-mail (opcional)</span><input id="cd-email" type="email" autocomplete="email" inputmode="email" placeholder="nome@exemplo.com" data-mask="email"></label>
+        <label for="cd-doc" class="wide"><span>CPF ou CNPJ</span><input id="cd-doc" type="text" required inputmode="numeric" placeholder="000.000.000-00" data-mask="doc"></label>
+        <label for="cd-cidade"><span>Cidade</span><input id="cd-cidade" type="text" required autocomplete="address-level2"></label>
+        <label for="cd-uf"><span>Estado</span><select id="cd-uf" required autocomplete="address-level1"><option value="" selected disabled>Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
+        <div class="wide cd-negocio" id="cd-negocio">
+          <p class="note">Sobre o seu negócio (opcional). Apoiadores veem só totais de grupos com 5 ou mais vanguardistas, nunca o seu nome, documento ou contato.</p>
+        </div>
+        <label for="cd-porte"><span>Porte do negócio (opcional)</span><select id="cd-porte"><option value="">Prefiro não informar</option><option value="autonomo">Autônomo</option><option value="mei">MEI</option><option value="me">Microempresa</option><option value="epp">Pequena empresa</option><option value="media">Média ou grande</option></select></label>
+        <label for="cd-ramo"><span>Tipo de negócio (opcional)</span><select id="cd-ramo"><option value="">Prefiro não informar</option><option value="comercio">Comércio e varejo</option><option value="alimentacao">Alimentação</option><option value="servicos">Serviços</option><option value="tecnologia">Tecnologia</option><option value="industria">Indústria</option><option value="educacao">Educação</option><option value="saude">Saúde e bem-estar</option><option value="financas">Finanças, contabilidade e seguros</option><option value="construcao">Construção e imóveis</option><option value="outro">Outro</option></select></label>
+        <label for="cd-fat" class="wide"><span>Faturamento mensal (opcional)</span><select id="cd-fat"><option value="">Prefiro não informar</option><option value="ate5k">Até R$ 5 mil</option><option value="5a20k">De R$ 5 mil a R$ 20 mil</option><option value="20a50k">De R$ 20 mil a R$ 50 mil</option><option value="50a100k">De R$ 50 mil a R$ 100 mil</option><option value="acima100k">Acima de R$ 100 mil</option></select></label>
+        <label for="cd-senha" class="wide"><span>Senha (mínimo de 6 caracteres)</span><input id="cd-senha" type="password" required minlength="6" autocomplete="new-password"></label>
+      </div>
+      <p class="err" id="cd-err" hidden></p>
+      <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. O cadastro cria sua conta e registra seu interesse, sem criar contrato.</span></p>
+      <button class="btn go" type="submit" id="cd-btn">Cadastrar</button>
+      <div class="cd-entrar" id="cd-entrar"><p class="note">Já tem conta?</p><a class="btn" href="#entrar">Entrar</a></div>
+    </form>
+  </div>
+</div>
 </div></section>
 </div>
 <div data-view="painel">
@@ -796,7 +828,7 @@ section.band#apoiadores > .in{padding-top:48px}
   <div class="pn-acts" data-apoiador hidden><a class="btn go" href="#pn-apoiar">Apadrinhar vanguardistas</a><a class="btn" href="#pn-selos">Ver selos</a><a class="btn" href="#pn-grupos">Acompanhar grupos</a></div>
 </div></section>
 <section class="band" id="pn-fora" hidden><div class="in">
-  <div class="loop"><span class="eyebrow">Acesso</span><p><b>O painel é exclusivo para apoiadores cadastrados.</b> Entre com sua conta ou cadastre-se como apoiador para ver os selos e acompanhar vanguardistas.</p><div class="loop-acts"><a class="btn" href="#entrar">Entrar</a><a class="btn go" href="#cadastro" data-tipo="apoiador">Cadastrar-se como apoiador</a></div></div>
+  <div class="loop"><span class="eyebrow">Acesso</span><p><b>O painel é exclusivo para apoiadores cadastrados.</b> Entre com sua conta ou cadastre-se como apoiador para ver os selos e acompanhar vanguardistas.</p><div class="loop-acts"><a class="btn" href="#entrar">Entrar</a><a class="btn go" href="#apoiar-cadastro">Cadastrar-se como apoiador</a></div></div>
 </div></section>
 <div id="pn-conteudo" hidden>
 <section class="band" id="pn-apoiar" hidden><div class="in">
@@ -927,49 +959,6 @@ section.band#apoiadores > .in{padding-top:48px}
     <button class="btn go" type="submit">Entrar</button>
     <p class="note">Ainda não tem conta? <a href="#cadastro">Cadastrar-se</a></p>
   </form>
-</div></section>
-</div>
-<div data-view="cadastro">
-<section class="pagehead"><div class="in">
-  <p class="eyebrow">Cadastrar-se</p>
-  <h1>Crie sua conta em um minuto</h1>
-  <p class="lede">Vanguardistas entram direto na área de simuladores. Apoiadores entram direto na área de apoiar vanguardistas.</p>
-</div></section>
-<section class="band"><div class="in">
-  <div class="signup">
-    <form class="acc" id="form-cadastro" novalidate>
-      <fieldset class="chips"><legend>Você é</legend>
-        <label><input type="radio" name="cd-tipo" value="vanguardista"><span>Vanguardista</span></label>
-        <label><input type="radio" name="cd-tipo" value="apoiador"><span>Apoiador</span></label>
-      </fieldset>
-      <div class="fields two">
-        <label for="cd-nome" class="wide"><span>Seu nome</span><input id="cd-nome" type="text" required autocomplete="name"></label>
-        <label for="cd-fone"><span>Celular, WhatsApp ou telefone</span><input id="cd-fone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
-        <label for="cd-email"><span>E-mail (opcional)</span><input id="cd-email" type="email" autocomplete="email" inputmode="email" placeholder="nome@exemplo.com" data-mask="email"></label>
-        <label for="cd-doc" class="wide"><span>CPF ou CNPJ</span><input id="cd-doc" type="text" required inputmode="numeric" placeholder="000.000.000-00" data-mask="doc"></label>
-        <label for="cd-cidade"><span>Cidade</span><input id="cd-cidade" type="text" required autocomplete="address-level2"></label>
-        <label for="cd-uf"><span>Estado</span><select id="cd-uf" required autocomplete="address-level1"><option value="" selected disabled>Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
-        <div class="wide cd-negocio" id="cd-negocio" hidden>
-          <p class="note">Sobre o seu negócio (opcional). Apoiadores veem só totais de grupos com 5 ou mais vanguardistas, nunca o seu nome, documento ou contato.</p>
-        </div>
-        <label for="cd-porte" data-negocio hidden><span>Porte do negócio (opcional)</span><select id="cd-porte"><option value="">Prefiro não informar</option><option value="autonomo">Autônomo</option><option value="mei">MEI</option><option value="me">Microempresa</option><option value="epp">Pequena empresa</option><option value="media">Média ou grande</option></select></label>
-        <label for="cd-ramo" data-negocio hidden><span>Tipo de negócio (opcional)</span><select id="cd-ramo"><option value="">Prefiro não informar</option><option value="comercio">Comércio e varejo</option><option value="alimentacao">Alimentação</option><option value="servicos">Serviços</option><option value="tecnologia">Tecnologia</option><option value="industria">Indústria</option><option value="educacao">Educação</option><option value="saude">Saúde e bem-estar</option><option value="financas">Finanças, contabilidade e seguros</option><option value="construcao">Construção e imóveis</option><option value="outro">Outro</option></select></label>
-        <label for="cd-fat" class="wide" data-negocio hidden><span>Faturamento mensal (opcional)</span><select id="cd-fat"><option value="">Prefiro não informar</option><option value="ate5k">Até R$ 5 mil</option><option value="5a20k">De R$ 5 mil a R$ 20 mil</option><option value="20a50k">De R$ 20 mil a R$ 50 mil</option><option value="50a100k">De R$ 50 mil a R$ 100 mil</option><option value="acima100k">Acima de R$ 100 mil</option></select></label>
-        <label for="cd-senha" class="wide"><span>Senha (mínimo de 6 caracteres)</span><input id="cd-senha" type="password" required minlength="6" autocomplete="new-password"></label>
-      </div>
-      <p class="err" id="cd-err" hidden></p>
-      <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. O cadastro cria sua conta e registra seu interesse, sem criar contrato.</span></p>
-      <button class="btn go" type="submit" id="cd-btn">Cadastrar</button>
-      <p class="note" id="cd-entrar">Já tem conta? <a href="#entrar">Entrar</a></p>
-    </form>
-    <div class="aside">
-      <div class="people">
-        <h3>Por que pedimos esses dados</h3>
-        <p>O celular ou WhatsApp é o seu login e o canal para falarmos com você. O CPF ou CNPJ vai na nota fiscal. O e-mail é opcional: se você informar, também pode usá-lo para entrar e a nota fiscal chega nele.</p>
-        <p>Seus dados ficam guardados no banco de dados do portal e são usados só para o Portal Vanguarda.</p>
-      </div>
-    </div>
-  </div>
 </div></section>
 </div>
 <div data-view="sobre">
@@ -1154,18 +1143,11 @@ section.band#apoiadores > .in{padding-top:48px}
     document.querySelectorAll('.fields label.bad').forEach(function(l){l.classList.remove('bad');});
     if(campo){var l=campo.closest('label');if(l)l.classList.add('bad');campo.focus();}}
   function ocupado(form,on){var b=form.querySelector('button[type=submit]');b.disabled=on;b.style.opacity=on?.6:'';}
-  document.querySelectorAll('[data-tipo]').forEach(function(a){a.addEventListener('click',function(){var r=document.querySelector('input[name="cd-tipo"][value="'+a.dataset.tipo+'"]');if(r)r.checked=true;});});
 
-  /* perguntas opcionais sobre o negócio: só para vanguardistas */
-  function negocio(){var t=document.querySelector('input[name="cd-tipo"]:checked'),vg=!!(t&&t.value==='vanguardista');
-    document.querySelectorAll('#cd-negocio,[data-negocio]').forEach(function(el){el.hidden=!vg;});}
-  document.querySelectorAll('input[name="cd-tipo"]').forEach(function(r){r.addEventListener('change',negocio);});
-  document.querySelectorAll('[data-tipo]').forEach(function(a){a.addEventListener('click',function(){setTimeout(negocio,0);});});
   document.getElementById('form-cadastro').addEventListener('submit',function(e){
     e.preventDefault();var form=e.target;
     function g(id){return document.getElementById(id);}
-    var tipo=document.querySelector('input[name="cd-tipo"]:checked');
-    if(!tipo)return erro('cd-err','Escolha se você é vanguardista ou apoiador.',document.querySelector('input[name="cd-tipo"]'));
+    var tipo={value:'vanguardista'}; /* o cadastro fica na aba Vanguardista; apoiadores se cadastram em Apoiar */
     if(!g('cd-nome').value.trim())return erro('cd-err','Informe seu nome.',g('cd-nome'));
     if(!foneOk(g('cd-fone').value))return erro('cd-err','Informe um celular, WhatsApp ou telefone com DDD.',g('cd-fone'));
     var email=maskEmail(g('cd-email').value);if(email&&!emailOk(email))return erro('cd-err','Confira o e-mail ou deixe o campo em branco.',g('cd-email'));
