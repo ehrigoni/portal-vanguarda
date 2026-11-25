@@ -343,6 +343,7 @@ section.band#apoiadores > .in{padding-top:48px}
 .entrar-head h1{font-size:clamp(26px,4vw,36px);line-height:1.1;font-weight:700}
 @media (max-width:560px){.entrar-painel{padding:20px}}
 .fields label.bad{border-color:var(--amber)}
+.fields .err-campo{display:block;font-size:13px;color:var(--amber);margin-top:4px}
 .footnav{display:flex;gap:16px;flex-wrap:wrap}
 .footnav a{color:var(--muted);text-decoration:none}
 .footnav a:hover{color:var(--fg)}
@@ -785,7 +786,7 @@ section.band#apoiadores > .in{padding-top:48px}
         <label for="ap-nome"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
         <label for="ap-email"><span>E-mail (para a nota fiscal)</span><input id="ap-email" type="email" required autocomplete="email" inputmode="email" data-mask="email"></label>
         <label for="ap-whats"><span>Celular ou WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
-        <label for="ap-doc"><span>CPF ou CNPJ (para a nota fiscal)</span><input id="ap-doc" type="text" required inputmode="numeric" data-mask="doc"></label>
+        <label for="ap-doc"><span>CPF ou CNPJ (para a nota fiscal)</span><input id="ap-doc" type="text" required inputmode="numeric" data-mask="doc" maxlength="18" placeholder="000.000.000-00 ou 00.000.000/0000-00"></label>
         <label for="ap-cep"><span>CEP</span><input id="ap-cep" type="text" required autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9"><small class="hint" id="ap-cep-msg" aria-live="polite"></small></label>
         <label for="ap-rua"><span>Rua</span><input id="ap-rua" type="text" required autocomplete="address-line1" maxlength="160"></label>
         <label for="ap-bairro"><span>Bairro</span><input id="ap-bairro" type="text" required maxlength="80"></label>
@@ -1127,7 +1128,8 @@ section.band#apoiadores > .in{padding-top:48px}
   function maskLogin(v){if(/^[\d\s()-]*$/.test(v))return maskFone(v);
     return maskEmail(v.replace(/^\((\d{0,2})\)?\s?(\d*)-?(\d*)/,'$1$2$3'));}
   var MASK={fone:maskFone,doc:maskDoc,email:maskEmail,login:maskLogin};
-  document.querySelectorAll('[data-mask]').forEach(function(i){i.addEventListener('input',function(){var f=MASK[i.dataset.mask],v=f(i.value);if(v!==i.value)i.value=v;});});
+  /* máscara ao digitar, colar e no preenchimento automático do navegador (que nem sempre dispara input) */
+  document.querySelectorAll('[data-mask]').forEach(function(i){function m(){var f=MASK[i.dataset.mask],v=f(i.value);if(v!==i.value)i.value=v;}['input','change','blur'].forEach(function(ev){i.addEventListener(ev,m);});});
   function foneOk(v){var d=dig(v);return d.length===10||d.length===11;}
   function emailOk(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);}
   function cpfOk(d){if(d.length!==11||/^(\d)\1+$/.test(d))return false;for(var t=9;t<11;t++){var s=0;for(var k=0;k<t;k++)s+=d[k]*(t+1-k);if(((s*10)%11)%10!=d[t])return false;}return true;}
@@ -1331,6 +1333,9 @@ section.band#apoiadores > .in{padding-top:48px}
       if(j.ok){errEl.textContent='Assinatura criada. A primeira fatura chega no seu e-mail em instantes.';errEl.hidden=false;return;}
       if(j.codigo==='sem_chave'){cobranca.ativo=false;apBtns.forEach(function(b){b.textContent=b.textContent.replace(' (teste)','');});document.getElementById('ap-aviso').hidden=false;document.getElementById('ap-aviso-pag').hidden=true;semCobranca();return;}
       errEl.textContent=j.erro||'Não foi possível gerar o pagamento agora. Tente de novo em instantes.';errEl.hidden=false;
+      /* recusa do servidor ou do Asaas que cita um campo: destaca o campo também */
+      [[/e-?mail/i,'ap-email'],[/cpf|cnpj/i,'ap-doc'],[/cep|postal/i,'ap-cep'],[/celular|telefone|phone/i,'ap-whats'],[/\brua\b|endere/i,'ap-rua'],[/bairro|province/i,'ap-bairro'],[/n[úu]mero/i,'ap-num']]
+        .forEach(function(x){if(j.erro&&x[0].test(j.erro))campoErro(document.getElementById(x[1]),j.erro.replace(/^O Asaas recusou: /,''));});
     },function(){apBtn.disabled=false;apBtn.textContent=txtBtn;errEl.textContent='Sem conexão com o servidor. Tente de novo em instantes.';errEl.hidden=false;});
   }
   /* Cadastrar e Apoiar: cria a conta de apoiador com os dados do formulário */
@@ -1381,21 +1386,51 @@ section.band#apoiadores > .in{padding-top:48px}
     },function(){return true;});
   }
   /* cadastro */
+  /* erro por campo: cada campo com problema fica destacado com a explicação embaixo, ao sair dele e ao enviar */
+  var cheio=function(v){return !!String(v).trim();};
+  var REGRAS={
+    n:[function(v){return parseInt(v,10)>0;},'Informe quantos vanguardistas quer apadrinhar.'],
+    nome:[cheio,'Informe o nome completo.'],
+    email:[function(v){return emailOk(maskEmail(v));},'Confira o e-mail, por exemplo nome@empresa.com.br.'],
+    whats:[foneOk,'Informe o celular com DDD, por exemplo (51) 99999-9999.'],
+    doc:[docOk,'CPF ou CNPJ inválido. Confira os números.'],
+    cep:[cepFormatoOk,'O CEP tem 8 números.'],
+    rua:[cheio,'Informe a rua.'],
+    bairro:[cheio,'Informe o bairro.'],
+    num:[function(v){return /\d|s\/?n/i.test(v);},'Informe o número ou s/n.'],
+    cidade:[function(v){return !!cidadeUf(v);},'Escreva a cidade e a sigla do estado, como Porto Alegre, RS.']
+  };
+  function campoErro(i,msg){
+    var l=i.closest('label');if(!l)return;var s=l.querySelector('.err-campo');
+    if(!msg){l.classList.remove('bad');i.removeAttribute('aria-invalid');if(s)s.remove();return;}
+    l.classList.add('bad');i.setAttribute('aria-invalid','true');
+    if(!s){s=document.createElement('small');s.className='err-campo';s.setAttribute('aria-live','polite');l.appendChild(s);}
+    s.textContent=msg;
+  }
+  function problema(i,p){
+    if(!i.required||i.closest('label').hidden)return '';
+    var r=REGRAS[i.id.slice(p.length+1)];
+    if(r&&(p==='ap'||i.id.slice(p.length+1)!=='cidade'))return r[0](i.value)?'':r[1];
+    return cheio(i.value)?'':'Preencha este campo.';
+  }
   document.querySelectorAll('[data-form]').forEach(function(f){
     var p=f.dataset.form;
+    f.querySelectorAll('.fields input[required]').forEach(function(i){
+      i.addEventListener('blur',function(){if(cheio(i.value)||i.closest('label').classList.contains('bad'))campoErro(i,problema(i,p));});
+      i.addEventListener('input',function(){if(i.closest('label').classList.contains('bad'))campoErro(i,problema(i,p));});
+    });
     f.addEventListener('submit',function(e){
       e.preventDefault();
-      var ok=true;f.querySelectorAll('input[required]').forEach(function(i){if(!i.value.trim())ok=false;});
-      var em=document.getElementById(p+'-email');if(em&&!emailOk(maskEmail(em.value)))ok=false;var wh=document.getElementById(p+'-whats');if(wh&&!foneOk(wh.value))ok=false;var dc=document.getElementById(p+'-doc');if(dc&&!docOk(dc.value))ok=false;
-      var ce=document.getElementById(p+'-cep');if(ce&&!cepFormatoOk(ce.value))ok=false;
-      var nm=document.getElementById(p+'-num');if(nm&&!/\d|s\/?n/i.test(nm.value))ok=false; /* número ou s/n */
-      var errEl=document.getElementById(p+'-err');errEl.textContent=errEl.dataset.msg||(errEl.dataset.msg=errEl.textContent);
-      errEl.hidden=ok;if(!ok)return;
+      var ruins=[];f.querySelectorAll('.fields input[required]').forEach(function(i){var m=problema(i,p);campoErro(i,m);if(m)ruins.push(i);});
+      var ok=!ruins.length,ce=document.getElementById(p+'-cep');
+      var errEl=document.getElementById(p+'-err');
+      errEl.textContent=ok?'':(ruins.length===1?'Confira o campo destacado.':'Confira os '+ruins.length+' campos destacados.');
+      errEl.hidden=ok;if(!ok){ruins[0].focus();return;}
       var btn=p==='ap'?(e.submitter&&e.submitter.dataset.acao?e.submitter:apBtns[1]):null,contaMsg='';
       var comConta=!!(btn&&btn.dataset.acao==='cadastrar'&&!perfil);
-      if(comConta){var se=document.getElementById('ap-senha');if(se.value.length<6){errEl.textContent='Para Cadastrar e Apoiar, crie uma senha com pelo menos 6 caracteres. Ou use Apenas Apoiar.';errEl.hidden=false;se.focus();return;}
-        if(!cidadeUf(document.getElementById('ap-cidade').value)){errEl.textContent='Escreva a cidade e a sigla do estado, como Porto Alegre, RS.';errEl.hidden=false;document.getElementById('ap-cidade').focus();return;}}
-      if(ce){conferirCep(false).then(function(r){if(r.ok===false){errEl.textContent='CEP não encontrado. Confira os números.';errEl.hidden=false;ce.focus();return;}cadastrar();});return;}
+      if(comConta){var se=document.getElementById('ap-senha');if(se.value.length<6){campoErro(se,'Crie uma senha com pelo menos 6 caracteres, ou use Apenas Apoiar.');errEl.textContent='Confira o campo destacado.';errEl.hidden=false;se.focus();return;}campoErro(se,'');
+}
+      if(ce){conferirCep(false).then(function(r){if(r.ok===false){campoErro(ce,'CEP não encontrado. Confira os números.');errEl.textContent='Confira o campo destacado.';errEl.hidden=false;ce.focus();return;}cadastrar();});return;}
       cadastrar();
       function cadastrar(){if(!comConta)return seguir();criarContaApoiador(errEl,btn).then(function(r){if(!r)return;contaMsg=r.msg;seguir();});}
       function seguir(){if(p==='ap'&&perfil&&!comConta)return atualizarCadastro(errEl).then(function(ok){if(ok)cobrar();});cobrar();}
