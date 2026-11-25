@@ -1421,6 +1421,7 @@ section.band#apoiadores > .in{padding-top:48px}
     if(!v){target=document.getElementById(h);v=target&&target.closest('[data-view]');}
     if(!v)v=views[0];
     views.forEach(function(x){x.hidden=(x!==v);});
+    var aviso=document.getElementById('aviso');if(aviso)aviso.hidden=v.getAttribute('data-view')==='admin'; /* o aviso do rodapé não aparece na aba Administrador */
     var name=v.getAttribute('data-view');
     document.querySelectorAll('[data-nav]').forEach(function(a){if(a.dataset.nav===name)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
     if(target)target.scrollIntoView({block:'start'});else window.scrollTo(0,0);
