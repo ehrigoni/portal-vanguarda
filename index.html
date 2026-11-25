@@ -2408,7 +2408,8 @@ section.band#apoiadores > .in{padding-top:48px}
         var vv=row.querySelector('[data-f="valor"]');if(vv)cp.valor=vv.value;});});
   }
   function novoCodigo(o){var n=1;while(o.campos.some(function(x){return x.id==='campo'+n||cod(x)==='campo'+n;}))n++;return 'campo'+n;}
-  function desenhar(c,msg,bad){
+  function desenhar(c,msg,bad,alvo){ /* msg aparece no painel alvo (o primeiro, se não indicado) */
+    alvo=alvo||SIMS[0];
     c.innerHTML=SIMS.map(function(id){var o=ed[id];
       var ativos=o.campos.filter(function(x){return !x.excluido;}),excl=o.campos.filter(function(x){return x.excluido;});
       return '<div class="adm-simc" data-simc="'+id+'">'+
@@ -2430,18 +2431,19 @@ section.band#apoiadores > .in{padding-top:48px}
         (excl.length?'<div class="adm-excl">Campos excluídos: '+excl.map(function(x){return '<button type="button" class="btn" data-res="'+esc(x.id)+'">Restaurar '+esc(x.rotulo)+'</button>';}).join('')+'</div>':'')+
         '<div class="adm-bar"><button type="button" class="btn" data-add="'+id+'">Acrescentar campo</button></div>'+
         '<p class="msg">'+(id==='raio-x'?'Campos novos são custos por venda: aparecem como "Custos adicionais por venda" e são descontados do lucro.':'Campos novos são custos mensais: entram no custo operacional e na meta de faturamento.')+'</p>'+
-        '</div>';}).join('')+
-      '<div class="adm-bar"><button type="button" class="btn go" data-a="salvar">Salvar</button></div><p class="msg'+(bad?' bad':'')+'" data-msg>'+esc(msg)+'</p>';
+        '<div class="adm-bar"><button type="button" class="btn go" data-salvar="'+id+'">Salvar '+esc(o.nome)+'</button></div>'+
+        '<p class="msg'+(id===alvo&&bad?' bad':'')+'" data-msg>'+(id===alvo?esc(msg):'')+'</p>'+
+        '</div>';}).join('');
     function simDe(b){return b.closest('[data-simc]').dataset.simc;}
     function mover(b,dir){lerTela(c);var o=ed[simDe(b)],id=b.dataset.up||b.dataset.down;
       var vis=o.campos.filter(function(x){return !x.excluido;}),k=vis.findIndex(function(x){return x.id===id;}),alvo=vis[k+dir];if(!alvo)return;
       var a=o.campos.indexOf(vis[k]),z=o.campos.indexOf(alvo),t=o.campos[a];o.campos[a]=o.campos[z];o.campos[z]=t;
-      desenhar(c,'Ordem alterada. Clique em Salvar para aplicar no site.');
+      desenhar(c,'Ordem alterada. Clique em Salvar para aplicar no site.',false,simDe(b));
       var bt=c.querySelector('[data-simc="'+simDe(b)+'"] [data-'+(dir<0?'up':'down')+'="'+id+'"]');if(bt&&!bt.disabled)bt.focus();}
     /* renomear código: confere e atualiza as fórmulas do simulador que usam o código antigo */
     c.querySelectorAll('[data-f="codigo"]').forEach(function(inp){inp.onchange=function(){
       var card=inp.closest('[data-simc]'),o=ed[card.dataset.simc],cp=o.campos.filter(function(x){return x.id===inp.closest('[data-campo]').dataset.campo;})[0];
-      var de=inp.dataset.ant,para=inp.value.trim().toLowerCase(),m=c.querySelector('[data-msg]');
+      var de=inp.dataset.ant,para=inp.value.trim().toLowerCase(),m=card.querySelector('[data-msg]');
       if(para===de){inp.value=de;return;}
       var erro=!okId(para)?'Código inválido. Use até 20 letras minúsculas sem acento, números ou _, começando por letra.':
         o.campos.some(function(x){return x!==cp&&cod(x)===para;})?'O código "'+para+'" já é usado por outro campo deste simulador.':'';
@@ -2454,29 +2456,31 @@ section.band#apoiadores > .in{padding-top:48px}
     c.querySelectorAll('[data-up]').forEach(function(b){b.onclick=function(){mover(b,-1);};});
     c.querySelectorAll('[data-down]').forEach(function(b){b.onclick=function(){mover(b,1);};});
     c.querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){lerTela(c);var o=ed[simDe(b)];
-      o.campos=o.campos.filter(function(x){if(x.id!==b.dataset.del)return true;if(x.extra)return false;x.excluido=true;return true;});desenhar(c,'Campo excluído. Clique em Salvar para aplicar no site.');};});
+      o.campos=o.campos.filter(function(x){if(x.id!==b.dataset.del)return true;if(x.extra)return false;x.excluido=true;return true;});desenhar(c,'Campo excluído. Clique em Salvar para aplicar no site.',false,simDe(b));};});
     c.querySelectorAll('[data-res]').forEach(function(b){b.onclick=function(){lerTela(c);
-      ed[simDe(b)].campos.forEach(function(x){if(x.id===b.dataset.res)x.excluido=false;});desenhar(c,'Campo restaurado. Clique em Salvar para aplicar no site.');};});
+      ed[simDe(b)].campos.forEach(function(x){if(x.id===b.dataset.res)x.excluido=false;});desenhar(c,'Campo restaurado. Clique em Salvar para aplicar no site.',false,simDe(b));};});
     c.querySelectorAll('[data-add]').forEach(function(b){b.onclick=function(){lerTela(c);var o=ed[b.dataset.add];
-      if(o.campos.filter(function(x){return x.extra;}).length>=LIM.extras){desenhar(c,'Limite de '+LIM.extras+' campos novos por simulador.',true);return;}
-      o.campos.push({id:novoCodigo(o),rotulo:'',descricao:'',formula:'',valor:0,extra:true});desenhar(c,'');
+      if(o.campos.filter(function(x){return x.extra;}).length>=LIM.extras){desenhar(c,'Limite de '+LIM.extras+' campos novos por simulador.',true,b.dataset.add);return;}
+      o.campos.push({id:novoCodigo(o),rotulo:'',descricao:'',formula:'',valor:0,extra:true});desenhar(c,'',false,b.dataset.add);
       var novos=c.querySelectorAll('[data-simc="'+b.dataset.add+'"] .adm-campo.extra [data-f="rotulo"]');if(novos.length)novos[novos.length-1].focus();};});
-    c.querySelector('[data-a="salvar"]').onclick=function(){
-      lerTela(c);var m=c.querySelector('[data-msg]'),v={},falta='';
-      SIMS.forEach(function(id){var o=ed[id];
-        if(!falta&&!o.nome.trim())falta='Preencha o nome de cada simulador.';
-        o.campos.forEach(function(x){if(!falta&&x.extra&&!String(x.rotulo).trim())falta='Dê um nome a cada campo novo ou exclua o campo.';});
-        if(!falta){var ec=conferirCodigos(o.campos);if(ec)falta=o.nome+': '+ec;}
-        if(!falta){var ef=conferirFormulas(o.campos);if(ef)falta=o.nome+': '+ef;}
-        v[id]={visivel:!!o.visivel,nome:o.nome.trim().slice(0,LIM.nome),descricao:o.descricao.trim().slice(0,LIM.descricao),instrucoes:o.instrucoes.trim().slice(0,LIM.instrucoes),
-          campos:o.campos.map(function(x){var y={id:x.id,codigo:cod(x),rotulo:String(x.rotulo).trim().slice(0,LIM.rotulo),descricao:String(x.descricao||'').trim().slice(0,LIM.campoDesc)};
-            var f=String(x.formula||'').trim().slice(0,LIM.formula);if(f)y.formula=f;
-            if(x.extra){y.extra=true;y.valor=Math.max(0,parseFloat(x.valor)||0);}else if(x.excluido)y.excluido=true;return y;})};});
+    /* cada painel salva só o próprio simulador; o outro fica como está salvo (e o que foi digitado nele continua na tela) */
+    c.querySelectorAll('[data-salvar]').forEach(function(b){b.onclick=function(){
+      lerTela(c);var id=b.dataset.salvar,o=ed[id],m=b.closest('[data-simc]').querySelector('[data-msg]'),falta='',v={};
+      if(!o.nome.trim())falta='Preencha o nome do simulador.';
+      o.campos.forEach(function(x){if(!falta&&x.extra&&!String(x.rotulo).trim())falta='Dê um nome a cada campo novo ou exclua o campo.';});
+      if(!falta)falta=conferirCodigos(o.campos);
+      if(!falta)falta=conferirFormulas(o.campos);
       if(falta){m.className='msg bad';m.textContent=falta;return;}
-      m.className='msg';m.textContent='Salvando...';
-      rpc('admin_config_salvar',{p_chave:'simuladores',p_valor:v}).then(function(){cfgRaw=v;aplicarSims();pSim(c);c.querySelector('[data-msg]').textContent='Salvo. A página de simuladores já mostra o que foi definido aqui.';},
-        function(e){m.className='msg bad';m.textContent=/apenas administradores|42501/i.test(String(e&&e.message))?'Esta conta não tem acesso de administrador.':'Não foi possível salvar agora. Tente de novo.';});
-    };
+      SIMS.forEach(function(k){if(k!==id&&cfgRaw[k]!==undefined)v[k]=cfgRaw[k];});
+      v[id]={visivel:!!o.visivel,nome:o.nome.trim().slice(0,LIM.nome),descricao:o.descricao.trim().slice(0,LIM.descricao),instrucoes:o.instrucoes.trim().slice(0,LIM.instrucoes),
+        campos:o.campos.map(function(x){var y={id:x.id,codigo:cod(x),rotulo:String(x.rotulo).trim().slice(0,LIM.rotulo),descricao:String(x.descricao||'').trim().slice(0,LIM.campoDesc)};
+          var f=String(x.formula||'').trim().slice(0,LIM.formula);if(f)y.formula=f;
+          if(x.extra){y.extra=true;y.valor=Math.max(0,parseFloat(x.valor)||0);}else if(x.excluido)y.excluido=true;return y;})};
+      m.className='msg';m.textContent='Salvando...';b.disabled=true;
+      rpc('admin_config_salvar',{p_chave:'simuladores',p_valor:v}).then(function(){cfgRaw=v;aplicarSims();ed[id]=JSON.parse(JSON.stringify(cfgDe(id)));
+          desenhar(c,'Salvo. A página de simuladores já mostra o que foi definido aqui.',false,id);},
+        function(e){b.disabled=false;m.className='msg bad';m.textContent=/apenas administradores|42501/i.test(String(e&&e.message))?'Esta conta não tem acesso de administrador.':'Não foi possível salvar agora. Tente de novo.';});
+    };});
   }
 
   /* selos */
