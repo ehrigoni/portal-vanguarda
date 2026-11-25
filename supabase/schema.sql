@@ -41,6 +41,28 @@ drop policy if exists "editar o proprio perfil" on public.perfis;
 create policy "editar o proprio perfil" on public.perfis
   for update using (auth.uid() = id) with check (auth.uid() = id);
 
+-- 1b. Administradores do portal. Não têm perfil: o login (ex.: 007) e o e-mail interno ficam aqui, a senha
+--     só no Supabase Auth (guardada como hash). Ninguém do site lê ou grava esta tabela; o administrador
+--     é cadastrado pelo SQL Editor (ver supabase/LEIAME.md). Quem decide o acesso é o banco (is_admin).
+create table if not exists public.admins (
+  email     text primary key check (email = lower(trim(email)) and position('@' in email) > 1),
+  login     text not null unique check (login ~ '^[0-9]{3,11}$'),
+  criado_em timestamptz not null default now()
+);
+alter table public.admins enable row level security; -- sem políticas
+revoke all on public.admins from anon, authenticated;
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public, auth
+as $$
+  select auth.uid() is not null and exists (
+    select 1 from public.admins a join auth.users u on lower(u.email) = a.email where u.id = auth.uid());
+$$;
+
 -- 2. Cria o perfil junto com a conta, com os dados enviados no cadastro
 create or replace function public.criar_perfil()
 returns trigger
@@ -49,6 +71,8 @@ security definer
 set search_path = public
 as $$
 begin
+  -- conta de administrador (criada pelo painel do Supabase): não tem perfil
+  if exists (select 1 from public.admins where email = lower(new.email)) then return new; end if;
   insert into public.perfis (id, tipo, nome, fone, email, doc, cidade, uf, porte_negocio, ramo, faturamento,
                              cep, rua, bairro, numero, complemento)
   values (
@@ -94,6 +118,9 @@ as $$
   join auth.users u on u.id = p.id
   where (position('@' in contato) = 0 and p.fone = regexp_replace(contato, '[^0-9]', '', 'g'))
      or (position('@' in contato) > 0 and p.email = lower(trim(contato)))
+  union all
+  select a.email from public.admins a
+  where position('@' in contato) = 0 and a.login = regexp_replace(contato, '[^0-9]', '', 'g')
   limit 1;
 $$;
 
@@ -142,6 +169,8 @@ grant execute on function public.contato_em_uso(text, text) to anon, authenticat
 revoke all on function public.dados_em_uso(text, text, text) from public;
 grant execute on function public.dados_em_uso(text, text, text) to anon, authenticated;
 revoke all on function public.criar_perfil() from public, anon, authenticated;
+revoke all on function public.is_admin() from public;
+grant execute on function public.is_admin() to anon, authenticated;
 
 -- 5. Permissões explícitas da Data API (versão atual do Supabase, Postgres 17).
 --    Projetos novos podem vir sem permissões automáticas nas tabelas novas; o site só lê e edita o próprio perfil
