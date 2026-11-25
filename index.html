@@ -494,8 +494,8 @@ section.band#apoiadores > .in{padding-top:48px}
 .adm-simc .adm-simc-topo label span{color:var(--sim-cor)}
 .adm-simc h4{margin:0;font-family:var(--display);font-size:17px}
 .adm-simc textarea{width:100%;min-height:58px;resize:vertical;background:transparent;border:0;color:var(--fg);font:500 15px/1.4 var(--body);outline:none;padding:0}
-.adm-campo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) minmax(0,1.1fr) auto;gap:8px;align-items:end;padding-bottom:8px;border-bottom:1px dashed var(--line)}
-.adm-campo.extra{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) minmax(0,1.1fr) 100px auto}
+.adm-campo{display:grid;grid-template-columns:minmax(0,1fr) 130px minmax(0,1.2fr) minmax(0,1.1fr) auto;gap:8px;align-items:end;padding-bottom:8px;border-bottom:1px dashed var(--line)}
+.adm-campo.extra{grid-template-columns:minmax(0,1fr) 130px minmax(0,1.2fr) minmax(0,1.1fr) 100px auto}
 @media (max-width:900px){.adm-campo,.adm-campo.extra{grid-template-columns:1fr 1fr}.adm-campo .adm-acts{grid-column:1/-1}}
 @media (max-width:560px){.adm-campo,.adm-campo.extra{grid-template-columns:1fr}}
 .adm-acts{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
@@ -504,6 +504,7 @@ section.band#apoiadores > .in{padding-top:48px}
 .sim-auto{opacity:.85}
 .sim-auto-l{border-style:dashed!important}
 .adm-campo .btn{padding:8px 12px;font-size:13px}
+.adm-campo [data-f="codigo"]{font-family:var(--mono)}
 .adm-excl{font-size:13px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .adm-topo .fields label{max-width:320px}
 .adm-fora-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
@@ -2263,17 +2264,29 @@ section.band#apoiadores > .in{padding-top:48px}
   }
   /* confere as fórmulas de um simulador: códigos existentes, sem referência a si mesmo nem ciclos */
   function conferirFormulas(campos){
-    var ativos={},grafo={};campos.forEach(function(c){if(!c.excluido)ativos[c.id]=c;});
+    var ativos={},grafo={};campos.forEach(function(c){if(!c.excluido)ativos[cod(c)]=c;});
     for(var k in ativos){var c=ativos[k];if(!c.formula)continue;var a;
       try{a=analisar(c.formula);}catch(e){return '"'+(c.rotulo||c.id)+'": '+e.message+'.';}
       for(var j=0;j<a.ids.length;j++){if(!ativos[a.ids[j]])return '"'+(c.rotulo||c.id)+'": o código "'+a.ids[j]+'" não é de nenhum campo deste simulador.';
-        if(a.ids[j]===c.id)return '"'+(c.rotulo||c.id)+'": a fórmula não pode usar o próprio campo.';}
-      grafo[c.id]=a.ids;}
+        if(a.ids[j]===cod(c))return '"'+(c.rotulo||c.id)+'": a fórmula não pode usar o próprio campo.';}
+      grafo[cod(c)]=a.ids;}
     var est={};function ciclo(n){if(est[n]===1)return true;if(est[n]===2)return false;est[n]=1;var d=grafo[n]||[];for(var i=0;i<d.length;i++)if(grafo[d[i]]&&ciclo(d[i]))return true;est[n]=2;return false;}
     for(var n in grafo)if(ciclo(n))return 'As fórmulas formam um ciclo (um campo depende do outro e vice-versa). Revise "'+(ativos[n].rotulo||n)+'".';
     return '';
   }
 
+  function cod(c){return c.codigo||c.id;}
+  /* códigos: letras minúsculas sem acento, números e _, começando por letra; sem repetir no mesmo simulador */
+  function conferirCodigos(campos){
+    var vistos={};
+    for(var i=0;i<campos.length;i++){var c=campos[i],k=cod(c);
+      if(!okId(k))return '"'+(c.rotulo||c.id)+'": o código "'+k+'" é inválido. Use até 20 letras minúsculas sem acento, números ou _, começando por letra.';
+      if(vistos[k])return 'O código "'+k+'" está repetido em "'+(vistos[k].rotulo||vistos[k].id)+'" e "'+(c.rotulo||c.id)+'". Cada campo precisa de um código diferente.';
+      vistos[k]=c;}
+    return '';
+  }
+  /* troca um código por outro numa fórmula, sem mexer em números nem em outros códigos */
+  function trocarCodigo(f,de,para){return String(f||'').replace(/[A-Za-z_][A-Za-z0-9_]*/g,function(w){return w.toLowerCase()===de?para:w;});}
   /* junta o que foi salvo com o padrão; aceita o formato antigo ({"raio-x": false}); respeita a ordem salva */
   function cfgDe(id){
     var d=DEF[id],r=cfgRaw[id],o={visivel:r!==false,nome:d.nome,descricao:d.descricao,instrucoes:d.instrucoes,campos:[]};
@@ -2281,10 +2294,11 @@ section.band#apoiadores > .in{padding-top:48px}
     var salvos=r&&Array.isArray(r.campos)?r.campos:[],pos={};
     salvos.forEach(function(y,k){if(y&&typeof y.id==='string'&&pos[y.id]==null)pos[y.id]=k;});
     d.campos.forEach(function(c,k){var x=salvos.filter(function(y){return y&&y.id===c.id&&!y.extra;})[0]||{};
-      o.campos.push({id:c.id,rotulo:txt(x.rotulo,LIM.rotulo,c.rotulo),descricao:txt(x.descricao,LIM.campoDesc,''),formula:txt(x.formula,LIM.formula,''),excluido:!c.fixo&&x.excluido===true,fixo:!!c.fixo,_o:pos[c.id]!=null?pos[c.id]:1000+k});});
+      o.campos.push({id:c.id,codigo:okId(x.codigo)?x.codigo:c.id,rotulo:txt(x.rotulo,LIM.rotulo,c.rotulo),descricao:txt(x.descricao,LIM.campoDesc,''),formula:txt(x.formula,LIM.formula,''),excluido:!c.fixo&&x.excluido===true,fixo:!!c.fixo,_o:pos[c.id]!=null?pos[c.id]:1000+k});});
     salvos.forEach(function(y,k){if(y&&y.extra&&okId(y.id)&&o.campos.filter(function(c){return c.extra;}).length<LIM.extras&&!o.campos.some(function(c){return c.id===y.id;}))
-      o.campos.push({id:y.id,rotulo:txt(y.rotulo,LIM.rotulo,'Campo'),descricao:txt(y.descricao,LIM.campoDesc,''),formula:txt(y.formula,LIM.formula,''),valor:Math.max(0,parseFloat(y.valor)||0),extra:true,_o:k});});
+      o.campos.push({id:y.id,codigo:okId(y.codigo)?y.codigo:y.id,rotulo:txt(y.rotulo,LIM.rotulo,'Campo'),descricao:txt(y.descricao,LIM.campoDesc,''),formula:txt(y.formula,LIM.formula,''),valor:Math.max(0,parseFloat(y.valor)||0),extra:true,_o:k});});
     o.campos.sort(function(a,b){return a._o-b._o;});o.campos.forEach(function(c){delete c._o;});
+    if(conferirCodigos(o.campos))o.campos.forEach(function(c){c.codigo=c.id;}); /* códigos repetidos: volta aos originais */
     if(conferirFormulas(o.campos))o.campos.forEach(function(c){c.formula='';}); /* configuração inválida: ignora as fórmulas */
     return o;
   }
@@ -2307,9 +2321,9 @@ section.band#apoiadores > .in{padding-top:48px}
     o.campos.forEach(function(c){var i=inputDe(sim,c.id);if(!i)return;
       if(c.formula&&!c.excluido){try{comF.push({c:c,i:i,a:analisar(c.formula)});}catch(e){}}
       else{i.readOnly=false;i.classList.remove('sim-auto');var l=i.closest('label');if(l)l.classList.remove('sim-auto-l');}
-      var n=parseFloat(i.value);val[c.id]=c.excluido?0:(n>0||n<0?n:0);});
-    for(var volta=0;volta<comF.length+1;volta++)comF.forEach(function(x){val[x.c.id]=x.a.calc(val);});
-    comF.forEach(function(x){var v=val[x.c.id];x.i.value=isFinite(v)?String(Math.round(v*100)/100):'0';x.i.readOnly=true;x.i.classList.add('sim-auto');
+      var n=parseFloat(i.value);val[cod(c)]=c.excluido?0:(n>0||n<0?n:0);});
+    for(var volta=0;volta<comF.length+1;volta++)comF.forEach(function(x){val[cod(x.c)]=x.a.calc(val);});
+    comF.forEach(function(x){var v=val[cod(x.c)];x.i.value=isFinite(v)?String(Math.round(v*100)/100):'0';x.i.readOnly=true;x.i.classList.add('sim-auto');
       var l=x.i.closest('label');if(l)l.classList.add('sim-auto-l');});
     return comF.length>0;
   }
@@ -2390,9 +2404,10 @@ section.band#apoiadores > .in{padding-top:48px}
       ['nome','descricao','instrucoes'].forEach(function(k){o[k]=card.querySelector('[data-f="'+k+'"]').value;});
       card.querySelectorAll('[data-campo]').forEach(function(row){var cp=o.campos.filter(function(x){return x.id===row.dataset.campo;})[0];if(!cp)return;
         cp.rotulo=row.querySelector('[data-f="rotulo"]').value;cp.descricao=row.querySelector('[data-f="descricao"]').value;cp.formula=row.querySelector('[data-f="formula"]').value;
+        var cc=row.querySelector('[data-f="codigo"]');if(cc)cp.codigo=cc.value.trim().toLowerCase();
         var vv=row.querySelector('[data-f="valor"]');if(vv)cp.valor=vv.value;});});
   }
-  function novoCodigo(o){var n=1;while(o.campos.some(function(x){return x.id==='campo'+n;}))n++;return 'campo'+n;}
+  function novoCodigo(o){var n=1;while(o.campos.some(function(x){return x.id==='campo'+n||cod(x)==='campo'+n;}))n++;return 'campo'+n;}
   function desenhar(c,msg,bad){
     c.innerHTML=SIMS.map(function(id){var o=ed[id];
       var ativos=o.campos.filter(function(x){return !x.excluido;}),excl=o.campos.filter(function(x){return x.excluido;});
@@ -2404,8 +2419,9 @@ section.band#apoiadores > .in{padding-top:48px}
         '<h4>Campos</h4>'+
         '<p class="msg">Na fórmula, use os códigos dos campos deste simulador, números, + − * / e parênteses. Ex.: <code>pessoas * salario</code>. Campo com fórmula é calculado automaticamente e a pessoa não digita nele.</p>'+
         ativos.map(function(x,k){return '<div class="adm-campo fields'+(x.extra?' extra':'')+'" data-campo="'+esc(x.id)+'">'+
-          '<label><span>Nome do campo · código <code>'+esc(x.id)+'</code>'+(x.extra?' (novo)':'')+'</span><input data-f="rotulo" maxlength="'+LIM.rotulo+'" value="'+esc(x.rotulo)+'"></label>'+
-          '<label><span>Texto descritivo (aparece embaixo do campo)</span><input data-f="descricao" maxlength="'+LIM.campoDesc+'" value="'+esc(x.descricao)+'"></label>'+
+          '<label><span>Nome do campo'+(x.extra?' (novo)':'')+'</span><input data-f="rotulo" maxlength="'+LIM.rotulo+'" value="'+esc(x.rotulo)+'"></label>'+
+          '<label><span>Código</span><input data-f="codigo" maxlength="20" autocapitalize="off" autocomplete="off" spellcheck="false" value="'+esc(cod(x))+'" data-ant="'+esc(cod(x))+'"></label>'+
+          '<label><span title="Aparece embaixo do campo">Texto descritivo</span><input data-f="descricao" maxlength="'+LIM.campoDesc+'" value="'+esc(x.descricao)+'"></label>'+
           '<label><span>Fórmula (opcional)</span><input data-f="formula" maxlength="'+LIM.formula+'" placeholder="ex.: pessoas * salario" value="'+esc(x.formula||'')+'"></label>'+
           (x.extra?'<label><span>Valor inicial</span><input data-f="valor" type="number" min="0" step="any" value="'+esc(x.valor||0)+'"></label>':'')+
           '<div class="adm-acts"><button type="button" class="btn" data-up="'+esc(x.id)+'" aria-label="Subir campo"'+(k===0?' disabled':'')+'>↑</button>'+
@@ -2422,6 +2438,19 @@ section.band#apoiadores > .in{padding-top:48px}
       var a=o.campos.indexOf(vis[k]),z=o.campos.indexOf(alvo),t=o.campos[a];o.campos[a]=o.campos[z];o.campos[z]=t;
       desenhar(c,'Ordem alterada. Clique em Salvar para aplicar no site.');
       var bt=c.querySelector('[data-simc="'+simDe(b)+'"] [data-'+(dir<0?'up':'down')+'="'+id+'"]');if(bt&&!bt.disabled)bt.focus();}
+    /* renomear código: confere e atualiza as fórmulas do simulador que usam o código antigo */
+    c.querySelectorAll('[data-f="codigo"]').forEach(function(inp){inp.onchange=function(){
+      var card=inp.closest('[data-simc]'),o=ed[card.dataset.simc],cp=o.campos.filter(function(x){return x.id===inp.closest('[data-campo]').dataset.campo;})[0];
+      var de=inp.dataset.ant,para=inp.value.trim().toLowerCase(),m=c.querySelector('[data-msg]');
+      if(para===de){inp.value=de;return;}
+      var erro=!okId(para)?'Código inválido. Use até 20 letras minúsculas sem acento, números ou _, começando por letra.':
+        o.campos.some(function(x){return x!==cp&&cod(x)===para;})?'O código "'+para+'" já é usado por outro campo deste simulador.':'';
+      if(erro){inp.value=de;m.className='msg bad';m.textContent=erro;inp.focus();return;}
+      var n=0;
+      card.querySelectorAll('[data-f="formula"]').forEach(function(f){var t=trocarCodigo(f.value,de,para);if(t!==f.value){f.value=t;n++;}});
+      o.campos.forEach(function(x){if(x.formula){var t=trocarCodigo(x.formula,de,para);if(t!==x.formula){x.formula=t;if(x.excluido)n++;}}});
+      cp.codigo=para;inp.value=para;inp.dataset.ant=para;
+      m.className='msg';m.textContent='Código "'+de+'" renomeado para "'+para+'"'+(n?' e atualizado em '+n+(n>1?' fórmulas':' fórmula'):'')+'. Clique em Salvar para aplicar no site.';};});
     c.querySelectorAll('[data-up]').forEach(function(b){b.onclick=function(){mover(b,-1);};});
     c.querySelectorAll('[data-down]').forEach(function(b){b.onclick=function(){mover(b,1);};});
     c.querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){lerTela(c);var o=ed[simDe(b)];
@@ -2437,9 +2466,10 @@ section.band#apoiadores > .in{padding-top:48px}
       SIMS.forEach(function(id){var o=ed[id];
         if(!falta&&!o.nome.trim())falta='Preencha o nome de cada simulador.';
         o.campos.forEach(function(x){if(!falta&&x.extra&&!String(x.rotulo).trim())falta='Dê um nome a cada campo novo ou exclua o campo.';});
+        if(!falta){var ec=conferirCodigos(o.campos);if(ec)falta=o.nome+': '+ec;}
         if(!falta){var ef=conferirFormulas(o.campos);if(ef)falta=o.nome+': '+ef;}
         v[id]={visivel:!!o.visivel,nome:o.nome.trim().slice(0,LIM.nome),descricao:o.descricao.trim().slice(0,LIM.descricao),instrucoes:o.instrucoes.trim().slice(0,LIM.instrucoes),
-          campos:o.campos.map(function(x){var y={id:x.id,rotulo:String(x.rotulo).trim().slice(0,LIM.rotulo),descricao:String(x.descricao||'').trim().slice(0,LIM.campoDesc)};
+          campos:o.campos.map(function(x){var y={id:x.id,codigo:cod(x),rotulo:String(x.rotulo).trim().slice(0,LIM.rotulo),descricao:String(x.descricao||'').trim().slice(0,LIM.campoDesc)};
             var f=String(x.formula||'').trim().slice(0,LIM.formula);if(f)y.formula=f;
             if(x.extra){y.extra=true;y.valor=Math.max(0,parseFloat(x.valor)||0);}else if(x.excluido)y.excluido=true;return y;})};});
       if(falta){m.className='msg bad';m.textContent=falta;return;}
