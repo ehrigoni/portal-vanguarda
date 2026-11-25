@@ -1246,12 +1246,14 @@ section.band#apoiadores > .in{padding-top:48px}
     assinar:function(n){if(n>0)apN.value=n;var r=document.querySelector('input[name="ap-p"][value="A"]');if(r)r.checked=true;ap();location.hash='apoiar-cadastro';}}; /* usado pelo painel do apoiador e pela página do selo */
   var FORA='O cadastro está sendo ligado e volta em breve. Enquanto isso, fale com a gente pelo WhatsApp (51) 99291-0038.';
   var perfil=null,cobranca={ativo:false,ambiente:''};
-  function destino(c){return c.tipo==='admin'?'admin':c.tipo==='vanguardista'?'simuladores':'painel';}
+  function destino(c){return c.tipo==='admin'||c.admin?'admin':c.tipo==='vanguardista'?'simuladores':'painel';}
   function emailInterno(){var r='';try{r=crypto.randomUUID().replace(/-/g,'');}catch(e){r=Date.now().toString(36)+Math.random().toString(36).slice(2);}return 'cadastro+'+r+'@'+LOGIN_DOMINIO;}
   function carregarPerfil(user){
     if(!user)return Promise.resolve(null);
     return sb.from('perfis').select('*').eq('id',user.id).maybeSingle().then(function(r){
-      var m=user.user_metadata||{},c=r.data||(m.tipo?{tipo:m.tipo,nome:m.nome,fone:m.fone,email:m.email_contato,doc:m.doc,cidade:m.cidade,uf:m.uf,cep:m.cep,rua:m.rua,bairro:m.bairro,numero:m.numero,complemento:m.complemento}:null);if(c){c.id=user.id;return c;}
+      var m=user.user_metadata||{},c=r.data||(m.tipo?{tipo:m.tipo,nome:m.nome,fone:m.fone,email:m.email_contato,doc:m.doc,cidade:m.cidade,uf:m.uf,cep:m.cep,rua:m.rua,bairro:m.bairro,numero:m.numero,complemento:m.complemento}:null);if(c){c.id=user.id;
+        /* uma conta comum (com perfil) também pode ser administradora; quem confirma é o banco (is_admin) */
+        return sb.rpc('is_admin').then(function(a){if(a&&a.data===true)c.admin=true;return c;},function(){return c;});}
       /* administrador: não tem perfil; quem confirma é o banco (is_admin) */
       return sb.rpc('is_admin').then(function(a){return a&&a.data===true?{tipo:'admin',nome:'Administrador',id:user.id}:null;},function(){return null;});
     },function(){return null;});
@@ -1274,8 +1276,8 @@ section.band#apoiadores > .in{padding-top:48px}
     document.querySelectorAll('[data-guest]').forEach(function(el){el.hidden=!!c;});
     document.querySelectorAll('[data-user]').forEach(function(el){el.hidden=!c;});
     document.querySelectorAll('[data-apoiador]').forEach(function(el){el.hidden=!(c&&c.tipo==='apoiador');});
-    document.querySelectorAll('[data-admin]').forEach(function(el){el.hidden=!(c&&c.tipo==='admin');});
-    document.querySelectorAll('.excluir').forEach(function(el){el.hidden=!c||c.tipo==='admin';});
+    document.querySelectorAll('[data-admin]').forEach(function(el){el.hidden=!(c&&(c.tipo==='admin'||c.admin));});
+    document.querySelectorAll('.excluir').forEach(function(el){el.hidden=!c||c.tipo==='admin'||!!c.admin;});
     try{document.dispatchEvent(new CustomEvent('vg:perfil',{detail:c}));}catch(e){}
     document.getElementById('ap-btn-so').textContent=(c?'Apoiar e atualizar dados':'Apenas Apoiar')+(cobranca.ambiente==='sandbox'?' (teste)':'');
     if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];
@@ -2158,7 +2160,7 @@ section.band#apoiadores > .in{padding-top:48px}
   function brl(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
   function num(v){return Number(v||0).toLocaleString('pt-BR');}
   function data(v){if(!v)return '';var d=new Date(String(v).length===10?v+'T12:00:00':v);return isNaN(d)?esc(v):d.toLocaleDateString('pt-BR');}
-  function admin(){var p=VG.perfil();return !!(p&&p.tipo==='admin');}
+  function admin(){var p=VG.perfil();return !!(p&&(p.tipo==='admin'||p.admin));}
   function amb(){return $('adm-amb').value;}
   function falhou(c,e){var m=String(e&&e.message||'');
     c.querySelector('.msg')?(c.querySelector('.msg').className='msg bad'):0;
