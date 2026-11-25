@@ -70,3 +70,17 @@ Para criar o administrador, uma vez:
 4. Abra www.vanguarda.social.br/admin, clique em **Entrar** e use o login escolhido e a senha. Quem não é administrador vê "Acesso negado".
 
 Para trocar a senha: **Authentication > Users**, abra o usuário e use **Reset password**, ou exclua e crie de novo (os passos 3 e 4). Para tirar o acesso: `delete from public.admins where login = '<login>';`.
+
+### Tornar administradora uma conta que já existe no site
+
+Uma conta criada pelo Cadastre-se também pode ser administradora: ela continua entrando com o próprio celular ou e-mail e passa a ver a aba Administrador. No SQL Editor, troque `<e-mail da conta>` pelo e-mail cadastrado no perfil:
+
+```sql
+alter table public.admins alter column login drop not null;
+insert into public.admins (email)
+select lower(u.email) from auth.users u left join public.perfis p on p.id = u.id
+where lower(u.email) = '<e-mail da conta>' or p.email = '<e-mail da conta>'
+on conflict (email) do nothing;
+```
+
+Para tirar o acesso: `delete from public.admins where email = (select lower(u.email) from auth.users u join public.perfis p on p.id = u.id where p.email = '<e-mail da conta>');`.

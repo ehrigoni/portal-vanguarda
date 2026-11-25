@@ -41,14 +41,16 @@ drop policy if exists "editar o proprio perfil" on public.perfis;
 create policy "editar o proprio perfil" on public.perfis
   for update using (auth.uid() = id) with check (auth.uid() = id);
 
--- 1b. Administradores do portal. Não têm perfil: o login (só números) e o e-mail interno ficam aqui, a senha
+-- 1b. Administradores do portal: o e-mail de login no Auth (e, para contas sem perfil, um login só de números). A senha
 --     só no Supabase Auth (guardada como hash). Ninguém do site lê ou grava esta tabela; o administrador
 --     é cadastrado pelo SQL Editor (ver supabase/LEIAME.md). Quem decide o acesso é o banco (is_admin).
 create table if not exists public.admins (
   email     text primary key check (email = lower(trim(email)) and position('@' in email) > 1),
-  login     text not null unique check (login ~ '^[0-9]{3,11}$'),
+  login     text unique check (login ~ '^[0-9]{3,11}$'),
   criado_em timestamptz not null default now()
 );
+-- login é opcional: uma conta comum do site (com perfil) entra com o próprio celular ou e-mail
+alter table public.admins alter column login drop not null;
 alter table public.admins enable row level security; -- sem políticas
 revoke all on public.admins from anon, authenticated;
 
