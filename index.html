@@ -344,6 +344,17 @@ section.band#apoiadores > .in{padding-top:48px}
 @media (max-width:560px){.entrar-painel{padding:20px}}
 .fields label.bad{border-color:var(--amber)}
 .fields .err-campo{display:block;font-size:13px;color:var(--amber);margin-top:4px}
+.excluir{display:grid;justify-items:center;gap:12px;margin-top:8px;padding-top:16px;border-top:1px solid var(--line)}
+.excluir-abrir{color:var(--muted);font-size:14px}
+.excluir-box{width:100%;border:1px solid var(--amber);border-radius:12px;padding:16px;display:grid;gap:12px;background:color-mix(in srgb,var(--amber) 6%,transparent)}
+.excluir-box h4{margin:0;font-family:var(--display);font-size:18px}
+.excluir-box p{margin:0;font-size:14px;line-height:1.5}
+.excluir-box .excluir-fixo{color:var(--muted)}
+.excluir-ok{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer}
+.excluir-ok input{margin-top:3px;width:18px;height:18px;flex:none;accent-color:var(--amber)}
+.excluir-acts{display:flex;gap:10px;flex-wrap:wrap}
+.excluir-sim{background:var(--amber);border-color:var(--amber);color:var(--btn-ink)}
+.excluir-sim:disabled{opacity:.45;cursor:not-allowed}
 .footnav{display:flex;gap:16px;flex-wrap:wrap}
 .footnav a{color:var(--muted);text-decoration:none}
 .footnav a:hover{color:var(--fg)}
@@ -803,6 +814,17 @@ section.band#apoiadores > .in{padding-top:48px}
       <button class="btn go" type="submit" id="ap-btn-so" data-acao="apoiar">Apenas Apoiar</button>
       <p class="note btn-nota" data-guest>Nenhuma informação fica guardada no portal. Os dados servem só para este apoio e a nota fiscal.</p>
       <p class="note nota-centro">Usamos seus dados só para falar com você sobre o lançamento.</p>
+      <div class="excluir" data-user hidden>
+        <button type="button" class="btn excluir-abrir">Excluir minha conta</button>
+        <div class="excluir-box" hidden>
+          <h4>Excluir sua conta?</h4>
+          <p class="excluir-txt"></p>
+          <p class="excluir-fixo">Pagamentos já feitos não são devolvidos por causa da exclusão. As cobranças e as notas fiscais já emitidas continuam guardadas no Asaas, nosso sistema de cobrança, porque a lei fiscal exige. Esta ação não pode ser desfeita: para voltar, será preciso fazer um novo cadastro.</p>
+          <label class="excluir-ok"><input type="checkbox"> <span>Concordo. Entendi que minha conta e todos os dados ligados a ela serão apagados para sempre.</span></label>
+          <p class="err" hidden></p>
+          <div class="excluir-acts"><button type="button" class="btn excluir-sim" disabled>Excluir</button><button type="button" class="btn excluir-nao">Cancelar</button></div>
+        </div>
+      </div>
     </form>
     <div class="aside">
       <div class="done" id="ap-done" hidden>
@@ -859,6 +881,17 @@ section.band#apoiadores > .in{padding-top:48px}
       <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. O cadastro cria sua conta e registra seu interesse, sem criar contrato.</span></p>
       <button class="btn go" type="submit" id="cd-btn">Cadastrar</button>
       <div class="cd-entrar" id="cd-entrar"><p class="note">Já tem conta?</p><a class="btn" href="#entrar">Entrar</a></div>
+      <div class="excluir" data-user hidden>
+        <button type="button" class="btn excluir-abrir">Excluir minha conta</button>
+        <div class="excluir-box" hidden>
+          <h4>Excluir sua conta?</h4>
+          <p class="excluir-txt"></p>
+          <p class="excluir-fixo">Pagamentos já feitos não são devolvidos por causa da exclusão. As cobranças e as notas fiscais já emitidas continuam guardadas no Asaas, nosso sistema de cobrança, porque a lei fiscal exige. Esta ação não pode ser desfeita: para voltar, será preciso fazer um novo cadastro.</p>
+          <label class="excluir-ok"><input type="checkbox"> <span>Concordo. Entendi que minha conta e todos os dados ligados a ela serão apagados para sempre.</span></label>
+          <p class="err" hidden></p>
+          <div class="excluir-acts"><button type="button" class="btn excluir-sim" disabled>Excluir</button><button type="button" class="btn excluir-nao">Cancelar</button></div>
+        </div>
+      </div>
     </form>
   </div>
 </div>
@@ -1202,6 +1235,32 @@ section.band#apoiadores > .in{padding-top:48px}
   function ola(txt){var h=document.getElementById('hello');document.getElementById('hello-txt').textContent=txt;h.hidden=false;}
   document.getElementById('hello-x').addEventListener('click',function(){document.getElementById('hello').hidden=true;});
   document.getElementById('sair').addEventListener('click',function(){var done=function(){perfil=null;document.getElementById('hello').hidden=true;cabecalho();location.hash='inicio';};if(sb)sb.auth.signOut().then(done,done);else done();});
+  /* Excluir minha conta (abas Vanguardistas e Apoiar): confirmação na própria página, com Concordo e Excluir.
+     O banco (excluir_minha_conta) só apaga a conta logada; nenhum id vai do site para o banco. */
+  var EXCLUIR_TXT={vanguardista:'Ao excluir, sua conta de vanguardista sai do portal: seu cadastro (nome, celular, e-mail, CPF ou CNPJ e endereço), os dados do seu negócio e todos os dados ligados às suas simulações. Você deixa de poder ser apadrinhado, e as vagas de apadrinhamento que você ocupava passam para outros vanguardistas. Se você também apoiou o portal, os registros desses apoios são apagados.',
+    apoiador:'Ao excluir, sua conta de apoiador sai do portal: seu cadastro (nome, celular, e-mail, CPF ou CNPJ e endereço), o painel de impacto, os selos e o material escolhidos, os grupos que você acompanha, as visitas ao seu selo e todos os dados dos seus apoios. Os apadrinhamentos de vanguardistas ligados aos seus apoios são encerrados.'};
+  document.querySelectorAll('.excluir').forEach(function(x){
+    var abrir=x.querySelector('.excluir-abrir'),box=x.querySelector('.excluir-box'),ok=x.querySelector('.excluir-ok input'),
+        sim=x.querySelector('.excluir-sim'),nao=x.querySelector('.excluir-nao'),err=x.querySelector('.err');
+    function fechar(){box.hidden=true;abrir.hidden=false;ok.checked=false;sim.disabled=true;err.hidden=true;}
+    abrir.addEventListener('click',function(){
+      x.querySelector('.excluir-txt').textContent=EXCLUIR_TXT[perfil&&perfil.tipo==='apoiador'?'apoiador':'vanguardista'];
+      box.hidden=false;abrir.hidden=true;ok.focus();});
+    nao.addEventListener('click',fechar);
+    ok.addEventListener('change',function(){sim.disabled=!ok.checked;});
+    document.addEventListener('vg:perfil',function(e){if(!e.detail)fechar();});
+    sim.addEventListener('click',function(){
+      if(!ok.checked||!sb||!perfil)return;
+      var id=perfil.id;sim.disabled=true;nao.disabled=true;sim.textContent='Excluindo...';err.hidden=true;
+      sb.rpc('excluir_minha_conta').then(function(r){
+        sim.textContent='Excluir';nao.disabled=false;
+        if(r.error){sim.disabled=!ok.checked;err.textContent='Não foi possível excluir agora. Tente de novo em instantes ou fale com a gente pelo WhatsApp (51) 99291-0038.';err.hidden=false;return;}
+        try{localStorage.removeItem('vg-painel-'+id);}catch(e){}
+        var done=function(){perfil=null;fechar();cabecalho();ola('Sua conta foi excluída. Obrigado por ter feito parte do Portal Vanguarda.');location.hash='inicio';};
+        sb.auth.signOut({scope:'local'}).then(done,done);
+      },function(){sim.textContent='Excluir';nao.disabled=false;sim.disabled=!ok.checked;err.textContent='Sem conexão. Confira a internet e tente de novo.';err.hidden=false;});
+    });
+  });
   /* Cadastre-se e Entrar: o aviso aparece embaixo do campo com problema e também no fim do formulário */
   function erro(id,msg,campo){var e=document.getElementById(id);e.textContent=msg;e.hidden=!msg;
     var form=e.closest('form')||document;

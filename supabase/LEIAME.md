@@ -43,3 +43,12 @@ O site guarda as contas de vanguardistas e apoiadores no Supabase. Enquanto as c
 ## Versão do Supabase
 
 Testado no Supabase atual (imagem `supabase/postgres:17.12.0.002`, Postgres 17.12), com o cadastro feito pelo papel do Auth (`supabase_auth_admin`), o apoiador logado (`authenticated`), visitante (`anon`) e o webhook (`service_role`). Os dois arquivos dão as permissões das tabelas explicitamente, então funcionam também em projetos novos com "expor tabelas novas automaticamente" desligado na Data API: o site só lê e edita o próprio perfil, o perfil de apoiador e os grupos; `apoios`, `apoio_vanguardistas` e `selo_visitas` ficam só para a chave de serviço e as funções do banco.
+
+## Excluir a própria conta
+
+O botão **Excluir minha conta** (abas Vanguardistas e Apoiar, só para quem está logado) chama a função `excluir_minha_conta()` do `painel.sql`. Ela só age sobre a conta logada (`auth.uid()`), sem receber nenhum id do site, e só a role `authenticated` pode executá-la. Ela apaga:
+
+- os apoios da pessoa (mesmo CPF/CNPJ e mesmo celular ou e-mail, a regra do painel) e as visitas do selo dela;
+- o usuário em `auth.users`, o que leva em cascata `perfis`, `apoiador_perfil`, `grupos` e os vínculos em `apoio_vanguardistas`.
+
+Depois roda `alocar_apoios` para passar a outros vanguardistas as vagas que ficaram livres. Cobranças e notas fiscais já emitidas continuam no Asaas, fora do banco do portal. Enquanto o `painel.sql` novo não for rodado no Supabase, o botão mostra um aviso de erro e não apaga nada.
