@@ -1202,9 +1202,12 @@ section.band#apoiadores > .in{padding-top:48px}
   function ola(txt){var h=document.getElementById('hello');document.getElementById('hello-txt').textContent=txt;h.hidden=false;}
   document.getElementById('hello-x').addEventListener('click',function(){document.getElementById('hello').hidden=true;});
   document.getElementById('sair').addEventListener('click',function(){var done=function(){perfil=null;document.getElementById('hello').hidden=true;cabecalho();location.hash='inicio';};if(sb)sb.auth.signOut().then(done,done);else done();});
+  /* Cadastre-se e Entrar: o aviso aparece embaixo do campo com problema e também no fim do formulário */
   function erro(id,msg,campo){var e=document.getElementById(id);e.textContent=msg;e.hidden=!msg;
-    document.querySelectorAll('.fields label.bad').forEach(function(l){l.classList.remove('bad');});
-    if(campo){var l=campo.closest('label');if(l)l.classList.add('bad');campo.focus();}}
+    var form=e.closest('form')||document;
+    form.querySelectorAll('.fields label.bad').forEach(function(l){l.classList.remove('bad');});
+    form.querySelectorAll('.fields .err-campo').forEach(function(x){x.remove();});
+    if(campo){var l=campo.closest('label');if(l){l.classList.add('bad');if(msg){var sm=document.createElement('small');sm.className='err-campo';sm.setAttribute('aria-live','polite');sm.textContent=msg;l.appendChild(sm);}}campo.focus();}}
   function ocupado(form,on){var b=form.querySelector('button[type=submit]');b.disabled=on;b.style.opacity=on?.6:'';}
 
   document.getElementById('form-cadastro').addEventListener('submit',function(e){
@@ -1356,7 +1359,7 @@ section.band#apoiadores > .in{padding-top:48px}
     return 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ').indexOf(uf)<0?null:{cidade:m[1].trim(),uf:uf};}
   function criarContaApoiador(errEl,btn){
     function g(id){return document.getElementById(id);}
-    function falha(msg,campo){errEl.textContent=msg;errEl.hidden=false;if(campo)campo.focus();return null;}
+    function falha(msg,campo){errEl.textContent=campo?'Confira o campo destacado.':msg;errEl.hidden=false;if(campo){campoErro(campo,msg);campo.focus();}return null;}
     if(!sb)return Promise.resolve(falha(FORA));
     var fone=dig(g('ap-whats').value),email=maskEmail(g('ap-email').value),ci=cidadeUf(g('ap-cidade').value);
     var dados={tipo:'apoiador',nome:g('ap-nome').value.trim(),fone:fone,email_contato:email,doc:dig(g('ap-doc').value),cidade:ci.cidade,uf:ci.uf,
@@ -1393,8 +1396,8 @@ section.band#apoiadores > .in{padding-top:48px}
     return sb.from('perfis').update(upd).eq('id',perfil.id).then(function(r){
       if(!r.error){Object.assign(perfil,upd);return true;}
       var m=String(r.error.message||'')+' '+String(r.error.details||'');
-      if(/fone/i.test(m)&&/duplicate|unique/i.test(m)){errEl.textContent='Esse celular já está em outra conta. Use o celular do seu cadastro.';errEl.hidden=false;g('ap-whats').focus();return false;}
-      if(/email/i.test(m)&&/duplicate|unique/i.test(m)){errEl.textContent='Esse e-mail já está em outra conta. Use outro e-mail.';errEl.hidden=false;g('ap-email').focus();return false;}
+      if(/fone/i.test(m)&&/duplicate|unique/i.test(m)){campoErro(g('ap-whats'),EM_USO.fone);errEl.textContent='Confira o campo destacado.';errEl.hidden=false;g('ap-whats').focus();return false;}
+      if(/email/i.test(m)&&/duplicate|unique/i.test(m)){campoErro(g('ap-email'),EM_USO.email);errEl.textContent='Confira o campo destacado.';errEl.hidden=false;g('ap-email').focus();return false;}
       console.error('cadastro não atualizado',r.error);return true; /* outra falha não impede o apoio */
     },function(){return true;});
   }
