@@ -101,7 +101,8 @@ begin
     select jsonb_agg(to_jsonb(x) order by x.criado_em desc)
     from (
       select p.id, p.tipo, p.nome, p.fone, p.email, p.doc, p.cep, p.rua, p.bairro, p.numero, p.complemento,
-             p.cidade, p.uf, p.porte_negocio, p.ramo, p.faturamento, p.indicado_por, p.criado_em
+             p.cidade, p.uf, p.porte_negocio, p.ramo, p.faturamento, p.indicado_por, p.criado_em,
+             exists (select 1 from public.admins ad join auth.users u on lower(u.email) = ad.email where u.id = p.id) as admin
       from public.perfis p
       where (coalesce(p_tipo, '') = '' or p.tipo = p_tipo)
         and (b = '' or lower(p.nome) like '%' || b || '%' or lower(coalesce(p.email, '')) like '%' || b || '%'
@@ -172,6 +173,7 @@ begin
       select jsonb_agg(to_jsonb(x) order by x.valor desc, x.nome)
       from (
         select p.id, p.nome, p.fone, p.email, p.doc, p.cidade, p.uf, p.criado_em, ap.marca, ap.codigo, ap.selos,
+               exists (select 1 from public.admins ad join auth.users u on lower(u.email) = ad.email where u.id = p.id) as admin,
                coalesce(f.apoios, 0) as apoios, coalesce(f.valor, 0) as valor, coalesce(f.vagas, 0) as vagas
         from public.perfis p
         left join public.apoiador_perfil ap on ap.id = p.id
@@ -225,6 +227,7 @@ begin
     select jsonb_agg(to_jsonb(x) order by x.visitas desc, x.nome)
     from (
       select ap.id, p.nome, ap.marca, ap.codigo, ap.selos, ap.atualizado_em,
+             exists (select 1 from public.admins ad join auth.users u on lower(u.email) = ad.email where u.id = p.id) as admin,
              coalesce((select sum(v.visitas) from public.selo_visitas v where v.codigo = ap.codigo), 0) as visitas,
              (select count(*) from public.perfis q where q.indicado_por = ap.codigo) as cadastros
       from public.apoiador_perfil ap join public.perfis p on p.id = ap.id
