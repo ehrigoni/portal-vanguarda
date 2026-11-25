@@ -502,7 +502,11 @@ section.band#apoiadores > .in{padding-top:48px}
 .fields .adm-esp label.adm-ok{display:flex;grid-template-columns:none;align-items:flex-start;gap:10px}
 .fields .adm-esp label.adm-ok span{color:var(--fg)}
 .adm-esp .adm-ok input{flex:none}
-.adm-esp-preco{max-width:220px}
+.adm-esp-vals{display:grid;grid-template-columns:repeat(2,minmax(0,200px));gap:8px}
+.adm-esp-vals [data-final]{grid-column:1/-1;margin:0}
+.adm-img-prev{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.adm-img-prev img{max-width:min(240px,100%);height:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
+.adm-img-prev .msg{margin:0 0 8px}
 .adm-img{font-family:var(--mono)!important;font-size:13px!important;min-height:110px!important}
 .adm-simc h4{margin:0;font-family:var(--display);font-size:17px}
 .adm-simc textarea{width:100%;min-height:58px;resize:vertical;background:transparent;border:0;color:var(--fg);font:500 15px/1.4 var(--body);outline:none;padding:0}
@@ -2242,7 +2246,7 @@ section.band#apoiadores > .in{padding-top:48px}
     'raio-x-preco':{nome:'Raio X do Preço',descricao:'Quanto o seu negócio precisa faturar por mês',instrucoes:'Preencha as despesas mensais da operação. O simulador soma o custo operacional e mostra a meta de faturamento que cobre esses custos, as comissões e o lucro.',
       campos:PRECO_FIXOS.map(function(c){return {id:c[0],rotulo:c[1],descricao:''};})}};
   var SIMS=['raio-x','raio-x-preco'];
-  var LIM={nome:60,descricao:140,instrucoes:400,rotulo:60,campoDesc:140,formula:200,extras:12,imagem:20000,preco:100000};
+  var LIM={nome:60,descricao:140,instrucoes:400,rotulo:60,campoDesc:140,formula:200,extras:12,codigoImg:50000,imagemPx:800,imagemB:1500000,preco:100000};
   var cfgRaw={};
   function txt(v,n,d){v=typeof v==='string'?v.trim().slice(0,n):'';return v||d;}
   function okId(id){return typeof id==='string'&&/^[a-z][a-z0-9_]{0,19}$/.test(id);}
@@ -2301,9 +2305,10 @@ section.band#apoiadores > .in{padding-top:48px}
   function trocarCodigo(f,de,para){return String(f||'').replace(/[A-Za-z_][A-Za-z0-9_]*/g,function(w){return w.toLowerCase()===de?para:w;});}
   /* junta o que foi salvo com o padrão; aceita o formato antigo ({"raio-x": false}); respeita a ordem salva */
   function cfgDe(id){
-    var d=DEF[id],r=cfgRaw[id],o={visivel:r!==false,nome:d.nome,descricao:d.descricao,instrucoes:d.instrucoes,especial:false,preco:0,imagem:'',campos:[]};
+    var d=DEF[id],r=cfgRaw[id],o={visivel:r!==false,nome:d.nome,descricao:d.descricao,instrucoes:d.instrucoes,especial:false,preco:0,desconto:0,imagem:'',campos:[]};
     if(r&&typeof r==='object'){o.visivel=r.visivel!==false;o.nome=txt(r.nome,LIM.nome,d.nome);o.descricao=txt(r.descricao,LIM.descricao,d.descricao);o.instrucoes=txt(r.instrucoes,LIM.instrucoes,d.instrucoes);
-      o.especial=r.especial===true;o.preco=Math.min(LIM.preco,Math.max(0,Math.round((parseFloat(r.preco)||0)*100)/100));o.imagem=typeof r.imagem==='string'?r.imagem.slice(0,LIM.imagem):'';}
+      o.especial=r.especial===true;o.preco=Math.min(LIM.preco,Math.max(0,Math.round((parseFloat(r.preco)||0)*100)/100));o.desconto=Math.min(o.preco,Math.max(0,Math.round((parseFloat(r.desconto)||0)*100)/100));
+      o.imagem=typeof r.imagem==='string'&&/^data:image\/png;base64,[A-Za-z0-9+\/=]+$/.test(r.imagem)&&r.imagem.length<=LIM.imagemB?r.imagem:'';}
     var salvos=r&&Array.isArray(r.campos)?r.campos:[],pos={};
     salvos.forEach(function(y,k){if(y&&typeof y.id==='string'&&pos[y.id]==null)pos[y.id]=k;});
     d.campos.forEach(function(c,k){var x=salvos.filter(function(y){return y&&y.id===c.id&&!y.extra;})[0]||{};
@@ -2405,6 +2410,29 @@ section.band#apoiadores > .in{padding-top:48px}
   aplicarSims();
   if(sb)sb.from('config_site').select('chave,valor').then(function(r){(r.data||[]).forEach(function(x){if(x.chave==='simuladores'&&x.valor&&typeof x.valor==='object')cfgRaw=x.valor;});aplicarSims();},function(){});
 
+  /* código gerador de imagens: aceita SVG, tira o que é ativo (scripts, eventos, links externos), desenha num canvas
+     e devolve só a imagem PNG processada. O código não é guardado nem executado no site. */
+  function processarImagem(codigo){
+    return new Promise(function(ok,falha){
+      var doc=new DOMParser().parseFromString(codigo,'image/svg+xml'),svg=doc.documentElement;
+      if(!svg||svg.nodeName.toLowerCase()!=='svg'||doc.getElementsByTagName('parsererror').length){falha(new Error('O código da imagem precisa ser um SVG válido, começando com <svg> e terminando com </svg>.'));return;}
+      Array.prototype.slice.call(svg.querySelectorAll('script,foreignObject,iframe,object,embed,audio,video')).forEach(function(n){n.remove();});
+      [svg].concat(Array.prototype.slice.call(svg.querySelectorAll('*'))).forEach(function(n){
+        Array.prototype.slice.call(n.attributes).forEach(function(a){var nm=a.name.toLowerCase(),v=String(a.value).trim();
+          if(nm.indexOf('on')===0||((nm==='href'||nm==='xlink:href'||nm==='src')&&!/^(#|data:image\/)/i.test(v))||/url\(\s*['"]?\s*(?!#)/i.test(v))n.removeAttribute(a.name);});});
+      if(!svg.getAttribute('xmlns'))svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
+      var vb=(svg.getAttribute('viewBox')||'').split(/[\s,]+/).map(parseFloat);
+      var w=parseFloat(svg.getAttribute('width'))||vb[2]||600,h=parseFloat(svg.getAttribute('height'))||vb[3]||400,k=Math.min(1,LIM.imagemPx/Math.max(w,h));
+      w=Math.max(1,Math.round(w*k));h=Math.max(1,Math.round(h*k));svg.setAttribute('width',w);svg.setAttribute('height',h);
+      var img=new Image();
+      img.onload=function(){try{var cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
+          var url=cv.toDataURL('image/png');if(url.length>LIM.imagemB){falha(new Error('A imagem gerada ficou grande demais. Reduza o tamanho do SVG.'));return;}ok(url);}
+        catch(e){falha(new Error('Não foi possível processar a imagem.'));}};
+      img.onerror=function(){falha(new Error('O SVG não pôde ser desenhado. Confira o código.'));};
+      img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(svg));
+    });
+  }
+
   /* editor da aba Administrador */
   var ed=null,recolhido={};
   function pSim(c){
@@ -2414,8 +2442,9 @@ section.band#apoiadores > .in{padding-top:48px}
   function lerTela(c){
     SIMS.forEach(function(id){var o=ed[id],card=c.querySelector('[data-simc="'+id+'"]');if(!card)return;
       o.visivel=card.querySelector('[data-f="visivel"]').checked;
-      ['nome','descricao','instrucoes','imagem'].forEach(function(k){o[k]=card.querySelector('[data-f="'+k+'"]').value;});
-      o.especial=card.querySelector('[data-f="especial"]').checked;o.preco=card.querySelector('[data-f="preco"]').value;
+      ['nome','descricao','instrucoes'].forEach(function(k){o[k]=card.querySelector('[data-f="'+k+'"]').value;});
+      o.codigoImg=card.querySelector('[data-f="codigoImg"]').value;
+      o.especial=card.querySelector('[data-f="especial"]').checked;o.preco=card.querySelector('[data-f="preco"]').value;o.desconto=card.querySelector('[data-f="desconto"]').value;
       card.querySelectorAll('[data-campo]').forEach(function(row){var cp=o.campos.filter(function(x){return x.id===row.dataset.campo;})[0];if(!cp)return;
         cp.rotulo=row.querySelector('[data-f="rotulo"]').value;cp.descricao=row.querySelector('[data-f="descricao"]').value;cp.formula=row.querySelector('[data-f="formula"]').value;
         var cc=row.querySelector('[data-f="codigo"]');if(cc)cp.codigo=cc.value.trim().toLowerCase();
@@ -2433,8 +2462,9 @@ section.band#apoiadores > .in{padding-top:48px}
         '<div class="adm-simc-corpo"'+(fech?' hidden':'')+'>'+
         '<div class="fields adm-simc-topo"><label><span>Nome do simulador</span><input data-f="nome" maxlength="'+LIM.nome+'" value="'+esc(o.nome)+'"></label>'+
         '<div class="adm-esp"><label class="adm-ok"><input type="checkbox" data-f="especial"'+(o.especial?' checked':'')+'><span>Simulador especial<small>Marque para cobrar pelo uso deste simulador.</small></span></label>'+
-        '<label class="adm-esp-preco"'+(o.especial?'':' hidden')+'><span>Preço (R$)</span><input data-f="preco" type="number" min="0" step="0.01" inputmode="decimal" value="'+esc(o.preco||0)+'"></label>'+
-        '<p class="msg adm-esp-nota"'+(o.especial?'':' hidden')+'>O valor é abatido da cota de apadrinhamento quando o vanguardista tem algum apoio.</p></div>'+
+        '<div class="adm-esp-vals"'+(o.especial?'':' hidden')+'><label><span>Preço (R$)</span><input data-f="preco" type="number" min="0" step="0.01" inputmode="decimal" value="'+esc(o.preco||0)+'"></label>'+
+        '<label><span>Desconto (R$)</span><input data-f="desconto" type="number" min="0" step="0.01" inputmode="decimal" value="'+esc(o.desconto||0)+'"></label>'+
+        '<p class="msg" data-final></p></div></div>'+
         '<label><span>Descrição</span><input data-f="descricao" maxlength="'+LIM.descricao+'" value="'+esc(o.descricao)+'"></label>'+
         '<label><span>Instruções de uso</span><textarea data-f="instrucoes" maxlength="'+LIM.instrucoes+'">'+esc(o.instrucoes)+'</textarea></label></div>'+
         '<h4>Campos</h4>'+
@@ -2451,7 +2481,8 @@ section.band#apoiadores > .in{padding-top:48px}
         (excl.length?'<div class="adm-excl">Campos excluídos: '+excl.map(function(x){return '<button type="button" class="btn" data-res="'+esc(x.id)+'">Restaurar '+esc(x.rotulo)+'</button>';}).join('')+'</div>':'')+
         '<div class="adm-bar"><button type="button" class="btn" data-add="'+id+'">Acrescentar campo</button></div>'+
         '<p class="msg">'+(id==='raio-x'?'Campos novos são custos por venda: aparecem como "Custos adicionais por venda" e são descontados do lucro.':'Campos novos são custos mensais: entram no custo operacional e na meta de faturamento.')+'</p>'+
-        '<div class="fields"><label><span>Código gerador de imagens (opcional)</span><textarea data-f="imagem" class="adm-img" maxlength="'+LIM.imagem+'" spellcheck="false" placeholder="Cole aqui o código que gera as imagens deste simulador">'+esc(o.imagem||'')+'</textarea></label></div>'+
+        '<div class="fields"><label><span>Código gerador de imagens (opcional)</span><textarea data-f="codigoImg" class="adm-img" maxlength="'+LIM.codigoImg+'" spellcheck="false" placeholder="Cole aqui o código SVG (&lt;svg&gt;…&lt;/svg&gt;). Ao salvar, o portal gera a imagem e guarda só a imagem processada.">'+esc(o.codigoImg||'')+'</textarea></label></div>'+
+        (o.imagem?'<div class="adm-img-prev"><img src="'+esc(o.imagem)+'" alt="Imagem processada de '+esc(o.nome)+'"><div><p class="msg">Imagem processada e salva. Cole um novo código acima para substituir.</p><button type="button" class="btn" data-rmimg="'+id+'">Remover imagem</button></div></div>':'')+
         '</div>'+
         '<div class="adm-bar"><button type="button" class="btn go" data-salvar="'+id+'">Salvar '+esc(o.nome)+'</button></div>'+
         '<p class="msg'+(id===alvo&&bad?' bad':'')+'" data-msg>'+(id===alvo?esc(msg):'')+'</p>'+
@@ -2478,8 +2509,13 @@ section.band#apoiadores > .in{padding-top:48px}
     c.querySelectorAll('[data-tog]').forEach(function(b){b.onclick=function(){var id=b.dataset.tog,card=b.closest('[data-simc]'),corpo=card.querySelector('.adm-simc-corpo');
       recolhido[id]=!recolhido[id];corpo.hidden=recolhido[id];card.classList.toggle('fechado',recolhido[id]);
       b.textContent=recolhido[id]?'▸':'▾';b.setAttribute('aria-expanded',String(!recolhido[id]));b.title=(recolhido[id]?'Expandir':'Recolher')+' os campos';};});
+    function valorFinal(box){var pr=parseFloat(box.querySelector('[data-f="preco"]').value)||0,de=parseFloat(box.querySelector('[data-f="desconto"]').value)||0;
+      box.querySelector('[data-final]').textContent='Valor com desconto: '+brl(Math.max(0,pr-de))+'. O desconto vale para quem tem algum apoio.';}
+    c.querySelectorAll('.adm-esp').forEach(function(box){valorFinal(box);box.querySelectorAll('[data-f="preco"],[data-f="desconto"]').forEach(function(i){i.oninput=function(){valorFinal(box);};});});
     c.querySelectorAll('[data-f="especial"]').forEach(function(ch){ch.onchange=function(){var box=ch.closest('.adm-esp');
-      box.querySelector('.adm-esp-preco').hidden=!ch.checked;box.querySelector('.adm-esp-nota').hidden=!ch.checked;if(ch.checked)box.querySelector('[data-f="preco"]').focus();};});
+      box.querySelector('.adm-esp-vals').hidden=!ch.checked;if(ch.checked)box.querySelector('[data-f="preco"]').focus();};});
+    c.querySelectorAll('[data-rmimg]').forEach(function(b){b.onclick=function(){lerTela(c);ed[b.dataset.rmimg].imagem='';
+      desenhar(c,'Imagem removida. Clique em Salvar para aplicar.',false,b.dataset.rmimg);};});
     c.querySelectorAll('[data-up]').forEach(function(b){b.onclick=function(){mover(b,-1);};});
     c.querySelectorAll('[data-down]').forEach(function(b){b.onclick=function(){mover(b,1);};});
     c.querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){lerTela(c);var o=ed[simDe(b)];
@@ -2500,17 +2536,23 @@ section.band#apoiadores > .in{padding-top:48px}
       var preco=Math.round((parseFloat(String(o.preco).replace(',','.'))||0)*100)/100;
       if(!falta&&o.especial&&(preco<0||preco>LIM.preco))falta='Informe um preço entre R$ 0 e R$ '+LIM.preco.toLocaleString('pt-BR')+'.';
       if(!falta&&o.especial&&!(preco>0))falta='Informe o preço do simulador especial.';
+      var desconto=Math.round((parseFloat(String(o.desconto).replace(',','.'))||0)*100)/100;
+      if(!falta&&o.especial&&(desconto<0||desconto>preco))falta='O desconto precisa ficar entre R$ 0 e o preço do simulador.';
       if(falta){m.className='msg bad';m.textContent=falta;return;}
+      var codigo=String(o.codigoImg||'').trim();
+      m.className='msg';m.textContent=codigo?'Processando a imagem...':'Salvando...';b.disabled=true;
+      (codigo?processarImagem(codigo):Promise.resolve(o.imagem||'')).then(function(img){
       SIMS.forEach(function(k){if(k!==id&&cfgRaw[k]!==undefined)v[k]=cfgRaw[k];});
       v[id]={visivel:!!o.visivel,nome:o.nome.trim().slice(0,LIM.nome),descricao:o.descricao.trim().slice(0,LIM.descricao),instrucoes:o.instrucoes.trim().slice(0,LIM.instrucoes),
-        especial:!!o.especial,preco:o.especial?preco:0,imagem:String(o.imagem||'').trim().slice(0,LIM.imagem),
+        especial:!!o.especial,preco:o.especial?preco:0,desconto:o.especial?desconto:0,imagem:img,
         campos:o.campos.map(function(x){var y={id:x.id,codigo:cod(x),rotulo:String(x.rotulo).trim().slice(0,LIM.rotulo),descricao:String(x.descricao||'').trim().slice(0,LIM.campoDesc)};
           var f=String(x.formula||'').trim().slice(0,LIM.formula);if(f)y.formula=f;
           if(x.extra){y.extra=true;y.valor=Math.max(0,parseFloat(x.valor)||0);}else if(x.excluido)y.excluido=true;return y;})};
-      m.className='msg';m.textContent='Salvando...';b.disabled=true;
-      rpc('admin_config_salvar',{p_chave:'simuladores',p_valor:v}).then(function(){cfgRaw=v;aplicarSims();ed[id]=JSON.parse(JSON.stringify(cfgDe(id)));
-          desenhar(c,'Salvo. A página de simuladores já mostra o que foi definido aqui.',false,id);},
+      m.textContent='Salvando...';
+      return rpc('admin_config_salvar',{p_chave:'simuladores',p_valor:v}).then(function(){cfgRaw=v;aplicarSims();ed[id]=JSON.parse(JSON.stringify(cfgDe(id)));
+          desenhar(c,'Salvo. A página de simuladores já mostra o que foi definido aqui.'+(codigo?' A imagem foi processada e guardada.':''),false,id);},
         function(e){b.disabled=false;m.className='msg bad';m.textContent=/apenas administradores|42501/i.test(String(e&&e.message))?'Esta conta não tem acesso de administrador.':'Não foi possível salvar agora. Tente de novo.';});
+      },function(e){b.disabled=false;m.className='msg bad';m.textContent=e&&e.message||'Não foi possível processar a imagem.';});
     };});
   }
 
