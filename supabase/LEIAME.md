@@ -52,3 +52,21 @@ O botão **Excluir minha conta** (abas Vanguardistas e Apoiar, só para quem est
 - o usuário em `auth.users`, o que leva em cascata `perfis`, `apoiador_perfil`, `grupos` e os vínculos em `apoio_vanguardistas`.
 
 Depois roda `alocar_apoios` para passar a outros vanguardistas as vagas que ficaram livres. Cobranças e notas fiscais já emitidas continuam no Asaas, fora do banco do portal. Enquanto o `painel.sql` novo não for rodado no Supabase, o botão mostra um aviso de erro e não apaga nada.
+
+## Administrador (aba Administrador)
+
+A aba **Administrador** tem cinco painéis retráteis: Simuladores (quais aparecem no site), Selos, Impacto, Apoiadores e Usuários. Ela só aparece para a conta de administrador. Quem libera ou barra cada consulta é o banco: todas as funções de `admin.sql` conferem `is_admin()` antes de responder, então uma conta comum recebe "apenas administradores" mesmo chamando a função direto.
+
+A conta de administrador não tem perfil de vanguardista nem de apoiador e não entra nos números do portal. O login (por exemplo, `007`) fica na tabela `admins`. A senha fica só no Supabase Auth, guardada como hash, e nunca vai para o código ou para um arquivo SQL.
+
+Para criar o administrador, uma vez:
+
+1. Rode no SQL Editor `schema.sql`, depois `painel.sql` e depois `admin.sql`.
+2. Ainda no SQL Editor, cadastre o login e o e-mail interno da conta (o e-mail não recebe mensagens; ele é usado só por dentro do login):
+   ```sql
+   insert into public.admins (email, login) values ('admin.vanguarda@decisaochave.com.br', '007');
+   ```
+3. Em **Authentication > Users > Add user > Create new user**, use o mesmo e-mail, digite a senha e marque **Auto Confirm User**. Faça este passo depois do passo 2: com o e-mail já na tabela `admins`, o cadastro não tenta criar um perfil.
+4. No site, entre em **Entrar** com o login `007` e a senha. A aba Administrador aparece no menu.
+
+Para trocar a senha: **Authentication > Users**, abra o usuário e use **Reset password**, ou exclua e crie de novo (os passos 3 e 4). Para tirar o acesso: `delete from public.admins where login = '007';`.

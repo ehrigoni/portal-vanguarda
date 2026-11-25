@@ -563,36 +563,51 @@ grant execute on function public.registrar_visita_selo(text) to anon, authentica
 --      selo dela e o usuário em auth.users; perfil, perfil de apoiador, grupos e vínculos com apoios saem em
 --      cascata. Depois redistribui as vagas de apoios que ficaram sem vanguardista. Cobranças e notas fiscais
 --      já emitidas continuam no Asaas (registro fiscal), fora do banco do portal.
+create or replace function public._excluir_conta(p_id uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = public, auth
+as $$
+declare
+  me public.perfis%rowtype;
+  cod text;
+begin
+  if p_id is null then raise exception 'conta não informada'; end if;
+  if exists (select 1 from public.admins a join auth.users u on lower(u.email) = a.email where u.id = p_id) then
+    raise exception 'a conta de administrador não é excluída por aqui' using errcode = '42501';
+  end if;
+  select * into me from public.perfis where id = p_id;
+  if found and nullif(me.doc, '') is not null then
+    delete from public.apoios
+    where doc = me.doc
+      and (fone = me.fone or (nullif(email, '') is not null and email = lower(trim(coalesce(me.email, '')))));
+  end if;
+  select codigo into cod from public.apoiador_perfil where id = p_id;
+  if cod is not null then
+    delete from public.selo_visitas where codigo = cod;
+  end if;
+  delete from auth.users where id = p_id;
+  perform public.alocar_apoios();
+  return true;
+end;
+$$;
+
 create or replace function public.excluir_minha_conta()
 returns boolean
 language plpgsql
 security definer
 set search_path = public
 as $$
-declare
-  eu uuid := auth.uid();
-  me public.perfis%rowtype;
-  cod text;
 begin
-  if eu is null then
+  if auth.uid() is null then
     raise exception 'sem login' using errcode = '42501';
   end if;
-  select * into me from public.perfis where id = eu;
-  if found and nullif(me.doc, '') is not null then
-    delete from public.apoios
-    where doc = me.doc
-      and (fone = me.fone or (nullif(email, '') is not null and email = lower(trim(coalesce(me.email, '')))));
-  end if;
-  select codigo into cod from public.apoiador_perfil where id = eu;
-  if cod is not null then
-    delete from public.selo_visitas where codigo = cod;
-  end if;
-  delete from auth.users where id = eu;
-  perform public.alocar_apoios();
-  return true;
+  return public._excluir_conta(auth.uid());
 end;
 $$;
 
+revoke all on function public._excluir_conta(uuid) from public, anon, authenticated;
 revoke all on function public.excluir_minha_conta() from public, anon;
 grant execute on function public.excluir_minha_conta() to authenticated;
 

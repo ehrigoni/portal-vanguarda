@@ -441,6 +441,45 @@ section.band#apoiadores > .in{padding-top:48px}
 .kpi.txt b{font-size:16px;line-height:1.35;padding-top:4px}
 .kpi small{color:var(--muted);font-size:12.5px;line-height:1.35}
 .grupo .pouco{color:var(--muted);font-size:14px}
+/* Aba Administrador */
+.adm-topo{margin-top:16px;max-width:320px}
+.adm .in{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.adm-p,.adm-c,.adm-tw{min-width:0}
+.adm-p{border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.adm-p>summary{cursor:pointer;list-style:none;padding:16px 18px;display:grid;gap:2px;position:relative;padding-right:48px}
+.adm-p>summary::-webkit-details-marker{display:none}
+.adm-p>summary::after{content:"+";position:absolute;right:18px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:22px;color:var(--glow)}
+.adm-p[open]>summary::after{content:"−"}
+.adm-p>summary span{font-family:var(--display);font-size:19px}
+.adm-p>summary small{color:var(--muted);font-size:13.5px}
+.adm-c{padding:0 18px 18px;display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.adm-c>*,.adm-lista>*{min-width:0}
+.adm-lista{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.adm-c .msg{font-size:14px;color:var(--muted)}
+.adm-c .msg.bad{color:var(--amber)}
+.adm-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.adm-bar input,.adm-bar select{min-width:0}
+.adm-bar.busca{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));align-items:end}
+.adm-tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.adm-t{width:100%;border-collapse:collapse;font-size:13.5px}
+.adm-t th,.adm-t td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.adm-t th{color:var(--muted);font-weight:500;white-space:nowrap}
+.adm-t td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.adm-t tr:last-child td{border-bottom:0}
+.adm-t .btn{padding:6px 12px;font-size:13px}
+.adm-chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin:1px 2px;font-size:12px;white-space:nowrap}
+.adm-ed{display:grid;gap:10px;padding:12px;border:1px solid var(--glow);border-radius:10px}
+.adm-ed .fields{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.adm-sim{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.adm-sim input{width:18px;height:18px;margin-top:3px;accent-color:var(--amber)}
+.adm-sim small{display:block;color:var(--muted);font-size:13px}
+.adm-ok{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.adm-ok input{width:18px;height:18px;margin-top:2px;accent-color:var(--amber)}
+.sim-off{display:none!important}
+.adm-topo .fields label{max-width:320px}
+.adm .fields select,.adm-topo select{width:100%;background:transparent;border:0;color:var(--fg);font-family:var(--body);font-size:16px;padding:0;outline:none}
+.adm .fields select option,.adm-topo select option{background:var(--panel);color:var(--fg)}
+.adm .fields input{font-family:var(--body);font-weight:500;font-size:16px}
 /* Manifesto (página inicial) */
 .mf-top{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:28px;align-items:start}
 .mf-top h2{max-width:none}
@@ -465,7 +504,7 @@ section.band#apoiadores > .in{padding-top:48px}
 <header class="top"><div class="in">
   <a class="brand" href="#inicio">Portal <span>Vanguarda</span></a>
   <nav aria-label="Páginas">
-    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#vanguardistas" data-nav="vanguardistas">Vanguardistas</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#painel" data-nav="painel" data-apoiador hidden>Painel</a><a href="#sobre" data-nav="sobre">Sobre</a>
+    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#vanguardistas" data-nav="vanguardistas">Vanguardistas</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#painel" data-nav="painel" data-apoiador hidden>Painel</a><a href="#admin" data-nav="admin" data-admin hidden>Administrador</a><a href="#sobre" data-nav="sobre">Sobre</a>
   </nav>
   <div class="acc-top">
     <a class="btn go" href="#entrar" data-guest>Entrar</a>
@@ -1039,6 +1078,24 @@ section.band#apoiadores > .in{padding-top:48px}
   </form>
 </div></section>
 </div>
+<div data-view="admin">
+<section class="pagehead"><div class="in">
+  <p class="eyebrow">Administrador</p>
+  <h1>Administração do portal</h1>
+  <p class="lede">Abra cada painel para ver e ajustar simuladores, selos, impacto, apoiadores e usuários. O banco confere se a conta é de administrador em cada consulta.</p>
+  <div class="adm-topo fields" data-admin hidden>
+    <label for="adm-amb"><span>Ambiente dos apoios</span><select id="adm-amb"><option value="producao">Produção</option><option value="sandbox">Teste (sandbox)</option></select></label>
+  </div>
+  <p class="notice" id="adm-fora"><b>Acesso restrito</b><span>Esta área é só para a conta de administrador. Entre com o login de administrador para continuar.</span></p>
+</div></section>
+<section class="band adm" data-admin hidden><div class="in">
+  <details class="adm-p" id="adm-sim"><summary><span>Simuladores</span><small>Quais simuladores aparecem no site</small></summary><div class="adm-c"></div></details>
+  <details class="adm-p" id="adm-selos"><summary><span>Selos</span><small>Selos escolhidos, visitas e cadastros pelo link de cada apoiador</small></summary><div class="adm-c"></div></details>
+  <details class="adm-p" id="adm-imp"><summary><span>Impacto</span><small>Números do portal inteiro</small></summary><div class="adm-c"></div></details>
+  <details class="adm-p" id="adm-apo"><summary><span>Apoiadores</span><small>Apoiadores, apoios recebidos e vagas de apadrinhamento</small></summary><div class="adm-c"></div></details>
+  <details class="adm-p" id="adm-usu"><summary><span>Usuários</span><small>Vanguardistas e apoiadores: buscar, editar e excluir</small></summary><div class="adm-c"></div></details>
+</div></section>
+</div>
 <div data-view="sobre">
 <section class="pagehead"><div class="in">
   <p class="eyebrow">Sobre</p>
@@ -1186,12 +1243,14 @@ section.band#apoiadores > .in{padding-top:48px}
     assinar:function(n){if(n>0)apN.value=n;var r=document.querySelector('input[name="ap-p"][value="A"]');if(r)r.checked=true;ap();location.hash='apoiar-cadastro';}}; /* usado pelo painel do apoiador e pela página do selo */
   var FORA='O cadastro está sendo ligado e volta em breve. Enquanto isso, fale com a gente pelo WhatsApp (51) 99291-0038.';
   var perfil=null,cobranca={ativo:false,ambiente:''};
-  function destino(c){return c.tipo==='vanguardista'?'simuladores':'painel';}
+  function destino(c){return c.tipo==='admin'?'admin':c.tipo==='vanguardista'?'simuladores':'painel';}
   function emailInterno(){var r='';try{r=crypto.randomUUID().replace(/-/g,'');}catch(e){r=Date.now().toString(36)+Math.random().toString(36).slice(2);}return 'cadastro+'+r+'@'+LOGIN_DOMINIO;}
   function carregarPerfil(user){
     if(!user)return Promise.resolve(null);
     return sb.from('perfis').select('*').eq('id',user.id).maybeSingle().then(function(r){
-      var m=user.user_metadata||{},c=r.data||(m.tipo?{tipo:m.tipo,nome:m.nome,fone:m.fone,email:m.email_contato,doc:m.doc,cidade:m.cidade,uf:m.uf,cep:m.cep,rua:m.rua,bairro:m.bairro,numero:m.numero,complemento:m.complemento}:null);if(c)c.id=user.id;return c;
+      var m=user.user_metadata||{},c=r.data||(m.tipo?{tipo:m.tipo,nome:m.nome,fone:m.fone,email:m.email_contato,doc:m.doc,cidade:m.cidade,uf:m.uf,cep:m.cep,rua:m.rua,bairro:m.bairro,numero:m.numero,complemento:m.complemento}:null);if(c){c.id=user.id;return c;}
+      /* administrador: não tem perfil; quem confirma é o banco (is_admin) */
+      return sb.rpc('is_admin').then(function(a){return a&&a.data===true?{tipo:'admin',nome:'Administrador',id:user.id}:null;},function(){return null;});
     },function(){return null;});
   }
   /* quais dados já estão na conta de outra pessoa: o banco devolve só os nomes dos campos ('fone', 'email', 'doc'),
@@ -1212,6 +1271,8 @@ section.band#apoiadores > .in{padding-top:48px}
     document.querySelectorAll('[data-guest]').forEach(function(el){el.hidden=!!c;});
     document.querySelectorAll('[data-user]').forEach(function(el){el.hidden=!c;});
     document.querySelectorAll('[data-apoiador]').forEach(function(el){el.hidden=!(c&&c.tipo==='apoiador');});
+    document.querySelectorAll('[data-admin]').forEach(function(el){el.hidden=!(c&&c.tipo==='admin');});
+    document.querySelectorAll('.excluir').forEach(function(el){el.hidden=!c||c.tipo==='admin';});
     try{document.dispatchEvent(new CustomEvent('vg:perfil',{detail:c}));}catch(e){}
     document.getElementById('ap-btn-so').textContent=(c?'Apoiar e atualizar dados':'Apenas Apoiar')+(cobranca.ambiente==='sandbox'?' (teste)':'');
     if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];
@@ -1219,7 +1280,7 @@ section.band#apoiadores > .in{padding-top:48px}
   }
   /* logado: o formulário Apoiar já vem com os dados do cadastro; só falta o que o cadastro não tem (CEP, endereço, número) */
   function preencherApoio(){
-    var c=perfil;if(!c)return;
+    var c=perfil;if(!c||c.tipo==='admin')return;
     var pre={'ap-nome':c.nome,'ap-email':c.email,'ap-whats':maskFone(c.fone||''),'ap-doc':maskDoc(c.doc||''),'ap-cidade':c.cidade?c.cidade+(c.uf?', '+c.uf:''):'',
       'ap-cep':c.cep?maskCep(c.cep):'','ap-rua':c.rua,'ap-bairro':c.bairro,'ap-num':c.numero,'ap-comp':c.complemento};
     Object.keys(pre).forEach(function(id){var i=document.getElementById(id);if(i&&!i.value.trim()&&pre[id])i.value=pre[id];});
@@ -1598,6 +1659,7 @@ section.band#apoiadores > .in{padding-top:48px}
      cond:'Ter pelo menos 180 meses de uso apadrinhados (somando apoios pagos e não estornados).',
      req:{meses:180}}
   ];
+  VG.selos=SELOS; /* usado pela aba Administrador */
   var SELO={};SELOS.forEach(function(s){SELO[s.id]=s;});
 
   /* regras de recomendação: cada regra soma pontos e explica o porquê */
@@ -2058,6 +2120,149 @@ section.band#apoiadores > .in{padding-top:48px}
   window.addEventListener('hashchange',function(){if(naTela())abrir();});
   document.addEventListener('vg:perfil',function(){if(naTela()||pronto)abrir();});
   if(naTela())abrir();
+})();
+</script>
+<script>
+/* Aba Administrador (supabase/admin.sql) e simuladores ligados ou desligados pelo administrador.
+   A tela só esconde a aba; todas as funções do banco conferem is_admin() antes de responder. */
+(function(){
+  var VG=window.VG;if(!VG)return;var sb=VG.sb;
+  function $(id){return document.getElementById(id);}
+  function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function dig(v){return String(v||'').replace(/\D/g,'');}
+  function fone(v){var d=dig(v);return d.length===11?'('+d.slice(0,2)+') '+d.slice(2,7)+'-'+d.slice(7):d.length===10?'('+d.slice(0,2)+') '+d.slice(2,6)+'-'+d.slice(6):d;}
+  function doc(v){var d=dig(v);return d.length===11?d.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4'):d.length===14?d.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,'$1.$2.$3/$4-$5'):d;}
+  function brl(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+  function num(v){return Number(v||0).toLocaleString('pt-BR');}
+  function data(v){if(!v)return '';var d=new Date(String(v).length===10?v+'T12:00:00':v);return isNaN(d)?esc(v):d.toLocaleDateString('pt-BR');}
+  function admin(){var p=VG.perfil();return !!(p&&p.tipo==='admin');}
+  function amb(){return $('adm-amb').value;}
+  function falhou(c,e){var m=String(e&&e.message||'');
+    c.querySelector('.msg')?(c.querySelector('.msg').className='msg bad'):0;
+    var t=/apenas administradores|42501|permission/i.test(m)?'Esta conta não tem acesso de administrador.':/function .* does not exist|Could not find the function/i.test(m)?'Falta rodar o supabase/admin.sql no Supabase.':'Não foi possível carregar agora. Tente de novo.';
+    return '<p class="msg bad">'+esc(t)+'</p>';}
+  function rpc(n,a){return sb?sb.rpc(n,a||{}).then(function(r){if(r.error)throw r.error;return r.data;}):Promise.reject(new Error('sem banco'));}
+  function tabela(cab,linhas){return '<div class="adm-tw"><table class="adm-t"><thead><tr>'+cab.map(function(h){return '<th>'+esc(h)+'</th>';}).join('')+'</tr></thead><tbody>'+(linhas.join('')||'<tr><td colspan="'+cab.length+'">Nada por aqui ainda.</td></tr>')+'</tbody></table></div>';}
+
+  /* simuladores: o administrador escolhe quais aparecem no site (config_site.simuladores) */
+  var SIMS=[{id:'raio-x',nome:'Raio X da venda',desc:'Para onde vai cada real que você vende.'},{id:'raio-x-preco',nome:'Raio X do preço',desc:'Quanto o negócio precisa faturar por mês.'}];
+  var cfgSim={};
+  function aplicarSims(){
+    SIMS.forEach(function(x){var el=$(x.id);if(el)el.classList.toggle('sim-off',cfgSim[x.id]===false&&!admin());});
+    var nenhum=SIMS.every(function(x){return cfgSim[x.id]===false;})&&!admin();
+    var av=$('sim-pausa');if(!av){var ph=document.querySelector('[data-view="simuladores"] .pagehead .in');if(ph){av=document.createElement('p');av.className='notice';av.id='sim-pausa';av.innerHTML='<b>Em manutenção</b><span>Os simuladores estão passando por ajustes e voltam em breve.</span>';ph.appendChild(av);}}
+    if(av)av.hidden=!nenhum;
+  }
+  if(sb)sb.from('config_site').select('chave,valor').then(function(r){(r.data||[]).forEach(function(x){if(x.chave==='simuladores'&&x.valor)cfgSim=x.valor;});aplicarSims();},function(){});
+  function pSim(c){
+    c.innerHTML=SIMS.map(function(x){return '<label class="adm-sim"><input type="checkbox" data-sim="'+x.id+'"'+(cfgSim[x.id]===false?'':' checked')+'><span><b>'+esc(x.nome)+'</b> visível no site<small>'+esc(x.desc)+'</small></span></label>';}).join('')+
+      '<div class="adm-bar"><button type="button" class="btn go" data-a="salvar">Salvar</button></div><p class="msg">Desligado, o simulador some do site para os visitantes. Você continua vendo todos.</p>';
+    c.querySelector('[data-a="salvar"]').onclick=function(){
+      var v={};c.querySelectorAll('[data-sim]').forEach(function(i){v[i.dataset.sim]=i.checked;});
+      var m=c.querySelector('.msg');m.className='msg';m.textContent='Salvando...';
+      rpc('admin_config_salvar',{p_chave:'simuladores',p_valor:v}).then(function(){cfgSim=v;aplicarSims();m.textContent='Salvo. O site já mostra só os simuladores marcados.';},function(e){m.outerHTML=falhou(c,e);});
+    };
+  }
+
+  /* selos */
+  function nomeSelo(id){var s=(VG.selos||[]).filter(function(x){return x.id===id;})[0];return s?s.curto||s.nome:id;}
+  function pSelos(c){
+    c.innerHTML='<p class="msg">Carregando...</p>';
+    rpc('admin_selos').then(function(rows){
+      var cont={};rows.forEach(function(r){(r.selos||[]).forEach(function(s){cont[s]=(cont[s]||0)+1;});});
+      var resumo=(VG.selos||[]).map(function(s){return '<span class="adm-chip">'+esc(s.curto||s.nome)+': '+num(cont[s.id]||0)+'</span>';}).join('');
+      c.innerHTML='<div>'+resumo+'</div>'+tabela(['Apoiador','Marca','Código do selo','Selos escolhidos','Visitas','Cadastros',''],rows.map(function(r,i){
+        return '<tr><td>'+esc(r.nome)+'</td><td>'+esc(r.marca||'')+'</td><td class="n">'+(r.codigo?'<a href="/?selo='+esc(r.codigo)+'#selo" target="_blank" rel="noopener">'+esc(r.codigo)+'</a>':'')+'</td><td>'+(r.selos||[]).map(function(s){return '<span class="adm-chip">'+esc(nomeSelo(s))+'</span>';}).join('')+'</td><td class="n">'+num(r.visitas)+'</td><td class="n">'+num(r.cadastros)+'</td><td><button type="button" class="btn" data-ed="'+i+'">Editar</button></td></tr>';}))+'<div class="adm-ed-slot"></div>';
+      c.querySelectorAll('[data-ed]').forEach(function(b){b.onclick=function(){var r=rows[+b.dataset.ed],slot=c.querySelector('.adm-ed-slot');
+        slot.innerHTML='<div class="adm-ed"><b>'+esc(r.nome)+'</b><div class="fields"><label><span>Marca</span><input data-f="marca" maxlength="80" value="'+esc(r.marca||'')+'"></label></div><div>'+(VG.selos||[]).map(function(s){return '<label class="adm-ok"><input type="checkbox" value="'+esc(s.id)+'"'+((r.selos||[]).indexOf(s.id)>=0?' checked':'')+'> '+esc(s.nome)+'</label>';}).join('')+'</div><p class="msg">Selo novo só fica se o apoiador cumprir a regra do selo (pelo menos 1 apoio pago).</p><div class="adm-bar"><button type="button" class="btn go" data-a="ok">Salvar</button><button type="button" class="btn" data-a="x">Cancelar</button></div></div>';
+        slot.scrollIntoView({block:'nearest'});
+        slot.querySelector('[data-a="x"]').onclick=function(){slot.innerHTML='';};
+        slot.querySelector('[data-a="ok"]').onclick=function(){var sel=[].slice.call(slot.querySelectorAll('input[type=checkbox]:checked')).map(function(i){return i.value;}),m=slot.querySelector('.msg');
+          m.className='msg';m.textContent='Salvando...';
+          rpc('admin_salvar_selos',{p_id:r.id,p_marca:slot.querySelector('[data-f="marca"]').value,p_selos:sel}).then(function(){pSelos(c);},function(e){m.outerHTML=falhou(c,e);});};
+      };});
+    },function(e){c.innerHTML=falhou(c,e);});
+  }
+
+  /* impacto */
+  function pImp(c){
+    c.innerHTML='<p class="msg">Carregando...</p>';
+    rpc('admin_resumo',{p_ambiente:amb()}).then(function(r){
+      var k=[['Vanguardistas cadastrados',num(r.vanguardistas)],['Apoiadores cadastrados',num(r.apoiadores)],['Cadastros nos últimos 30 dias',num(r.cadastros_30d)],
+        ['Apoios pagos',num(r.apoios)],['Apoios estornados',num(r.estornados)],['Valor apoiado',brl(r.valor_total)],
+        ['Vagas de apadrinhamento',num(r.vagas_total)],['Vagas vigentes',num(r.vagas_vigentes)],['Vagas preenchidas',num(r.vagas_alocadas)],
+        ['Vanguardistas apadrinhados hoje',num(r.apadrinhados)],['Meses de vanguardista custeados',num(r.meses_vanguardista)],
+        ['Visitas às páginas de selo',num(r.visitas_selo)],['Cadastros vindos de selos',num(r.cadastros_selo)]];
+      c.innerHTML='<p class="msg">Ambiente: '+(amb()==='producao'?'produção':'teste (sandbox)')+'.</p><div class="kpis">'+k.map(function(x){return '<div class="kpi"><small>'+esc(x[0])+'</small><b>'+esc(x[1])+'</b></div>';}).join('')+'</div>'+
+        '<b>Vanguardistas por estado</b>'+tabela(['Estado','Vanguardistas'],(r.por_uf||[]).map(function(x){return '<tr><td>'+esc(x.uf)+'</td><td class="n">'+num(x.vanguardistas)+'</td></tr>';}));
+    },function(e){c.innerHTML=falhou(c,e);});
+  }
+
+  /* apoiadores e apoios */
+  function pApo(c){
+    c.innerHTML='<p class="msg">Carregando...</p>';
+    rpc('admin_apoiadores',{p_ambiente:amb()}).then(function(r){
+      c.innerHTML='<b>Apoiadores</b>'+tabela(['Nome','Marca','CPF/CNPJ','Celular','E-mail','Cidade','Apoios','Valor','Vagas','Desde'],(r.apoiadores||[]).map(function(a){
+          return '<tr><td>'+esc(a.nome)+'</td><td>'+esc(a.marca||'')+'</td><td class="n">'+esc(doc(a.doc))+'</td><td class="n">'+esc(fone(a.fone))+'</td><td>'+esc(a.email||'')+'</td><td>'+esc(a.cidade)+'/'+esc(a.uf)+'</td><td class="n">'+num(a.apoios)+'</td><td class="n">'+brl(a.valor)+'</td><td class="n">'+num(a.vagas)+'</td><td class="n">'+data(a.criado_em)+'</td></tr>';}))+
+        '<b>Apoios recebidos ('+(amb()==='producao'?'produção':'teste')+')</b>'+tabela(['Pago em','Pagamento','Conta','CPF/CNPJ','Valor','Vagas','Preenchidas','Meses','Situação'],(r.apoios||[]).map(function(a){
+          return '<tr><td class="n">'+data(a.pago_em)+'</td><td class="n">'+esc(a.pagamento_id)+'</td><td>'+esc(a.conta||'sem conta')+'</td><td class="n">'+esc(doc(a.doc))+'</td><td class="n">'+brl(a.valor)+'</td><td class="n">'+num(a.vanguardistas)+'</td><td class="n">'+num(a.alocados)+'</td><td class="n">'+num(a.meses)+'</td><td>'+(a.estornado_em?'Estornado em '+data(a.estornado_em):'Pago')+'</td></tr>';}))+
+        '<div class="adm-bar"><button type="button" class="btn" data-a="alocar">Redistribuir vagas livres</button></div><p class="msg">Redistribuir preenche as vagas de apoios pagos que ainda estão sem vanguardista.</p>';
+      c.querySelector('[data-a="alocar"]').onclick=function(){var m=c.querySelector('.msg:last-child');m.textContent='Redistribuindo...';
+        rpc('admin_alocar').then(function(n){m.textContent=n?num(n)+' vaga(s) preenchida(s).':'Nenhuma vaga livre para preencher.';},function(e){m.outerHTML=falhou(c,e);});};
+    },function(e){c.innerHTML=falhou(c,e);});
+  }
+
+  /* usuários */
+  var CAMPOS=[['nome','Nome'],['tipo','Tipo'],['fone','Celular'],['email','E-mail'],['doc','CPF ou CNPJ'],['cep','CEP'],['rua','Rua'],['bairro','Bairro'],['numero','Número'],['complemento','Complemento'],['cidade','Cidade'],['uf','Estado']];
+  var busca={q:'',t:''};
+  function pUsu(c){
+    if(!c.querySelector('.adm-bar.busca')){
+      c.innerHTML='<div class="adm-bar busca fields"><label><span>Buscar por nome, e-mail, cidade, celular ou CPF/CNPJ</span><input data-f="q" type="search"></label><label><span>Tipo</span><select data-f="t"><option value="">Todos</option><option value="vanguardista">Vanguardistas</option><option value="apoiador">Apoiadores</option></select></label><button type="button" class="btn go" data-a="buscar">Buscar</button></div><div class="adm-lista"></div>';
+      var q=c.querySelector('[data-f="q"]');
+      c.querySelector('[data-a="buscar"]').onclick=function(){busca.q=q.value;busca.t=c.querySelector('[data-f="t"]').value;pUsu(c);};
+      q.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();c.querySelector('[data-a="buscar"]').click();}});
+    }
+    var L=c.querySelector('.adm-lista');L.innerHTML='<p class="msg">Carregando...</p>';
+    rpc('admin_usuarios',{p_busca:busca.q,p_tipo:busca.t}).then(function(rows){
+      L.innerHTML='<p class="msg">'+num(rows.length)+(rows.length>=500?' (mostrando os 500 mais recentes)':'')+' usuário(s).</p>'+tabela(['Nome','Tipo','Celular','E-mail','CPF/CNPJ','Cidade','Cadastro',''],rows.map(function(u,i){
+        return '<tr><td>'+esc(u.nome)+'</td><td>'+esc(u.tipo)+'</td><td class="n">'+esc(fone(u.fone))+'</td><td>'+esc(u.email||'')+'</td><td class="n">'+esc(doc(u.doc))+'</td><td>'+esc(u.cidade)+'/'+esc(u.uf)+'</td><td class="n">'+data(u.criado_em)+'</td><td><button type="button" class="btn" data-ed="'+i+'">Editar</button></td></tr>';}))+'<div class="adm-ed-slot"></div>';
+      L.querySelectorAll('[data-ed]').forEach(function(b){b.onclick=function(){editarUsu(c,L.querySelector('.adm-ed-slot'),rows[+b.dataset.ed]);};});
+    },function(e){L.innerHTML=falhou(c,e);});
+  }
+  function editarUsu(c,slot,u){
+    slot.innerHTML='<div class="adm-ed"><b>Editar '+esc(u.nome)+'</b><div class="fields">'+CAMPOS.map(function(f){
+      var v=u[f[0]]==null?'':u[f[0]];
+      if(f[0]==='tipo')return '<label><span>Tipo</span><select data-f="tipo"><option value="vanguardista"'+(v==='vanguardista'?' selected':'')+'>Vanguardista</option><option value="apoiador"'+(v==='apoiador'?' selected':'')+'>Apoiador</option></select></label>';
+      return '<label><span>'+esc(f[1])+'</span><input data-f="'+f[0]+'" value="'+esc(f[0]==='fone'?fone(v):f[0]==='doc'?doc(v):v)+'"></label>';}).join('')+
+      '</div><p class="msg"></p><div class="adm-bar"><button type="button" class="btn go" data-a="ok">Salvar</button><button type="button" class="btn" data-a="x">Cancelar</button><button type="button" class="btn" data-a="del">Excluir usuário</button></div>'+
+      '<div class="adm-del" hidden><p>Excluir a conta de <b>'+esc(u.nome)+'</b> apaga o cadastro, o painel, os selos, os grupos e os apoios ligados a ela. Cobranças e notas já emitidas continuam no Asaas. Não dá para desfazer.</p><label class="adm-ok"><input type="checkbox" data-f="concordo"> Concordo em excluir esta conta para sempre.</label><div class="adm-bar"><button type="button" class="btn go" data-a="sim" disabled>Excluir</button></div></div></div>';
+    slot.scrollIntoView({block:'nearest'});
+    var m=slot.querySelector('.msg'),del=slot.querySelector('.adm-del'),ok=slot.querySelector('[data-f="concordo"]'),sim=slot.querySelector('[data-a="sim"]');
+    slot.querySelector('[data-a="x"]').onclick=function(){slot.innerHTML='';};
+    slot.querySelector('[data-a="del"]').onclick=function(){del.hidden=!del.hidden;};
+    ok.onchange=function(){sim.disabled=!ok.checked;};
+    sim.onclick=function(){if(!ok.checked)return;sim.disabled=true;m.className='msg';m.textContent='Excluindo...';
+      rpc('admin_excluir_usuario',{p_id:u.id}).then(function(){pUsu(c);},function(e){sim.disabled=false;m.className='msg bad';m.textContent='Não foi possível excluir: '+String(e&&e.message||'erro');});};
+    slot.querySelector('[data-a="ok"]').onclick=function(){
+      var d={};CAMPOS.forEach(function(f){var i=slot.querySelector('[data-f="'+f[0]+'"]');d[f[0]]=i.value.trim();});
+      if(!d.nome)return (m.className='msg bad',m.textContent='O nome é obrigatório.');
+      if(!/^\d{10,11}$/.test(dig(d.fone)))return (m.className='msg bad',m.textContent='Celular com DDD: 10 ou 11 números.');
+      if(!/^(\d{11}|\d{14})$/.test(dig(d.doc)))return (m.className='msg bad',m.textContent='CPF com 11 números ou CNPJ com 14.');
+      if(d.email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email))return (m.className='msg bad',m.textContent='Confira o e-mail.');
+      if(d.cep&&!/^\d{8}$/.test(dig(d.cep)))return (m.className='msg bad',m.textContent='CEP com 8 números.');
+      if(!/^[A-Za-z]{2}$/.test(d.uf))return (m.className='msg bad',m.textContent='Estado com 2 letras, por exemplo RS.');
+      m.className='msg';m.textContent='Salvando...';
+      rpc('admin_salvar_usuario',{p_id:u.id,p_dados:d}).then(function(){pUsu(c);},function(e){var t=String(e&&e.message||'');
+        m.className='msg bad';m.textContent=/duplicate|unique/i.test(t)?'Esse celular ou e-mail já está em outra conta.':/check constraint/i.test(t)?'Algum campo está fora do formato aceito.':'Não foi possível salvar: '+t;});
+    };
+  }
+
+  var PAINEIS={'adm-sim':pSim,'adm-selos':pSelos,'adm-imp':pImp,'adm-apo':pApo,'adm-usu':pUsu};
+  Object.keys(PAINEIS).forEach(function(id){var d=$(id);d.addEventListener('toggle',function(){if(d.open&&admin())PAINEIS[id](d.querySelector('.adm-c'));});});
+  $('adm-amb').addEventListener('change',function(){['adm-imp','adm-apo'].forEach(function(id){var d=$(id);if(d.open)PAINEIS[id](d.querySelector('.adm-c'));});});
+  document.addEventListener('vg:perfil',function(){var a=admin();$('adm-fora').hidden=a;aplicarSims();
+    if(!a)document.querySelectorAll('.adm-p').forEach(function(d){d.open=false;d.querySelector('.adm-c').innerHTML='';});});
+  $('adm-fora').hidden=admin();
 })();
 </script>
 
