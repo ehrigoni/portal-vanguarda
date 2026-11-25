@@ -57,16 +57,16 @@ Depois roda `alocar_apoios` para passar a outros vanguardistas as vagas que fica
 
 A aba **Administrador** tem cinco painéis retráteis: Simuladores (quais aparecem no site), Selos, Impacto, Apoiadores e Usuários. Ela só aparece para a conta de administrador. Quem libera ou barra cada consulta é o banco: todas as funções de `admin.sql` conferem `is_admin()` antes de responder, então uma conta comum recebe "apenas administradores" mesmo chamando a função direto.
 
-A conta de administrador não tem perfil de vanguardista nem de apoiador e não entra nos números do portal. O login (por exemplo, `007`) fica na tabela `admins`. A senha fica só no Supabase Auth, guardada como hash, e nunca vai para o código ou para um arquivo SQL.
+A conta de administrador não tem perfil de vanguardista nem de apoiador e não entra nos números do portal. O login de administrador (só números, de 3 a 11 dígitos) fica na tabela `admins`. A senha fica só no Supabase Auth, guardada como hash, e nunca vai para o código ou para um arquivo SQL.
 
 Para criar o administrador, uma vez:
 
 1. Rode no SQL Editor `schema.sql`, depois `painel.sql` e depois `admin.sql`.
-2. Ainda no SQL Editor, cadastre o login e o e-mail interno da conta (o e-mail não recebe mensagens; ele é usado só por dentro do login):
+2. Ainda no SQL Editor, cadastre o login e o e-mail interno da conta, trocando `<e-mail interno>` e `<login>` pelos valores escolhidos (o e-mail não recebe mensagens; ele é usado só por dentro do login):
    ```sql
-   insert into public.admins (email, login) values ('admin.vanguarda@decisaochave.com.br', '007');
+   insert into public.admins (email, login) values ('<e-mail interno>', '<login>');
    ```
 3. Em **Authentication > Users > Add user > Create new user**, use o mesmo e-mail, digite a senha e marque **Auto Confirm User**. Faça este passo depois do passo 2: com o e-mail já na tabela `admins`, o cadastro não tenta criar um perfil.
-4. No site, entre em **Entrar** com o login `007` e a senha. A aba Administrador aparece no menu.
+4. No site, entre em **Entrar** com o login escolhido e a senha. A aba Administrador aparece no menu.
 
-Para trocar a senha: **Authentication > Users**, abra o usuário e use **Reset password**, ou exclua e crie de novo (os passos 3 e 4). Para tirar o acesso: `delete from public.admins where login = '007';`.
+Para trocar a senha: **Authentication > Users**, abra o usuário e use **Reset password**, ou exclua e crie de novo (os passos 3 e 4). Para tirar o acesso: `delete from public.admins where login = '<login>';`.
