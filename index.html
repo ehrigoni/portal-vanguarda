@@ -1161,6 +1161,19 @@ section.band#apoiadores > .in{padding-top:48px}
       var m=user.user_metadata||{},c=r.data||(m.tipo?{tipo:m.tipo,nome:m.nome,fone:m.fone,email:m.email_contato,doc:m.doc,cidade:m.cidade,uf:m.uf,cep:m.cep,rua:m.rua,bairro:m.bairro,numero:m.numero,complemento:m.complemento}:null);if(c)c.id=user.id;return c;
     },function(){return null;});
   }
+  /* quais dados já estão na conta de outra pessoa: o banco devolve só os nomes dos campos ('fone', 'email', 'doc'),
+     nunca dados da outra conta; logado, a própria conta não conta. Sem a função nova no banco, usa a antiga (celular e e-mail). */
+  function emUso(fone,email,doc){
+    if(!sb)return Promise.resolve([]);
+    return sb.rpc('dados_em_uso',{p_fone:fone||null,p_email:email||null,p_doc:doc||null}).then(function(r){
+      if(!r.error)return r.data||[];
+      if(!fone&&!email)return [];
+      return sb.rpc('contato_em_uso',{p_fone:fone||'',p_email:email||null}).then(function(x){return x.error||!x.data?[]:[x.data];});
+    }).then(null,function(){return [];});
+  }
+  var EM_USO={fone:'Esse celular já está cadastrado em outra conta. Use outro número ou entre na sua conta.',
+    email:'Esse e-mail já está cadastrado em outra conta. Use outro e-mail ou entre na sua conta.',
+    doc:'Esse CPF ou CNPJ já está cadastrado em outra conta. Use outro ou entre na sua conta.'};
   function cabecalho(){
     var c=perfil;
     document.querySelectorAll('[data-guest]').forEach(function(el){el.hidden=!!c;});
@@ -1216,10 +1229,10 @@ section.band#apoiadores > .in{padding-top:48px}
     if(tipo.value==='vanguardista'){if(g('cd-porte').value)dados.porte_negocio=g('cd-porte').value;if(g('cd-ramo').value)dados.ramo=g('cd-ramo').value;if(g('cd-fat').value)dados.faturamento=g('cd-fat').value;}
     if(refSelo())dados.ref=refSelo();
     erro('cd-err','');ocupado(form,true);
-    sb.rpc('contato_em_uso',{p_fone:fone,p_email:email||null}).then(function(r){
-      if(r.error)throw r.error;
-      if(r.data==='fone'){erro('cd-err','Já existe uma conta com esse número. Use Entrar.',g('cd-fone'));return;}
-      if(r.data==='email'){erro('cd-err','Já existe uma conta com esse e-mail. Use Entrar.',g('cd-email'));return;}
+    emUso(fone,email,dados.doc).then(function(u){
+      if(u.indexOf('fone')>=0){erro('cd-err',EM_USO.fone,g('cd-fone'));return;}
+      if(u.indexOf('email')>=0){erro('cd-err',EM_USO.email,g('cd-email'));return;}
+      if(u.indexOf('doc')>=0){erro('cd-err',EM_USO.doc,g('cd-doc'));return;}
       return sb.auth.signUp({email:emailInterno(),password:g('cd-senha').value,options:{data:dados}}).then(function(res){
         if(res.error)throw res.error;
         if(!res.data.session){erro('cd-err','Conta criada. Assim que a confirmação for liberada, você já pode entrar com seu celular e senha.');return;}
@@ -1430,8 +1443,22 @@ section.band#apoiadores > .in{padding-top:48px}
       var comConta=!!(btn&&btn.dataset.acao==='cadastrar'&&!perfil);
       if(comConta){var se=document.getElementById('ap-senha');if(se.value.length<6){campoErro(se,'Crie uma senha com pelo menos 6 caracteres, ou use Apenas Apoiar.');errEl.textContent='Confira o campo destacado.';errEl.hidden=false;se.focus();return;}campoErro(se,'');
 }
-      if(ce){conferirCep(false).then(function(r){if(r.ok===false){campoErro(ce,'CEP não encontrado. Confira os números.');errEl.textContent='Confira o campo destacado.';errEl.hidden=false;ce.focus();return;}cadastrar();});return;}
-      cadastrar();
+      if(ce){conferirCep(false).then(function(r){if(r.ok===false){campoErro(ce,'CEP não encontrado. Confira os números.');errEl.textContent='Confira o campo destacado.';errEl.hidden=false;ce.focus();return;}duplicados();});return;}
+      duplicados();
+      /* CPF/CNPJ, e-mail (e celular, quando vai para um cadastro) que já estão em outra conta: destaca e pede outro valor */
+      function duplicados(){
+        if(p!=='ap')return cadastrar();
+        var g=function(id){return document.getElementById(id);};
+        var campos={fone:g('ap-whats'),email:g('ap-email'),doc:g('ap-doc')};
+        apBtns.forEach(function(b){b.disabled=true;});
+        emUso(perfil||comConta?dig(campos.fone.value):null,maskEmail(campos.email.value),dig(campos.doc.value)).then(function(u){
+          apBtns.forEach(function(b){b.disabled=false;});
+          u=u.filter(function(k){return campos[k];});
+          if(!u.length)return cadastrar();
+          u.forEach(function(k){campoErro(campos[k],EM_USO[k]);});
+          errEl.textContent=u.length===1?'Confira o campo destacado.':'Confira os '+u.length+' campos destacados.';errEl.hidden=false;campos[u[0]].focus();
+        });
+      }
       function cadastrar(){if(!comConta)return seguir();criarContaApoiador(errEl,btn).then(function(r){if(!r)return;contaMsg=r.msg;seguir();});}
       function seguir(){if(p==='ap'&&perfil&&!comConta)return atualizarCadastro(errEl).then(function(ok){if(ok)cobrar();});cobrar();}
       function cobrar(){if(p==='ap'&&cobranca.ativo)pagar(errEl,concluir,btn);else concluir();}
