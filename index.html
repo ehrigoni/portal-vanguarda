@@ -467,6 +467,7 @@ section.band#apoiadores > .in{padding-top:48px}
 .adm-t td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 .adm-t tr:last-child td{border-bottom:0}
 .adm-t .btn{padding:6px 12px;font-size:13px}
+.adm-a{display:inline-grid;place-items:center;width:18px;height:18px;margin-left:6px;border-radius:50%;background:var(--amber);color:var(--btn-ink);font:700 11px/1 var(--display);vertical-align:middle}
 .adm-chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin:1px 2px;font-size:12px;white-space:nowrap}
 .adm-ed{display:grid;gap:10px;padding:12px;border:1px solid var(--glow);border-radius:10px}
 .adm-ed .fields{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
@@ -509,7 +510,7 @@ section.band#apoiadores > .in{padding-top:48px}
   </nav>
   <div class="acc-top">
     <a class="btn go" href="#entrar" data-guest>Entrar</a>
-    <span class="me" data-user hidden>Olá, <b id="me-nome"></b> <button type="button" class="copy" id="sair">Sair</button></span>
+    <span class="me" data-user hidden>Olá, <b id="me-nome"></b><span class="adm-a" id="me-a" title="Administrador" hidden>A</span> <button type="button" class="copy" id="sair">Sair</button></span>
   </div>
 </div></header>
 <div class="hello" id="hello" hidden><div class="in"><p id="hello-txt"></p><button type="button" class="copy" id="hello-x" aria-label="Fechar aviso">Fechar</button></div></div>
@@ -1280,7 +1281,7 @@ section.band#apoiadores > .in{padding-top:48px}
     document.querySelectorAll('.excluir').forEach(function(el){el.hidden=!c||c.tipo==='admin'||!!c.admin;});
     try{document.dispatchEvent(new CustomEvent('vg:perfil',{detail:c}));}catch(e){}
     document.getElementById('ap-btn-so').textContent=(c?'Apoiar e atualizar dados':'Apenas Apoiar')+(cobranca.ambiente==='sandbox'?' (teste)':'');
-    if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];
+    if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];document.getElementById('me-a').hidden=!(c.tipo==='admin'||c.admin);
       preencherApoio();}
   }
   /* logado: o formulário Apoiar já vem com os dados do cadastro; só falta o que o cadastro não tem (CEP, endereço, número) */
@@ -2197,7 +2198,7 @@ section.band#apoiadores > .in{padding-top:48px}
       var cont={};rows.forEach(function(r){(r.selos||[]).forEach(function(s){cont[s]=(cont[s]||0)+1;});});
       var resumo=(VG.selos||[]).map(function(s){return '<span class="adm-chip">'+esc(s.curto||s.nome)+': '+num(cont[s.id]||0)+'</span>';}).join('');
       c.innerHTML='<div>'+resumo+'</div>'+tabela(['Apoiador','Marca','Código do selo','Selos escolhidos','Visitas','Cadastros',''],rows.map(function(r,i){
-        return '<tr><td>'+esc(r.nome)+'</td><td>'+esc(r.marca||'')+'</td><td class="n">'+(r.codigo?'<a href="/?selo='+esc(r.codigo)+'#selo" target="_blank" rel="noopener">'+esc(r.codigo)+'</a>':'')+'</td><td>'+(r.selos||[]).map(function(s){return '<span class="adm-chip">'+esc(nomeSelo(s))+'</span>';}).join('')+'</td><td class="n">'+num(r.visitas)+'</td><td class="n">'+num(r.cadastros)+'</td><td><button type="button" class="btn" data-ed="'+i+'">Editar</button></td></tr>';}))+'<div class="adm-ed-slot"></div>';
+        return '<tr><td>'+esc(r.nome)+(r.admin?' <span class="adm-a" title="Administrador">A</span>':'')+'</td><td>'+esc(r.marca||'')+'</td><td class="n">'+(r.codigo?'<a href="/?selo='+esc(r.codigo)+'#selo" target="_blank" rel="noopener">'+esc(r.codigo)+'</a>':'')+'</td><td>'+(r.selos||[]).map(function(s){return '<span class="adm-chip">'+esc(nomeSelo(s))+'</span>';}).join('')+'</td><td class="n">'+num(r.visitas)+'</td><td class="n">'+num(r.cadastros)+'</td><td><button type="button" class="btn" data-ed="'+i+'">Editar</button></td></tr>';}))+'<div class="adm-ed-slot"></div>';
       c.querySelectorAll('[data-ed]').forEach(function(b){b.onclick=function(){var r=rows[+b.dataset.ed],slot=c.querySelector('.adm-ed-slot');
         slot.innerHTML='<div class="adm-ed"><b>'+esc(r.nome)+'</b><div class="fields"><label><span>Marca</span><input data-f="marca" maxlength="80" value="'+esc(r.marca||'')+'"></label></div><div>'+(VG.selos||[]).map(function(s){return '<label class="adm-ok"><input type="checkbox" value="'+esc(s.id)+'"'+((r.selos||[]).indexOf(s.id)>=0?' checked':'')+'> '+esc(s.nome)+'</label>';}).join('')+'</div><p class="msg">Selo novo só fica se o apoiador cumprir a regra do selo (pelo menos 1 apoio pago).</p><div class="adm-bar"><button type="button" class="btn go" data-a="ok">Salvar</button><button type="button" class="btn" data-a="x">Cancelar</button></div></div>';
         slot.scrollIntoView({block:'nearest'});
@@ -2228,7 +2229,7 @@ section.band#apoiadores > .in{padding-top:48px}
     c.innerHTML='<p class="msg">Carregando...</p>';
     rpc('admin_apoiadores',{p_ambiente:amb()}).then(function(r){
       c.innerHTML='<b>Apoiadores</b>'+tabela(['Nome','Marca','CPF/CNPJ','Celular','E-mail','Cidade','Apoios','Valor','Vagas','Desde'],(r.apoiadores||[]).map(function(a){
-          return '<tr><td>'+esc(a.nome)+'</td><td>'+esc(a.marca||'')+'</td><td class="n">'+esc(doc(a.doc))+'</td><td class="n">'+esc(fone(a.fone))+'</td><td>'+esc(a.email||'')+'</td><td>'+esc(a.cidade)+'/'+esc(a.uf)+'</td><td class="n">'+num(a.apoios)+'</td><td class="n">'+brl(a.valor)+'</td><td class="n">'+num(a.vagas)+'</td><td class="n">'+data(a.criado_em)+'</td></tr>';}))+
+          return '<tr><td>'+esc(a.nome)+(a.admin?' <span class="adm-a" title="Administrador">A</span>':'')+'</td><td>'+esc(a.marca||'')+'</td><td class="n">'+esc(doc(a.doc))+'</td><td class="n">'+esc(fone(a.fone))+'</td><td>'+esc(a.email||'')+'</td><td>'+esc(a.cidade)+'/'+esc(a.uf)+'</td><td class="n">'+num(a.apoios)+'</td><td class="n">'+brl(a.valor)+'</td><td class="n">'+num(a.vagas)+'</td><td class="n">'+data(a.criado_em)+'</td></tr>';}))+
         '<b>Apoios recebidos ('+(amb()==='producao'?'produção':'teste')+')</b>'+tabela(['Pago em','Pagamento','Conta','CPF/CNPJ','Valor','Vagas','Preenchidas','Meses','Situação'],(r.apoios||[]).map(function(a){
           return '<tr><td class="n">'+data(a.pago_em)+'</td><td class="n">'+esc(a.pagamento_id)+'</td><td>'+esc(a.conta||'sem conta')+'</td><td class="n">'+esc(doc(a.doc))+'</td><td class="n">'+brl(a.valor)+'</td><td class="n">'+num(a.vanguardistas)+'</td><td class="n">'+num(a.alocados)+'</td><td class="n">'+num(a.meses)+'</td><td>'+(a.estornado_em?'Estornado em '+data(a.estornado_em):'Pago')+'</td></tr>';}))+
         '<div class="adm-bar"><button type="button" class="btn" data-a="alocar">Redistribuir vagas livres</button></div><p class="msg">Redistribuir preenche as vagas de apoios pagos que ainda estão sem vanguardista.</p>';
@@ -2250,7 +2251,7 @@ section.band#apoiadores > .in{padding-top:48px}
     var L=c.querySelector('.adm-lista');L.innerHTML='<p class="msg">Carregando...</p>';
     rpc('admin_usuarios',{p_busca:busca.q,p_tipo:busca.t}).then(function(rows){
       L.innerHTML='<p class="msg">'+num(rows.length)+(rows.length>=500?' (mostrando os 500 mais recentes)':'')+' usuário(s).</p>'+tabela(['Nome','Tipo','Celular','E-mail','CPF/CNPJ','Cidade','Cadastro',''],rows.map(function(u,i){
-        return '<tr><td>'+esc(u.nome)+'</td><td>'+esc(u.tipo)+'</td><td class="n">'+esc(fone(u.fone))+'</td><td>'+esc(u.email||'')+'</td><td class="n">'+esc(doc(u.doc))+'</td><td>'+esc(u.cidade)+'/'+esc(u.uf)+'</td><td class="n">'+data(u.criado_em)+'</td><td><button type="button" class="btn" data-ed="'+i+'">Editar</button></td></tr>';}))+'<div class="adm-ed-slot"></div>';
+        return '<tr><td>'+esc(u.nome)+(u.admin?' <span class="adm-a" title="Administrador">A</span>':'')+'</td><td>'+esc(u.tipo)+'</td><td class="n">'+esc(fone(u.fone))+'</td><td>'+esc(u.email||'')+'</td><td class="n">'+esc(doc(u.doc))+'</td><td>'+esc(u.cidade)+'/'+esc(u.uf)+'</td><td class="n">'+data(u.criado_em)+'</td><td><button type="button" class="btn" data-ed="'+i+'">Editar</button></td></tr>';}))+'<div class="adm-ed-slot"></div>';
       L.querySelectorAll('[data-ed]').forEach(function(b){b.onclick=function(){editarUsu(c,L.querySelector('.adm-ed-slot'),rows[+b.dataset.ed]);};});
     },function(e){L.innerHTML=falhou(c,e);});
   }
