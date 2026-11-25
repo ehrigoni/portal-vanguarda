@@ -897,6 +897,7 @@ section.band#apoiadores > .in{padding-top:48px}
         <p>O celular ou WhatsApp é o seu login e o canal para falarmos com você. O CPF ou CNPJ vai na nota fiscal. O e-mail também serve para entrar e é nele que a nota fiscal chega.</p>
         <p>Seus dados ficam guardados no banco de dados do portal e são usados só para o Portal Vanguarda.</p>
       </div>
+      <p class="notice" id="cd-vindo" hidden><b>Cadastro</b><span id="cd-vindo-txt"></span></p>
       <div class="fields two">
         <label for="cd-nome" class="wide"><span>Seu nome</span><input id="cd-nome" type="text" required autocomplete="name"></label>
         <label for="cd-fone"><span>Celular, WhatsApp ou telefone</span><input id="cd-fone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
@@ -1075,7 +1076,7 @@ section.band#apoiadores > .in{padding-top:48px}
     </div>
     <p class="err" id="en-err" hidden></p>
     <button class="btn go" type="submit">Entrar</button>
-    <div class="cd-entrar"><p class="note">Ainda não tem conta?</p><a class="btn" href="#cadastro">Cadastrar-se</a></div>
+    <div class="cd-entrar"><p class="note">Ainda não tem conta?</p><a class="btn" href="#cadastro" id="en-cadastrar">Cadastrar-se</a></div>
   </form>
 </div></section>
 </div>
@@ -1368,6 +1369,22 @@ section.band#apoiadores > .in{padding-top:48px}
       erro('cd-err',/password/i.test(m)?'Escolha uma senha mais forte, com pelo menos 6 caracteres.':/database|duplicate|unique/i.test(m)?'Já existe uma conta com esse número ou e-mail. Use Entrar.':'Não foi possível criar a conta agora. Tente de novo em instantes.');
     }).then(function(){ocupado(form,false);});
   });
+  /* Entrar com celular ou e-mail sem conta (ou Cadastrar-se): leva ao cadastro já com o que foi digitado.
+     A senha só passa de um campo para o outro nesta página; não é guardada em lugar nenhum. */
+  function paraCadastro(semConta){
+    var li=document.getElementById('en-login'),se=document.getElementById('en-senha'),v=li.value.trim(),
+        f=document.getElementById('cd-fone'),m=document.getElementById('cd-email'),s=document.getElementById('cd-senha'),
+        ehEmail=v.indexOf('@')>=0,alvo=null;
+    if(v){if(ehEmail){if(!m.value.trim())m.value=maskEmail(v);}else if(dig(v).length>=10&&!f.value.trim())f.value=maskFone(v);}
+    if(se.value&&!s.value)s.value=se.value;
+    var txt=semConta?(ehEmail?'Não encontramos uma conta com esse e-mail.':'Não encontramos uma conta com esse celular.')+' Complete os dados abaixo para criar a sua; já aproveitamos o que você digitou.':(v||se.value?'Já aproveitamos o que você digitou no Entrar. Complete os outros dados.':'');
+    document.getElementById('cd-vindo-txt').textContent=txt;document.getElementById('cd-vindo').hidden=!txt;
+    erro('en-err','');li.value='';se.value='';
+    location.hash='cadastro';
+    alvo=[].slice.call(document.querySelectorAll('#form-cadastro .fields input[required]')).filter(function(i){return !i.value.trim();})[0];
+    if(alvo)setTimeout(function(){alvo.focus({preventScroll:true});},50);
+  }
+  document.getElementById('en-cadastrar').addEventListener('click',function(e){e.preventDefault();paraCadastro(false);});
   document.getElementById('form-entrar').addEventListener('submit',function(e){
     e.preventDefault();var form=e.target;
     var li=document.getElementById('en-login'),se=document.getElementById('en-senha'),v=li.value.trim();
@@ -1379,7 +1396,7 @@ section.band#apoiadores > .in{padding-top:48px}
     erro('en-err','');ocupado(form,true);
     sb.rpc('email_de_login',{contato:contato}).then(function(r){
       if(r.error)throw r.error;
-      if(!r.data){erro('en-err',NAO,li);return;}
+      if(!r.data){paraCadastro(true);return;}
       return sb.auth.signInWithPassword({email:r.data,password:se.value}).then(function(res){
         if(res.error){erro('en-err',NAO,li);return;}
         form.reset();return entrou(res.data.user,'Bem-vindo de volta, {n}.');
