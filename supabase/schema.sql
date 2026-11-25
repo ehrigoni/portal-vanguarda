@@ -113,10 +113,34 @@ as $$
   end;
 $$;
 
+-- 4b. Quais dados do formulário já estão em outra conta (celular, e-mail, CPF/CNPJ). Devolve só os nomes
+--     dos campos ('fone', 'email', 'doc'), nunca dados da outra conta. Logado, a própria conta não conta.
+create or replace function public.dados_em_uso(p_fone text, p_email text, p_doc text)
+returns text[]
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select array_remove(array[
+    case when nullif(regexp_replace(coalesce(p_fone, ''), '[^0-9]', '', 'g'), '') is not null
+          and exists (select 1 from public.perfis where fone = regexp_replace(p_fone, '[^0-9]', '', 'g')
+                      and id is distinct from auth.uid()) then 'fone' end,
+    case when nullif(trim(coalesce(p_email, '')), '') is not null
+          and exists (select 1 from public.perfis where email = lower(trim(p_email))
+                      and id is distinct from auth.uid()) then 'email' end,
+    case when nullif(regexp_replace(coalesce(p_doc, ''), '[^0-9]', '', 'g'), '') is not null
+          and exists (select 1 from public.perfis where doc = regexp_replace(p_doc, '[^0-9]', '', 'g')
+                      and id is distinct from auth.uid()) then 'doc' end
+  ], null);
+$$;
+
 revoke all on function public.email_de_login(text) from public;
 revoke all on function public.contato_em_uso(text, text) from public;
 grant execute on function public.email_de_login(text) to anon, authenticated;
 grant execute on function public.contato_em_uso(text, text) to anon, authenticated;
+revoke all on function public.dados_em_uso(text, text, text) from public;
+grant execute on function public.dados_em_uso(text, text, text) to anon, authenticated;
 revoke all on function public.criar_perfil() from public, anon, authenticated;
 
 -- 5. Permissões explícitas da Data API (versão atual do Supabase, Postgres 17).

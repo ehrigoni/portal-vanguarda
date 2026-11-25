@@ -94,27 +94,32 @@ async function asaas(method, path, body) {
   return json;
 }
 
+// Importa o apoiador no Asaas a cada apoio: procura pelo CPF/CNPJ e cria ou atualiza o cadastro com
+// nome, e-mail, celular e endereço do formulário. A NFS-e e o envio da nota por e-mail usam esses dados,
+// então uma falha aqui interrompe a cobrança (o apoiador tenta de novo) em vez de seguir com dados velhos.
 async function clienteAsaas(d) {
-  const achou = await asaas("GET", "/customers?cpfCnpj=" + d.doc + "&limit=1");
+  const achou = await asaas("GET", "/customers?cpfCnpj=" + d.doc + "&limit=10");
   const dados = {
     name: d.nome,
     cpfCnpj: d.doc,
+    email: d.email,
     mobilePhone: d.fone,
     postalCode: d.cep,
     address: d.endereco,
     province: d.bairro,
     addressNumber: d.numero,
-    complement: d.complemento || undefined,
+    complement: d.complemento || "",
     externalReference: "portal-vanguarda",
+    notificationDisabled: false, // o Asaas manda fatura e nota por e-mail ao cliente
   };
-  if (d.email) dados.email = d.email;
   const existente = achou && Array.isArray(achou.data) && achou.data.find((c) => !c.deleted);
   if (existente) {
-    // atualiza contato e endereço para a fatura e a nota saírem com os dados novos
-    await asaas("PUT", "/customers/" + existente.id, dados).catch(() => {});
+    await asaas("PUT", "/customers/" + existente.id, dados);
+    console.log("asaas cliente atualizado", existente.id);
     return existente.id;
   }
   const novo = await asaas("POST", "/customers", dados);
+  console.log("asaas cliente criado", novo.id);
   return novo.id;
 }
 

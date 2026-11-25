@@ -558,6 +558,44 @@ grant execute on function public.selo_publico(text, text) to anon, authenticated
 revoke all on function public.registrar_visita_selo(text) from public;
 grant execute on function public.registrar_visita_selo(text) to anon, authenticated;
 
+-- 12b. Excluir a própria conta (botão "Excluir minha conta" no site). Só age sobre a conta logada (auth.uid()):
+--      apaga os apoios dela (mesmo CPF/CNPJ e mesmo celular ou e-mail, a mesma regra do painel), as visitas do
+--      selo dela e o usuário em auth.users; perfil, perfil de apoiador, grupos e vínculos com apoios saem em
+--      cascata. Depois redistribui as vagas de apoios que ficaram sem vanguardista. Cobranças e notas fiscais
+--      já emitidas continuam no Asaas (registro fiscal), fora do banco do portal.
+create or replace function public.excluir_minha_conta()
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  eu uuid := auth.uid();
+  me public.perfis%rowtype;
+  cod text;
+begin
+  if eu is null then
+    raise exception 'sem login' using errcode = '42501';
+  end if;
+  select * into me from public.perfis where id = eu;
+  if found and nullif(me.doc, '') is not null then
+    delete from public.apoios
+    where doc = me.doc
+      and (fone = me.fone or (nullif(email, '') is not null and email = lower(trim(coalesce(me.email, '')))));
+  end if;
+  select codigo into cod from public.apoiador_perfil where id = eu;
+  if cod is not null then
+    delete from public.selo_visitas where codigo = cod;
+  end if;
+  delete from auth.users where id = eu;
+  perform public.alocar_apoios();
+  return true;
+end;
+$$;
+
+revoke all on function public.excluir_minha_conta() from public, anon;
+grant execute on function public.excluir_minha_conta() to authenticated;
+
 -- 13. Permissões explícitas da Data API (versão atual do Supabase, Postgres 17).
 --     Projetos novos podem vir com "expor tabelas novas automaticamente" desligado; aí as tabelas não recebem
 --     permissão nenhuma para anon/authenticated e o painel quebra. Nos projetos antigos, as permissões padrão dão
