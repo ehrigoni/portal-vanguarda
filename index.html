@@ -486,6 +486,12 @@ section.band#apoiadores > .in{padding-top:48px}
 .sim-desc{display:block;font-size:12.5px;color:var(--muted);line-height:1.35;font-family:var(--body);font-weight:400}
 .calc .sim-extras{gap:10px}
 .adm-simc{border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:12px}
+.adm-simc[data-simc="raio-x"]{--sim-cor:var(--amber)}
+.adm-simc[data-simc="raio-x-preco"]{--sim-cor:var(--glow)}
+.adm-simc[data-simc]{border-color:var(--sim-cor);border-left-width:4px;background:color-mix(in srgb,var(--sim-cor) 5%,transparent)}
+.adm-simc .adm-sim b{color:var(--sim-cor)}
+.adm-simc .adm-simc-topo label{border-color:color-mix(in srgb,var(--sim-cor) 55%,var(--line));background:color-mix(in srgb,var(--sim-cor) 12%,var(--panel))}
+.adm-simc .adm-simc-topo label span{color:var(--sim-cor)}
 .adm-simc h4{margin:0;font-family:var(--display);font-size:17px}
 .adm-simc textarea{width:100%;min-height:58px;resize:vertical;background:transparent;border:0;color:var(--fg);font:500 15px/1.4 var(--body);outline:none;padding:0}
 .adm-campo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:8px;align-items:end}
@@ -2293,7 +2299,7 @@ section.band#apoiadores > .in{padding-top:48px}
       var ativos=o.campos.filter(function(x){return !x.excluido;}),excl=o.campos.filter(function(x){return x.excluido;});
       return '<div class="adm-simc" data-simc="'+id+'">'+
         '<label class="adm-sim"><input type="checkbox" data-f="visivel"'+(o.visivel?' checked':'')+'><span><b>'+esc(o.nome)+'</b> visível no site<small>Desligado, o simulador não aparece para os usuários.</small></span></label>'+
-        '<div class="fields"><label><span>Nome do simulador</span><input data-f="nome" maxlength="'+LIM.nome+'" value="'+esc(o.nome)+'"></label>'+
+        '<div class="fields adm-simc-topo"><label><span>Nome do simulador</span><input data-f="nome" maxlength="'+LIM.nome+'" value="'+esc(o.nome)+'"></label>'+
         '<label><span>Descrição</span><input data-f="descricao" maxlength="'+LIM.descricao+'" value="'+esc(o.descricao)+'"></label>'+
         '<label><span>Instruções de uso</span><textarea data-f="instrucoes" maxlength="'+LIM.instrucoes+'">'+esc(o.instrucoes)+'</textarea></label></div>'+
         '<h4>Campos</h4>'+
