@@ -477,6 +477,7 @@ section.band#apoiadores > .in{padding-top:48px}
 .adm-ok input{width:18px;height:18px;margin-top:2px;accent-color:var(--amber)}
 .sim-off{display:none!important}
 .adm-topo .fields label{max-width:320px}
+.adm-fora-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .adm .fields select,.adm-topo select{width:100%;background:transparent;border:0;color:var(--fg);font-family:var(--body);font-size:16px;padding:0;outline:none}
 .adm .fields select option,.adm-topo select option{background:var(--panel);color:var(--fg)}
 .adm .fields input{font-family:var(--body);font-weight:500;font-size:16px}
@@ -504,7 +505,7 @@ section.band#apoiadores > .in{padding-top:48px}
 <header class="top"><div class="in">
   <a class="brand" href="#inicio">Portal <span>Vanguarda</span></a>
   <nav aria-label="Páginas">
-    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#vanguardistas" data-nav="vanguardistas">Vanguardistas</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#painel" data-nav="painel" data-apoiador hidden>Painel</a><a href="#admin" data-nav="admin" data-admin hidden>Administrador</a><a href="#sobre" data-nav="sobre">Sobre</a>
+    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#vanguardistas" data-nav="vanguardistas">Vanguardistas</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#painel" data-nav="painel" data-apoiador hidden>Painel</a><a href="/admin" data-nav="admin" data-admin hidden>Administrador</a><a href="#sobre" data-nav="sobre">Sobre</a>
   </nav>
   <div class="acc-top">
     <a class="btn go" href="#entrar" data-guest>Entrar</a>
@@ -1086,7 +1087,8 @@ section.band#apoiadores > .in{padding-top:48px}
   <div class="adm-topo fields" data-admin hidden>
     <label for="adm-amb"><span>Ambiente dos apoios</span><select id="adm-amb"><option value="producao">Produção</option><option value="sandbox">Teste (sandbox)</option></select></label>
   </div>
-  <p class="notice" id="adm-fora"><b>Acesso restrito</b><span>Esta área é só para a conta de administrador. Entre com o login de administrador para continuar.</span></p>
+  <div class="notice" id="adm-fora"><b>Acesso negado</b><span>Esta área é só para a conta de administrador. <span data-guest>Se você é o administrador, entre com o login de administrador.</span><span data-user hidden>A conta que está logada não é de administrador.</span></span></div>
+  <div class="adm-fora-acts" id="adm-fora-acts"><a class="btn go" href="#entrar" data-guest>Entrar</a><a class="btn" href="/#inicio">Voltar ao início</a></div>
 </div></section>
 <section class="band adm" data-admin hidden><div class="in">
   <details class="adm-p" id="adm-sim"><summary><span>Simuladores</span><small>Quais simuladores aparecem no site</small></summary><div class="adm-c"></div></details>
@@ -1292,7 +1294,7 @@ section.band#apoiadores > .in{padding-top:48px}
     if(vazio)setTimeout(function(){vazio.focus({preventScroll:true});},0);
   }
   window.addEventListener('hashchange',function(){var h=location.hash.slice(1);if(h==='apoiar'||h==='apoiar-cadastro'){preencherApoio();if(h==='apoiar-cadastro')focarFaltando();}});
-  function entrou(user,txt){return carregarPerfil(user).then(function(c){perfil=c;cabecalho();if(c){ola(txt.replace('{n}',(c.nome||'').split(' ')[0]));location.hash=destino(c);}return c;});}
+  function entrou(user,txt){return carregarPerfil(user).then(function(c){perfil=c;cabecalho();if(c){ola(txt.replace('{n}',(c.nome||'').split(' ')[0]));var d=destino(c);if(d==='admin'){history.pushState(null,'','/admin');window.dispatchEvent(new HashChangeEvent('hashchange'));}else location.hash=d;}return c;});}
   function ola(txt){var h=document.getElementById('hello');document.getElementById('hello-txt').textContent=txt;h.hidden=false;}
   document.getElementById('hello-x').addEventListener('click',function(){document.getElementById('hello').hidden=true;});
   document.getElementById('sair').addEventListener('click',function(){var done=function(){perfil=null;document.getElementById('hello').hidden=true;cabecalho();location.hash='inicio';};if(sb)sb.auth.signOut().then(done,done);else done();});
@@ -1389,7 +1391,11 @@ section.band#apoiadores > .in{padding-top:48px}
   /* páginas */
   var views=[].slice.call(document.querySelectorAll('[data-view]'));
   function show(){
-    var h=decodeURIComponent(location.hash.slice(1))||'inicio';
+    /* www.vanguarda.social.br/admin abre a aba Administrador (vercel.json reescreve /admin para este arquivo) */
+    var noAdmin=/^\/admin\/?$/.test(location.pathname);
+    var h=decodeURIComponent(location.hash.slice(1))||(noAdmin?'admin':'inicio');
+    if(noAdmin&&h!=='admin')history.replaceState(null,'','/#'+h);
+    else if(!noAdmin&&h==='admin')history.replaceState(null,'','/admin');
     if(typeof window.vgAntesDeMostrar==='function')window.vgAntesDeMostrar(h); /* painel: devolve o formulário de apoio ao lugar dele */
     var v=document.querySelector('[data-view="'+h+'"]'),target=null;
     if(!v){target=document.getElementById(h);v=target&&target.closest('[data-view]');}
@@ -2260,9 +2266,9 @@ section.band#apoiadores > .in{padding-top:48px}
   var PAINEIS={'adm-sim':pSim,'adm-selos':pSelos,'adm-imp':pImp,'adm-apo':pApo,'adm-usu':pUsu};
   Object.keys(PAINEIS).forEach(function(id){var d=$(id);d.addEventListener('toggle',function(){if(d.open&&admin())PAINEIS[id](d.querySelector('.adm-c'));});});
   $('adm-amb').addEventListener('change',function(){['adm-imp','adm-apo'].forEach(function(id){var d=$(id);if(d.open)PAINEIS[id](d.querySelector('.adm-c'));});});
-  document.addEventListener('vg:perfil',function(){var a=admin();$('adm-fora').hidden=a;aplicarSims();
+  document.addEventListener('vg:perfil',function(){var a=admin();$('adm-fora').hidden=a;$('adm-fora-acts').hidden=a;aplicarSims();
     if(!a)document.querySelectorAll('.adm-p').forEach(function(d){d.open=false;d.querySelector('.adm-c').innerHTML='';});});
-  $('adm-fora').hidden=admin();
+  $('adm-fora').hidden=admin();$('adm-fora-acts').hidden=admin();
 })();
 </script>
 
