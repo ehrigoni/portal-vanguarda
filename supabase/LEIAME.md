@@ -28,6 +28,11 @@ O site guarda as contas de vanguardistas e apoiadores no Supabase. Enquanto as c
 - Página pública do selo: cada apoiador tem um `codigo` em `apoiador_perfil`. O link do material (`/?selo=codigo`) abre a página do selo com os números atuais (função `selo_publico`), conta visitas por dia (`selo_visitas`) e grava em `perfis.indicado_por` quem se cadastrou vindo dele.
 - Funções `contar_grupo` e `painel_grupo`: devolvem só o total do grupo e a distribuição por porte, tipo de negócio e faixa de faturamento. Nada sai quando o grupo tem menos de 5 vanguardistas, ou quando, tirando um filtro, a diferença entre os grupos isolaria de 1 a 4 pessoas. O apoiador não tem acesso de leitura a `perfis` de vanguardistas.
 
+## CPF/CNPJ repetido e busca por CNPJ
+
+- O banco aceita o mesmo CPF/CNPJ em mais de uma conta (só celular e e-mail são únicos). Quando o CPF/CNPJ digitado no cadastro, no Apoiar ou em Dados da conta já consta na base, o site avisa e pergunta se a pessoa quer continuar assim mesmo, em vez de mostrar erro. A função `dados_em_uso` só diz que o número existe, nunca de quem é.
+- Ao digitar um CNPJ válido, o site busca os dados públicos da empresa na Receita Federal pela BrasilAPI (`brasilapi.com.br/api/cnpj/v1/`), direto do navegador, e completa nome (no Apoiar) e endereço quando CEP e rua estão vazios. Não usa os cadastros do portal, que têm dados pessoais de outras contas.
+
 ## Privacidade dos vanguardistas (LGPD)
 
 - Dos vanguardistas, o apoiador só recebe região (estado e cidade), porte, tipo de negócio e faixa de faturamento, sempre somados (função interna `_perfil_somado`).

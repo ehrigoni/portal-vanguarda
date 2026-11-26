@@ -322,6 +322,9 @@ details.opcional[open] summary{margin-bottom:12px}
 .done p{color:var(--muted);font-size:14px}
 .done pre{margin:0;white-space:pre-wrap;font-family:var(--mono);font-size:12.5px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-wrap:anywhere}
 .err{color:var(--amber);font-size:13px}
+.pergunta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;color:var(--fg);border:1px dashed var(--amber);border-radius:10px;padding:10px 12px;font-size:14px}
+.pergunta .btn{min-height:auto;padding:6px 12px;font-size:14px}
+.hint.cnpj-msg{display:block}
 .aside{display:grid;gap:14px}
 .aside .people{gap:10px}
 /* como vai funcionar */
@@ -993,7 +996,7 @@ details.opcional[open] summary{margin-bottom:12px}
   <ol class="steps">
       <li><h3>Acesso ilimitado aos simuladores</h3><p>Gratuito aos simuladores básicos.</p></li>
       <li><h3>Amplie a Comunidade</h3><p>Convide outros empreendedores a se tornarem vanguardistas, fortalecendo o portal.</p></li>
-      <li><h3>Contribua com o portal</h3><p>Todo vanguardista pode se tornar um apoiador do portal, dispensando o apadrinhamento de outro vanguardista. Com isso ele pode se cadastrar no portal, armazenar histórico de simulações e ter acesso a simuladores mais avançados.</p></li>
+      <li><h3>Contribua com o portal</h3><p>Todo vanguardista pode se tornar um apoiador financeiro do portal, ou até mesmo indicando outros membros.</p></li>
       <li><h3>Apadrinhamento</h3><p>Caso o vanguardista tenha se cadastrado no portal e não exercido seu apoio, este fica disponível para que seja apadrinhado na plataforma.</p></li>
     </ol>
   <div class="cadastro-vg" id="cadastro">
@@ -1456,7 +1459,7 @@ details.opcional[open] summary{margin-bottom:12px}
     assinar:function(n){if(n>0)apN.value=n;var r=document.querySelector('input[name="ap-p"][value="A"]');if(r)r.checked=true;ap();location.hash='apoiar-cadastro';},
     /* Minha conta (Dados da conta): grava no perfil o que a pessoa mudou e atualiza o cabeçalho */
     perfilMudou:function(upd){if(perfil){Object.assign(perfil,upd);cabecalho();}},
-    util:{dig:dig,maskFone:maskFone,maskDoc:maskDoc,foneOk:foneOk,emailOk:emailOk,docOk:docOk,emUso:function(a,b,c){return emUso(a,b,c);},EM_USO:function(){return EM_USO;},
+    util:{perguntarDoc:function(a,b,c){return perguntarDoc(a,b,c);},docJaAceito:function(v){return docJaAceito(v);},dig:dig,maskFone:maskFone,maskDoc:maskDoc,foneOk:foneOk,emailOk:emailOk,docOk:docOk,emUso:function(a,b,c){return emUso(a,b,c);},EM_USO:function(){return EM_USO;},
       maskCep:function(v){return maskCep(v);},cepFormatoOk:function(v){return cepFormatoOk(v);},consultaCep:function(d){return consultaCep(d);}}}; /* usado pelo painel (Minha conta) e pela página do selo */
   var FORA='O cadastro está sendo ligado e volta em breve. Enquanto isso, fale com a gente pelo WhatsApp (51) 99291-0038.';
   var perfil=null,cobranca={ativo:false,ambiente:''};
@@ -1485,6 +1488,54 @@ details.opcional[open] summary{margin-bottom:12px}
   var EM_USO={fone:'Esse celular já está cadastrado em outra conta. Use outro número ou entre na sua conta.',
     email:'Esse e-mail já está cadastrado em outra conta. Use outro e-mail ou entre na sua conta.',
     doc:'Esse CPF ou CNPJ já está cadastrado em outra conta. Use outro ou entre na sua conta.'};
+  /* CPF/CNPJ que já consta na base: não é erro (o banco aceita documento repetido). Avisamos e perguntamos se a pessoa quer
+     continuar assim mesmo; a resposta vale para esse número até a página recarregar. */
+  var docAceito={};
+  function docJaAceito(v){return !!docAceito[dig(v)];}
+  function perguntarDoc(el,campo,continuar){
+    var d=dig(campo.value);el.textContent='';el.hidden=false;el.classList.add('pergunta');
+    var t=document.createElement('span');t.textContent='Esse CPF ou CNPJ já consta na base de dados do portal. Deseja continuar assim mesmo?';
+    var b=document.createElement('button');b.type='button';b.className='btn go';b.textContent='Continuar assim mesmo';
+    var n=document.createElement('button');n.type='button';n.className='btn';n.textContent='Corrigir';
+    function limpa(){el.textContent='';el.hidden=true;el.classList.remove('pergunta');}
+    b.addEventListener('click',function(){docAceito[d]=1;limpa();continuar();});
+    n.addEventListener('click',function(){limpa();campo.focus();campo.select&&campo.select();});
+    el.appendChild(t);el.appendChild(b);el.appendChild(n);b.focus();
+    campo.addEventListener('input',function f(){if(dig(campo.value)!==d){limpa();campo.removeEventListener('input',f);}});
+  }
+  /* CNPJ: busca os dados públicos da empresa (Receita Federal, pela BrasilAPI) e completa os campos vazios do formulário.
+     Não usa os cadastros do portal: eles têm dados pessoais de outras contas (LGPD). */
+  var cnpjCache={};
+  function buscarCnpj(d){
+    if(cnpjCache[d])return cnpjCache[d];
+    var ctl=window.AbortController?new AbortController():null,t=setTimeout(function(){if(ctl)ctl.abort();},8000);
+    var pr=fetch('https://brasilapi.com.br/api/cnpj/v1/'+d,ctl?{signal:ctl.signal}:{}).then(function(r){return r.ok?r.json():null;})
+      .then(function(j){clearTimeout(t);return j&&j.cnpj?j:null;},function(){clearTimeout(t);delete cnpjCache[d];return null;});
+    cnpjCache[d]=pr;return pr;
+  }
+  function ligarCnpj(px,comNome){
+    var i=document.getElementById(px+'-doc');if(!i)return;var l=i.closest('label'),ult='';
+    var m=document.createElement('small');m.className='hint cnpj-msg';m.setAttribute('aria-live','polite');l.appendChild(m);
+    i.addEventListener('input',function(){
+      var d=dig(i.value);if(d.length!==14||!cnpjOk(d)){if(d!==ult)m.textContent='';ult='';return;}
+      if(d===ult)return;ult=d;m.textContent='Buscando os dados deste CNPJ…';
+      buscarCnpj(d).then(function(j){
+        if(dig(i.value)!==d)return;
+        if(!j){m.textContent='Não achamos os dados deste CNPJ agora. Preencha os campos à mão.';return;}
+        var tipo=j.descricao_tipo_de_logradouro?String(j.descricao_tipo_de_logradouro).trim()+' ':'',n=0;
+        var v={cep:j.cep?maskCep(String(j.cep)):'',rua:j.logradouro?(tipo+j.logradouro).trim():'',num:j.numero&&j.numero!=='0'?String(j.numero):'',comp:j.complemento||'',
+          bairro:j.bairro||'',cidade:j.municipio?String(j.municipio).toLowerCase().replace(/(^|\s)(\S)/g,function(a,b,c){return b+c.toUpperCase();}).replace(/\s(D[aeo]s?|E)\s/g,function(x){return x.toLowerCase();}):'',uf:j.uf||''};
+        if(comNome)v.nome=j.razao_social||'';
+        /* o endereço vai inteiro (para não misturar rua de um lugar com cidade de outro): só quando CEP e rua estão vazios */
+        var el=function(k){return document.getElementById(px+'-'+k);},vazio=function(k){var c=el(k);return !c||!String(c.value||'').trim();};
+        var poe=function(k){var c=el(k);if(!c||!v[k])return;c.value=v[k];n++;if(c.closest('label').classList.contains('bad'))campoErro(c,'');};
+        if(vazio('cep')&&vazio('rua'))['cep','rua','num','comp','bairro','cidade','uf'].forEach(function(k){var c=el(k);if(c&&v[k])poe(k);else if(c&&k!=='cidade'&&k!=='uf')c.value='';});
+        if(v.nome&&vazio('nome'))poe('nome');
+        var op=i.closest('details');if(op)op.open=true;
+        m.textContent=n?'Completamos '+(n===1?'1 campo':n+' campos')+' com os dados públicos do CNPJ (Receita Federal). Confira antes de enviar.':'O endereço já estava preenchido; não mudamos nada. Para usar o endereço do CNPJ, apague o CEP e a rua e digite o CNPJ de novo.';
+      });
+    });
+  }
   function cabecalho(){
     var c=perfil;
     document.querySelectorAll('[data-guest]').forEach(function(el){el.hidden=!!c;});
@@ -1504,7 +1555,8 @@ details.opcional[open] summary{margin-bottom:12px}
     var c=perfil;if(!c||c.tipo==='admin')return;
     var pre={'ap-nome':c.nome,'ap-email':c.email,'ap-whats':maskFone(c.fone||''),'ap-doc':maskDoc(c.doc||''),'ap-cidade':c.cidade,'ap-uf':c.uf,
       'ap-cep':c.cep?maskCep(c.cep):'','ap-rua':c.rua,'ap-bairro':c.bairro,'ap-num':c.numero,'ap-comp':c.complemento};
-    Object.keys(pre).forEach(function(id){var i=document.getElementById(id);if(i&&!i.value.trim()&&pre[id])i.value=pre[id];});
+    /* preenche o que está vazio ou ainda tem o valor que nós mesmos pusemos antes (o cadastro pode ter mudado em Dados da conta) */
+    Object.keys(pre).forEach(function(id){var i=document.getElementById(id);if(!i||!pre[id])return;var v=String(i.value||'').trim();if(!v||v===i.dataset.pre){i.value=pre[id];i.dataset.pre=String(pre[id]).trim();}});
   }
   function focarFaltando(){
     if(!perfil)return;
@@ -1516,7 +1568,8 @@ details.opcional[open] summary{margin-bottom:12px}
   function entrou(user,txt,novo){return carregarPerfil(user).then(function(c){perfil=c;cabecalho();if(c){ola(txt.replace('{n}',(c.nome||'').split(' ')[0]));var d=novo&&c.tipo==='vanguardista'?'pn-perfil':destino(c);if(d==='admin'){history.pushState(null,'','/admin');window.dispatchEvent(new HashChangeEvent('hashchange'));}else location.hash=d;}return c;});}
   function ola(txt){var h=document.getElementById('hello');document.getElementById('hello-txt').textContent=txt;h.hidden=false;}
   document.getElementById('hello-x').addEventListener('click',function(){document.getElementById('hello').hidden=true;});
-  document.getElementById('sair').addEventListener('click',function(){var done=function(){perfil=null;document.getElementById('hello').hidden=true;cabecalho();location.hash='inicio';};if(sb)sb.auth.signOut().then(done,done);else done();});
+  function limparApoio(){var f=document.querySelector('[data-form="ap"]');if(!f)return;f.querySelectorAll('.fields input:not([type=radio]):not(#ap-n):not(#ap-meses),.fields select').forEach(function(i){if(i.id==='ap-uf')i.selectedIndex=0;else i.value='';delete i.dataset.pre;});}
+  document.getElementById('sair').addEventListener('click',function(){var done=function(){perfil=null;limparApoio();document.getElementById('hello').hidden=true;cabecalho();location.hash='inicio';};if(sb)sb.auth.signOut().then(done,done);else done();});
   /* Excluir minha conta (Minha conta > Dados da conta): confirmação na própria página, com Concordo e Excluir.
      O banco (excluir_minha_conta) só apaga a conta logada; nenhum id vai do site para o banco. */
   var EXCLUIR_TXT={vanguardista:'Ao excluir, sua conta de vanguardista sai do portal: seu cadastro (nome, celular, e-mail, CPF ou CNPJ e endereço), os dados do seu negócio e todos os dados ligados às suas simulações. Você deixa de poder ser apadrinhado, e as vagas de apadrinhamento que você ocupava passam para outros vanguardistas. Se você também apoiou o portal, os registros desses apoios são apagados.',
@@ -1538,13 +1591,13 @@ details.opcional[open] summary{margin-bottom:12px}
         sim.textContent='Excluir';nao.disabled=false;
         if(r.error){sim.disabled=!ok.checked;err.textContent='Não foi possível excluir agora. Tente de novo em instantes ou fale com a gente pelo WhatsApp (51) 99291-0038.';err.hidden=false;return;}
         try{localStorage.removeItem('vg-painel-'+id);}catch(e){}
-        var done=function(){perfil=null;fechar();cabecalho();ola('Sua conta foi excluída. Obrigado por ter feito parte do Portal Vanguarda.');location.hash='inicio';};
+        var done=function(){perfil=null;limparApoio();fechar();cabecalho();ola('Sua conta foi excluída. Obrigado por ter feito parte do Portal Vanguarda.');location.hash='inicio';};
         sb.auth.signOut({scope:'local'}).then(done,done);
       },function(){sim.textContent='Excluir';nao.disabled=false;sim.disabled=!ok.checked;err.textContent='Sem conexão. Confira a internet e tente de novo.';err.hidden=false;});
     });
   });
   /* Cadastre-se e Entrar: o aviso aparece embaixo do campo com problema e também no fim do formulário */
-  function erro(id,msg,campo){var e=document.getElementById(id);e.textContent=msg;e.hidden=!msg;
+  function erro(id,msg,campo){var e=document.getElementById(id);e.classList.remove('pergunta');e.textContent=msg;e.hidden=!msg;
     var form=e.closest('form')||document;
     form.querySelectorAll('.fields label.bad').forEach(function(l){l.classList.remove('bad');});
     form.querySelectorAll('.fields .err-campo').forEach(function(x){x.remove();});
@@ -1576,7 +1629,7 @@ details.opcional[open] summary{margin-bottom:12px}
     emUso(fone,email,dados.doc||null).then(function(u){
       if(u.indexOf('fone')>=0){erro('cd-err',EM_USO.fone,g('cd-fone'));return;}
       if(u.indexOf('email')>=0){erro('cd-err',EM_USO.email,g('cd-email'));return;}
-      if(u.indexOf('doc')>=0){var op=document.querySelector('#form-cadastro details.opcional');if(op)op.open=true;erro('cd-err',EM_USO.doc,g('cd-doc'));return;}
+      if(u.indexOf('doc')>=0&&!docJaAceito(dados.doc)){var op=document.querySelector('#form-cadastro details.opcional');if(op)op.open=true;erro('cd-err','');perguntarDoc(g('cd-err'),g('cd-doc'),function(){form.requestSubmit?form.requestSubmit():g('cd-btn').click();});return;}
       return sb.auth.signUp({email:emailInterno(),password:g('cd-senha').value,options:{data:dados}}).then(function(res){
         if(res.error)throw res.error;
         if(!res.data.session){erro('cd-err','Conta criada. Assim que a confirmação for liberada, você já pode entrar com seu celular e senha.');return;}
@@ -1805,7 +1858,7 @@ details.opcional[open] summary{margin-bottom:12px}
       e.preventDefault();
       var ruins=[];f.querySelectorAll('.fields input[required],.fields select[required]').forEach(function(i){var m=problema(i,p);campoErro(i,m);if(m)ruins.push(i);});
       var ok=!ruins.length,ce=document.getElementById(p+'-cep');
-      var errEl=document.getElementById(p+'-err');
+      var errEl=document.getElementById(p+'-err');errEl.classList.remove('pergunta');
       errEl.textContent=ok?'':(ruins.length===1?'Confira o campo destacado.':'Confira os '+ruins.length+' campos destacados.');
       errEl.hidden=ok;if(!ok){ruins[0].focus();return;}
       var btn=p==='ap'?apBtns[0]:null,contaMsg='';
@@ -1823,7 +1876,8 @@ details.opcional[open] summary{margin-bottom:12px}
         emUso(perfil||comConta?dig(campos.fone.value):null,maskEmail(campos.email.value),dig(campos.doc.value)).then(function(u){
           apBtns.forEach(function(b){b.disabled=false;});
           u=u.filter(function(k){return campos[k];});
-          if(!u.length)return cadastrar();
+          var docRep=u.indexOf('doc')>=0;u=u.filter(function(k){return k!=='doc';});
+          if(!u.length){errEl.classList.remove('pergunta');if(docRep&&!docJaAceito(campos.doc.value))return perguntarDoc(errEl,campos.doc,cadastrar);return cadastrar();}
           u.forEach(function(k){campoErro(campos[k],EM_USO[k]);});
           errEl.textContent=u.length===1?'Confira o campo destacado.':'Confira os '+u.length+' campos destacados.';errEl.hidden=false;campos[u[0]].focus();
         });
@@ -1844,6 +1898,7 @@ details.opcional[open] summary{margin-bottom:12px}
       }
     });
   });
+  ligarCnpj('cd',false);ligarCnpj('ap',true);ligarCnpj('dd',false);
   /* Indique para 3 empreendedores: compartilha o site (menu do celular ou WhatsApp) */
   (function(){var a=document.getElementById('indicar');if(!a)return;
     var url=location.href.split('#')[0];
@@ -2150,7 +2205,7 @@ details.opcional[open] summary{margin-bottom:12px}
         $('dd-num').focus();});});
   })();
   $('pn-form-dados').addEventListener('submit',function(e){
-    e.preventDefault();var m=$('dd-msg'),g=function(id){return $(id).value.trim();};
+    e.preventDefault();var m=$('dd-msg'),g=function(id){return $(id).value.trim();};m.classList.remove('pergunta');m.hidden=false;
     function ruim(t,id){m.textContent=t;m.classList.add('bad');if(id)$(id).focus();}
     m.classList.remove('bad');
     if(!g('dd-nome'))return ruim('Informe o nome.','dd-nome');
@@ -2168,8 +2223,9 @@ details.opcional[open] summary{margin-bottom:12px}
     if(!VG.sb){m.textContent='Não foi possível salvar agora.';return;}
     $('dd-btn').disabled=true;m.textContent='Salvando…';
     U.emUso(upd.fone||null,upd.email||null,upd.doc||null).then(function(u){
-      var em=U.EM_USO(),campo={fone:'dd-fone',email:'dd-email',doc:'dd-doc'};
+      var em=U.EM_USO(),campo={fone:'dd-fone',email:'dd-email',doc:'dd-doc'},docRep=u.indexOf('doc')>=0;u=u.filter(function(k){return k!=='doc';});
       if(u.length){$('dd-btn').disabled=false;return ruim(em[u[0]],campo[u[0]]);}
+      if(docRep&&!U.docJaAceito(upd.doc)){$('dd-btn').disabled=false;m.classList.remove('bad');return U.perguntarDoc(m,$('dd-doc'),function(){$('pn-form-dados').requestSubmit();});}
       return VG.sb.from('perfis').update(upd).eq('id',p.id).then(function(r){
         $('dd-btn').disabled=false;
         if(r.error){var t=String(r.error.message||'')+' '+String(r.error.details||'');
