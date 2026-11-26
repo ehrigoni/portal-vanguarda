@@ -226,7 +226,8 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 .cta{background:var(--film)}
 .cta .in{padding-block:64px;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:28px;align-items:center}
 @media (max-width:860px){.cta .in{grid-template-columns:1fr}}
-.cta .actions{display:grid;gap:10px}
+.cta .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
+.cta .actions .contact{grid-column:1/-1}
 .cta .actions .btn{justify-content:center}
 .cta small{color:var(--muted);font-size:13px}
 .contact{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:8px}
@@ -269,7 +270,12 @@ section.band#apoiadores > .in{padding-top:48px}
 details.opcional{border:1px solid var(--line);border-radius:12px;padding:12px 16px}
 details.opcional summary{cursor:pointer;font-size:15px;color:var(--muted)}
 details.opcional[open] summary{margin-bottom:12px}
-.selo .divulgar{justify-self:start;margin-top:4px}
+.selo .divulgar{margin-top:auto;align-self:center;min-width:160px;justify-content:center} /* Divulgar centralizado, no pé do card, na mesma linha em todos */
+.selo.lib{display:flex;flex-direction:column;border-color:var(--glow);background:var(--panel);box-shadow:0 0 0 1px var(--glow),0 0 22px color-mix(in srgb,var(--glow) 22%,transparent)}
+.selo.lib.on{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber),0 0 22px color-mix(in srgb,var(--amber) 22%,transparent)}
+.selo .tag.lib{border-color:var(--glow);color:var(--bg);background:var(--glow);font-weight:600}
+#pn-perfil .pn-acts{justify-content:center;flex-direction:column}
+#pn-impacto .kpi{text-align:center;justify-items:center;align-content:center}
 #como-funciona-vanguardistas .head h2{text-wrap:wrap}
 .sim-nota{font-size:15px;padding:14px 16px;border-style:solid}
 .sim-nota span{display:grid;gap:12px;justify-items:start}
@@ -341,11 +347,12 @@ details.opcional[open] summary{margin-bottom:12px}
 .track i{display:block;height:100%;width:0;background:var(--glow);border-radius:7px;transition:width .6s ease}
 .track.amber i{background:var(--amber)}
 .scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:-6px}
-.split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px;align-items:start}
+.split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px;align-items:stretch}
 @media (max-width:860px){.split{grid-template-columns:1fr}}
 .who-box{border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:16px;align-content:start}
 .who-box.feat{border-color:var(--amber);background:var(--panel)}
-.who-box .btn{justify-self:start}
+.who-box .btn{justify-self:start;align-self:end} /* botões dos dois cards na mesma linha */
+.who-box{grid-template-rows:auto 1fr auto}
 .checks{margin:0;padding-left:20px;display:grid;gap:6px;color:var(--fg)}
 .checks li::marker{color:var(--glow);font-family:var(--mono)}
 .nrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:17px}
@@ -800,7 +807,7 @@ details.opcional[open] summary{margin-bottom:12px}
   <div class="split">
     <article class="who-box">
       <span class="tag">Quer se tornar um Vanguardista</span>
-      <ol class="checks"><li>Obtenha acesso aos simuladores.</li><li>Uso gratuito e ininterrupto.</li><li>Caso queira armazenar o seu histórico, realize o seu cadastro.</li></ol>
+      <ol class="checks"><li>Obtenha acesso aos simuladores.</li><li>Uso gratuito e ininterrupto.</li><li>Realize seu cadastro, e passe a apoiar e indicar o portal, liberando selos de impacto.</li></ol>
       <a class="btn go" href="#cadastro">Quero me cadastrar</a>
     </article>
     <article class="who-box feat" id="simular-apoio">
@@ -2090,9 +2097,9 @@ details.opcional[open] summary{margin-bottom:12px}
     var ord=SELOS.slice().sort(function(a,b){var ta=top.indexOf(a.id),tb=top.indexOf(b.id);if(ta>=0||tb>=0)return (ta<0?9:ta)-(tb<0?9:tb);return 0;});
     $('pn-lista-selos').innerHTML=ord.map(function(s){
       var bloq=!liberado(s.id),rec=!bloq&&top.indexOf(s.id)>=0,on=!bloq&&sel.indexOf(s.id)>=0,por=R[s.id].por.filter(Boolean).slice(0,2);
-      return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':'')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
+      return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':' lib')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
         '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
-        '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
+        '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'<span class="tag lib">Desbloqueado</span>')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
         '<p>'+esc(s.desc)+'</p>'+condHtml(s,bloq?faltaSelo(s):'Cumprida.')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+
         (bloq?'':'<button type="button" class="btn divulgar'+(on?'':' go')+'" data-divulgar="'+s.id+'">Divulgar</button>')+'</label>';
     }).join('');
