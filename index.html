@@ -1268,10 +1268,13 @@ section.band#apoiadores > .in{padding-top:48px}
     var ae=document.activeElement;if(!(ae&&ae.type==='range'))while(m>200&&val<m*0.25)m/=2;
     if(m!==m0)sl.max=m;}
   function ajustarLimite(p){limiteDe(rng,p);var h=document.querySelector('.bone-rng[data-k="venda"]');if(h)h.max=rng.max;}
+  /* valores ajustados à mão nos cards (slider ou edição): só aquele card muda; mexer no card principal (Vendas) zera os ajustes */
+  var AJ={};
+  function valores(p){var r=calc(p);for(var k in AJ)r[k]=AJ[k];return r;}
   function render(p){
     if(!(p>0))return;
     ajustarLimite(p);
-    var r=calc(p);
+    var r=valores(p);
     document.querySelectorAll('[data-k]').forEach(function(el){if(!el.querySelector('input'))el.textContent=fmt.format(r[el.dataset.k]);});
     document.querySelectorAll('[data-b]').forEach(function(el){el.style.width=Math.max(0,r[el.dataset.b]/p*100).toFixed(1)+'%';});
     /* cada slider de card mostra o valor do próprio card (independente dos outros); o percentual é sobre o preço da venda */
@@ -1282,7 +1285,7 @@ section.band#apoiadores > .in{padding-top:48px}
     svgV.forEach(function(t,k){if(order[k]!=null)t.textContent=fmt.format(order[k]);});
     if(svgP)svgP.textContent='por venda de '+fmt.format(p);
   }
-  num.addEventListener('input',function(){var p=parseFloat(num.value);if(p>0){render(p);rng.value=p;}});
+  num.addEventListener('input',function(){var p=parseFloat(num.value);if(p>0){AJ={};render(p);rng.value=p;}});
   rng.addEventListener('input',function(){num.value=rng.value;render(parseFloat(rng.value));});
   /* cards do raio X da venda: clicar abre a edição do valor; ao terminar, recalcula o preço */
   /* inverso: o preço (entre 1 e 100.000) que leva o card ao valor digitado. Cada fórmula é linear entre dois inteiros,
@@ -1304,30 +1307,31 @@ section.band#apoiadores > .in{padding-top:48px}
     /* percentual do card sobre o preço, entre o valor em R$ e o slider */
     var pc=document.createElement('span');pc.className='pct';pc.dataset.pk=k;v.after(pc);
     /* slider do card: independente, vai de 0 a um limite próprio (que cresce com o valor) e mostra o valor do próprio card;
-       arrastar define o valor desse card e o preço é recalculado a partir dele. O custo de entrega (último dígito) vai de 0 a 9 */
+       arrastar muda só o valor desse card (o preço e os outros cards ficam como estão). O custo de entrega (último dígito) vai de 0 a 9 */
     var bar=li.querySelector('.bar'),sl=document.createElement('input');
     sl.type='range';sl.className='bone-rng';sl.dataset.k=k;sl.min=k==='venda'?rng.min:0;sl.max=k==='cst'?9:rng.max;sl.step=k==='venda'?rng.step:k==='cst'?1:0.01;sl.value=rng.value;
     sl.setAttribute('aria-label','Ajustar '+li.querySelector('b').textContent);
     if(bar)bar.replaceWith(sl);else li.appendChild(sl);
     sl.addEventListener('click',function(e){e.stopPropagation();});
     sl.addEventListener('keydown',function(e){e.stopPropagation();});
-    sl.addEventListener('input',function(){var n=parseFloat(sl.value),p=k==='venda'?n:INV[k](n);
-      if(p>0){num.value=Math.max(1,Math.round(p*100)/100);num.dispatchEvent(new Event('input',{bubbles:true}));}});
-    /* ao soltar, o slider encosta no valor que o card de fato ficou (o preço anda em centavos) */
-    sl.addEventListener('change',function(){var r=calc(parseFloat(num.value)||1);sl.value=Math.min(parseFloat(sl.max),Math.max(parseFloat(sl.min),r[k]));});
+    /* slider da cabeça muda o preço e reajusta todos os cards; slider de outro card muda só o valor (e o percentual) dele */
+    sl.addEventListener('input',function(){var n=parseFloat(sl.value);
+      if(k==='venda'){if(n>0){num.value=n;num.dispatchEvent(new Event('input',{bubbles:true}));}}
+      else if(n>=0){AJ[k]=Math.round(n*100)/100;render(parseFloat(num.value));}});
     function abrir(){
       if(v.querySelector('input'))return;
-      var atual=calc(parseFloat(num.value)||0)[k],inp=document.createElement('input'),feito=false;
+      var atual=valores(parseFloat(num.value)||0)[k],inp=document.createElement('input'),feito=false;
       inp.type='text';inp.inputMode='decimal';inp.className='v-in';inp.setAttribute('enterkeyhint','done');
       inp.setAttribute('aria-label',li.querySelector('b').textContent);
       inp.value=(Math.round(atual*100)/100).toFixed(2).replace('.',',');
       v.textContent='';v.appendChild(inp);inp.focus();inp.select();
       function fechar(ok,teclado){
         if(feito)return;feito=true;
-        var n=lerValor(inp.value),p=ok&&n>=0?INV[k](n):NaN;
+        /* valor digitado: na cabeça muda o preço e reajusta todos; nos outros cards muda só aquele card */
+        var n=lerValor(inp.value),p=ok&&n>=0&&k==='venda'?n:NaN;
         v.textContent='';
         if(p>0){p=Math.max(1,Math.round(p*100)/100);num.value=p;num.dispatchEvent(new Event('input',{bubbles:true}));}
-        else render(parseFloat(num.value));
+        else{if(ok&&n>=0&&k!=='venda')AJ[k]=Math.round(n*100)/100;render(parseFloat(num.value));}
         if(teclado)li.focus();
       }
       inp.addEventListener('keydown',function(e){e.stopPropagation();if(e.key==='Enter'){e.preventDefault();fechar(true,true);}else if(e.key==='Escape'){e.preventDefault();fechar(false,true);}});
@@ -1372,7 +1376,7 @@ section.band#apoiadores > .in{padding-top:48px}
      No raio X da venda o ponto de partida é o card Vendas (cabeça): o slider e os demais cards seguem o preço dele.
      Roda ao abrir a página, ao voltar a ela pelo histórico (o navegador pode restaurar valores antigos) e a cada vez que o painel é aberto. */
   window.vgSimCarregar=function(){var p=parseFloat(num.value);if(!(p>0)){p=15;num.value=p;}
-    ajustarLimite(p);rng.value=p;render(p);custos();};
+    AJ={};ajustarLimite(p);rng.value=p;render(p);custos();};
   window.addEventListener('pageshow',function(){window.vgSimCarregar();});
   /* cards do raio X do preço: custo total e meta também são editáveis; o novo valor é distribuído
      proporcionalmente entre os campos em reais (o número de pessoas fica como está) */
