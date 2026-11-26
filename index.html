@@ -541,6 +541,7 @@ section.band#apoiadores > .in{padding-top:48px}
 .adm-img-prev img{max-width:min(240px,100%);height:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
 .adm-img-prev .msg{margin:0 0 8px}
 .adm-img{font-family:var(--mono)!important;font-size:13px!important;min-height:110px!important}
+.adm-passos textarea{min-height:160px}
 .adm-simc h4{margin:0;font-family:var(--display);font-size:17px}
 .adm-simc textarea{width:100%;min-height:58px;resize:vertical;background:transparent;border:0;color:var(--fg);font:500 15px/1.4 var(--body);outline:none;padding:0}
 .adm-campo{display:grid;grid-template-columns:minmax(0,1fr) 130px minmax(0,1.2fr) minmax(0,1.1fr) auto;gap:8px;align-items:end;padding-bottom:8px;border-bottom:1px dashed var(--line)}
@@ -2347,7 +2348,7 @@ section.band#apoiadores > .in{padding-top:48px}
     'raio-x-preco':{nome:'Raio X do Preço',descricao:'Quanto o seu negócio precisa faturar por mês',instrucoes:'Preencha as despesas mensais da operação. O simulador soma o custo operacional e mostra a meta de faturamento que cobre esses custos, as comissões e o lucro.',
       campos:PRECO_FIXOS.map(function(c){return {id:c[0],rotulo:c[1],descricao:''};})}};
   var SIMS=['raio-x','raio-x-preco'];
-  var LIM={nome:60,descricao:140,instrucoes:400,rotulo:60,campoDesc:140,formula:200,extras:12,codigoImg:50000,imagemPx:800,imagemB:1500000,preco:100000};
+  var LIM={nome:60,descricao:140,instrucoes:400,rotulo:60,campoDesc:140,formula:200,passos:5000,extras:12,codigoImg:50000,imagemPx:800,imagemB:1500000,preco:100000};
   var cfgRaw={};
   function txt(v,n,d){v=typeof v==='string'?v.trim().slice(0,n):'';return v||d;}
   function okId(id){return typeof id==='string'&&/^[a-z][a-z0-9_]{0,19}$/.test(id);}
@@ -2406,8 +2407,8 @@ section.band#apoiadores > .in{padding-top:48px}
   function trocarCodigo(f,de,para){return String(f||'').replace(/[A-Za-z_][A-Za-z0-9_]*/g,function(w){return w.toLowerCase()===de?para:w;});}
   /* junta o que foi salvo com o padrão; aceita o formato antigo ({"raio-x": false}); respeita a ordem salva */
   function cfgDe(id){
-    var d=DEF[id],r=cfgRaw[id],o={visivel:r!==false,nome:d.nome,descricao:d.descricao,instrucoes:d.instrucoes,especial:false,preco:0,desconto:0,imagem:'',campos:[]};
-    if(r&&typeof r==='object'){o.visivel=r.visivel!==false;o.nome=txt(r.nome,LIM.nome,d.nome);o.descricao=txt(r.descricao,LIM.descricao,d.descricao);o.instrucoes=txt(r.instrucoes,LIM.instrucoes,d.instrucoes);
+    var d=DEF[id],r=cfgRaw[id],o={visivel:r!==false,nome:d.nome,descricao:d.descricao,instrucoes:d.instrucoes,passos:'',especial:false,preco:0,desconto:0,imagem:'',campos:[]};
+    if(r&&typeof r==='object'){o.visivel=r.visivel!==false;o.nome=txt(r.nome,LIM.nome,d.nome);o.descricao=txt(r.descricao,LIM.descricao,d.descricao);o.instrucoes=txt(r.instrucoes,LIM.instrucoes,d.instrucoes);o.passos=txt(r.passos,LIM.passos,'');
       o.especial=r.especial===true;o.preco=Math.min(LIM.preco,Math.max(0,Math.round((parseFloat(r.preco)||0)*100)/100));o.desconto=Math.min(o.preco,Math.max(0,Math.round((parseFloat(r.desconto)||0)*100)/100));
       o.imagem=typeof r.imagem==='string'&&/^data:image\/png;base64,[A-Za-z0-9+\/=]+$/.test(r.imagem)&&r.imagem.length<=LIM.imagemB?r.imagem:'';}
     var salvos=r&&Array.isArray(r.campos)?r.campos:[],pos={};
@@ -2544,10 +2545,11 @@ section.band#apoiadores > .in{padding-top:48px}
     SIMS.forEach(function(id){var o=ed[id],card=c.querySelector('[data-simc="'+id+'"]');if(!card)return;
       o.visivel=card.querySelector('[data-f="visivel"]').checked;
       ['nome','descricao','instrucoes'].forEach(function(k){o[k]=card.querySelector('[data-f="'+k+'"]').value;});
-      o.codigoImg=card.querySelector('[data-f="codigoImg"]').value;
+      o.codigoImg=card.querySelector('[data-f="codigoImg"]').value;o.passos=card.querySelector('[data-f="passos"]').value;
       o.especial=card.querySelector('[data-f="especial"]').checked;o.preco=card.querySelector('[data-f="preco"]').value;o.desconto=card.querySelector('[data-f="desconto"]').value;
       card.querySelectorAll('[data-campo]').forEach(function(row){var cp=o.campos.filter(function(x){return x.id===row.dataset.campo;})[0];if(!cp)return;
-        cp.rotulo=row.querySelector('[data-f="rotulo"]').value;cp.descricao=row.querySelector('[data-f="descricao"]').value;cp.formula=row.querySelector('[data-f="formula"]').value;
+        cp.rotulo=row.querySelector('[data-f="rotulo"]').value;cp.descricao=row.querySelector('[data-f="descricao"]').value;
+        var ff=row.querySelector('[data-f="formula"]');if(ff)cp.formula=ff.value; /* sem campo na tela: mantém o que já estava salvo */
         var cc=row.querySelector('[data-f="codigo"]');if(cc)cp.codigo=cc.value.trim().toLowerCase();
         var vv=row.querySelector('[data-f="valor"]');if(vv)cp.valor=vv.value;});});
   }
@@ -2569,13 +2571,10 @@ section.band#apoiadores > .in{padding-top:48px}
         '<label><span>Descrição</span><input data-f="descricao" maxlength="'+LIM.descricao+'" value="'+esc(o.descricao)+'"></label>'+
         '<label><span>Instruções de uso</span><textarea data-f="instrucoes" maxlength="'+LIM.instrucoes+'">'+esc(o.instrucoes)+'</textarea></label></div>'+
         '<h4>Campos</h4>'+
-        '<p class="msg">Na fórmula, use os códigos dos campos deste simulador, números, + − * / e parênteses. Ex.: <code>pessoas * salario</code>. Campo com fórmula é calculado automaticamente e a pessoa não digita nele.</p>'+
         ativos.map(function(x,k){return '<div class="adm-campo fields'+(x.extra?' extra':'')+'" data-campo="'+esc(x.id)+'">'+
           '<label><span>Nome do campo'+(x.extra?' (novo)':'')+'</span><input data-f="rotulo" maxlength="'+LIM.rotulo+'" value="'+esc(x.rotulo)+'"></label>'+
           '<label><span>Código</span><input data-f="codigo" maxlength="20" autocapitalize="off" autocomplete="off" spellcheck="false" value="'+esc(cod(x))+'" data-ant="'+esc(cod(x))+'"></label>'+
           '<label><span title="Aparece embaixo do campo">Texto descritivo</span><input data-f="descricao" maxlength="'+LIM.campoDesc+'" value="'+esc(x.descricao)+'"></label>'+
-          '<label><span>Fórmula (opcional)</span><input data-f="formula" maxlength="'+LIM.formula+'" placeholder="ex.: pessoas * salario" value="'+esc(x.formula||'')+'"></label>'+
-          (x.extra?'<label><span>Valor inicial</span><input data-f="valor" type="number" min="0" step="any" value="'+esc(x.valor||0)+'"></label>':'')+
           '<div class="adm-acts"><button type="button" class="btn" data-up="'+esc(x.id)+'" aria-label="Subir campo"'+(k===0?' disabled':'')+'>↑</button>'+
           '<button type="button" class="btn" data-down="'+esc(x.id)+'" aria-label="Descer campo"'+(k===ativos.length-1?' disabled':'')+'>↓</button>'+
           (x.fixo?'<span class="msg">Principal</span>':'<button type="button" class="btn" data-del="'+esc(x.id)+'">Excluir</button>')+'</div></div>';}).join('')+
@@ -2584,6 +2583,7 @@ section.band#apoiadores > .in{padding-top:48px}
         '<p class="msg">'+(id==='raio-x'?'Campos novos são custos por venda: aparecem como "Custos adicionais por venda" e são descontados do lucro.':'Campos novos são custos mensais: entram no custo operacional e na meta de faturamento.')+'</p>'+
         '<div class="fields"><label><span>Código gerador de imagens (opcional)</span><textarea data-f="codigoImg" class="adm-img" maxlength="'+LIM.codigoImg+'" spellcheck="false" placeholder="Cole aqui o código SVG (&lt;svg&gt;…&lt;/svg&gt;). Ao salvar, o portal gera a imagem e guarda só a imagem processada.">'+esc(o.codigoImg||'')+'</textarea></label></div>'+
         (o.imagem?'<div class="adm-img-prev"><img src="'+esc(o.imagem)+'" alt="Imagem processada de '+esc(o.nome)+'"><div><p class="msg">Imagem processada e salva. Cole um novo código acima para substituir.</p><button type="button" class="btn" data-rmimg="'+id+'">Remover imagem</button></div></div>':'')+
+        '<div class="fields adm-passos"><label><span>Passo a passo para executar o simulador</span><textarea data-f="passos" maxlength="'+LIM.passos+'" placeholder="Descreva aqui, passo a passo, como o simulador deve funcionar.">'+esc(o.passos||'')+'</textarea></label></div>'+
         '</div>'+
         '<div class="adm-bar"><button type="button" class="btn go" data-salvar="'+id+'">Salvar '+esc(o.nome)+'</button></div>'+
         '<p class="msg'+(id===alvo&&bad?' bad':'')+'" data-msg>'+(id===alvo?esc(msg):'')+'</p>'+
@@ -2644,7 +2644,7 @@ section.band#apoiadores > .in{padding-top:48px}
       m.className='msg';m.textContent=codigo?'Processando a imagem...':'Salvando...';b.disabled=true;
       (codigo?processarImagem(codigo):Promise.resolve(o.imagem||'')).then(function(img){
       SIMS.forEach(function(k){if(k!==id&&cfgRaw[k]!==undefined)v[k]=cfgRaw[k];});
-      v[id]={visivel:!!o.visivel,nome:o.nome.trim().slice(0,LIM.nome),descricao:o.descricao.trim().slice(0,LIM.descricao),instrucoes:o.instrucoes.trim().slice(0,LIM.instrucoes),
+      v[id]={visivel:!!o.visivel,nome:o.nome.trim().slice(0,LIM.nome),descricao:o.descricao.trim().slice(0,LIM.descricao),instrucoes:o.instrucoes.trim().slice(0,LIM.instrucoes),passos:String(o.passos||'').trim().slice(0,LIM.passos),
         especial:!!o.especial,preco:o.especial?preco:0,desconto:o.especial?desconto:0,imagem:img,
         campos:o.campos.map(function(x){var y={id:x.id,codigo:cod(x),rotulo:String(x.rotulo).trim().slice(0,LIM.rotulo),descricao:String(x.descricao||'').trim().slice(0,LIM.campoDesc)};
           var f=String(x.formula||'').trim().slice(0,LIM.formula);if(f)y.formula=f;
