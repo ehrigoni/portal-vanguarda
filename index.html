@@ -96,6 +96,7 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 #calc .bones li.head-bone .v{color:var(--amber);font-size:34px;font-weight:600}
 #calc .bones li.head-bone .v-in{color:var(--amber)}
 #calc .bones li.head-bone:hover,#calc .bones li.head-bone:focus-visible{border-color:var(--amber);box-shadow:0 0 0 3px color-mix(in srgb,var(--amber) 25%,transparent)}
+.bones-reset{margin-top:14px;width:100%}
 .bone-rng{width:100%;margin:6px 0 0;accent-color:var(--glow);cursor:pointer}
 .bones .pct{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px;color:var(--muted)}
 #calc .head-bone .pct{font-size:13px}
@@ -842,6 +843,7 @@ section.band#apoiadores > .in{padding-top:48px}
         <li data-bone-extra hidden><small>Extras</small><b>Custos relacionados à entrega do produto/valor</b><span class="v" data-k="extra"></span><span class="bar"><i data-b="extra"></i></span></li>
         <li><small>Bacia</small><b>Lucro</b><span class="v" data-k="lucro"></span><span class="bar"><i data-b="lucro"></i></span></li>
       </ul>
+      <button type="button" class="btn bones-reset" id="bones-reset">Restaurar valores padrão</button>
     </form>
   </div>
 </div></section>
@@ -1271,6 +1273,13 @@ section.band#apoiadores > .in{padding-top:48px}
   /* valores ajustados à mão nos cards (slider ou edição): só aquele card muda; mexer no card principal (Vendas) zera os ajustes */
   var AJ={};
   function valores(p){var r=calc(p);for(var k in AJ)r[k]=AJ[k];return r;}
+  /* ajuste num card que não é o principal: aquele card fica com o valor novo, os outros ficam como estão
+     e o card Vendas passa a ser a soma de todos (o preço acompanha, sem reajustar os demais) */
+  var CARDS_SOMA=['cst','insumos','seller','producer','delivery','lucro'];
+  function ajustarCard(k,n){var p=parseFloat(num.value)||0,r=valores(p);
+    CARDS_SOMA.forEach(function(c){AJ[c]=r[c];});AJ[k]=Math.round(n*100)/100;
+    var t=r.extra;CARDS_SOMA.forEach(function(c){t+=AJ[c];});t=Math.round(t*100)/100;
+    if(t>0){num.value=t;rng.value=t;render(t);}else render(p);}
   function render(p){
     if(!(p>0))return;
     ajustarLimite(p);
@@ -1314,10 +1323,10 @@ section.band#apoiadores > .in{padding-top:48px}
     if(bar)bar.replaceWith(sl);else li.appendChild(sl);
     sl.addEventListener('click',function(e){e.stopPropagation();});
     sl.addEventListener('keydown',function(e){e.stopPropagation();});
-    /* slider da cabeça muda o preço e reajusta todos os cards; slider de outro card muda só o valor (e o percentual) dele */
+    /* slider da cabeça muda o preço e reajusta todos os cards; slider de outro card muda só o valor dele, e a cabeça vira a soma dos cards */
     sl.addEventListener('input',function(){var n=parseFloat(sl.value);
       if(k==='venda'){if(n>0){num.value=n;num.dispatchEvent(new Event('input',{bubbles:true}));}}
-      else if(n>=0){AJ[k]=Math.round(n*100)/100;render(parseFloat(num.value));}});
+      else if(n>=0)ajustarCard(k,n);});
     function abrir(){
       if(v.querySelector('input'))return;
       var atual=valores(parseFloat(num.value)||0)[k],inp=document.createElement('input'),feito=false;
@@ -1327,11 +1336,12 @@ section.band#apoiadores > .in{padding-top:48px}
       v.textContent='';v.appendChild(inp);inp.focus();inp.select();
       function fechar(ok,teclado){
         if(feito)return;feito=true;
-        /* valor digitado: na cabeça muda o preço e reajusta todos; nos outros cards muda só aquele card */
+        /* valor digitado: na cabeça muda o preço e reajusta todos; nos outros cards muda só aquele card e a cabeça vira a soma */
         var n=lerValor(inp.value),p=ok&&n>=0&&k==='venda'?n:NaN;
         v.textContent='';
         if(p>0){p=Math.max(1,Math.round(p*100)/100);num.value=p;num.dispatchEvent(new Event('input',{bubbles:true}));}
-        else{if(ok&&n>=0&&k!=='venda')AJ[k]=Math.round(n*100)/100;render(parseFloat(num.value));}
+        else if(ok&&n>=0&&k!=='venda')ajustarCard(k,n);
+        else render(parseFloat(num.value));
         if(teclado)li.focus();
       }
       inp.addEventListener('keydown',function(e){e.stopPropagation();if(e.key==='Enter'){e.preventDefault();fechar(true,true);}else if(e.key==='Escape'){e.preventDefault();fechar(false,true);}});
@@ -1378,6 +1388,10 @@ section.band#apoiadores > .in{padding-top:48px}
   window.vgSimCarregar=function(){var p=parseFloat(num.value);if(!(p>0)){p=15;num.value=p;}
     AJ={};ajustarLimite(p);rng.value=p;render(p);custos();};
   window.addEventListener('pageshow',function(){window.vgSimCarregar();});
+  /* restaurar valores padrão: volta o preço ao valor inicial do simulador e desfaz os ajustes feitos nos cards */
+  var reset=document.getElementById('bones-reset');
+  if(reset)reset.addEventListener('click',function(){var p=parseFloat(num.defaultValue)||15;AJ={};num.value=p;rng.max=200;ajustarLimite(p);rng.value=p;
+    document.querySelectorAll('.bone-rng').forEach(function(sl){if(sl.dataset.k!=='cst')sl.max=rng.max;});render(p);});
   /* cards do raio X do preço: custo total e meta também são editáveis; o novo valor é distribuído
      proporcionalmente entre os campos em reais (o número de pessoas fica como está) */
   function aplicarCusto(alvo,atual){
