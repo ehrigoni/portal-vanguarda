@@ -10,15 +10,16 @@ O site guarda as contas de vanguardistas e apoiadores no Supabase. Enquanto as c
 4. Em **Project Settings > API**, copie a **Project URL** e a chave **anon public**.
 5. No `index.html`, preencha `SUPABASE_URL` e `SUPABASE_ANON_KEY` (a chave anon é pública, pode ficar no site).
 6. Painel do apoiador: em **SQL Editor > New query**, cole o conteúdo de `painel.sql` e clique em **Run**. Pode rodar de novo; a única coisa que ele apaga é a tabela antiga `atividades`. Enquanto isso não for feito, o painel guarda perfil e selos só no navegador e mostra os grupos como "em breve".
-7. Registro dos apoios: em **Project Settings > API Keys**, copie a chave **service_role** (ou a **secret key**) e cole na Vercel como `SUPABASE_SERVICE_ROLE_KEY` (Production). Essa chave é secreta: só na Vercel, nunca no código. Depois, faça um redeploy.
+7. Novo fluxo do site (Minha conta, cadastro mais curto): em **SQL Editor > New query**, cole o conteúdo de `fluxo-2026-11.sql` e clique em **Run**. Ele deixa o CPF/CNPJ opcional para vanguardistas (continua obrigatório para apoiador), copia porte e setor do painel para o perfil e tira o filtro por CPF/CNPJ dos grupos. Pode rodar de novo; não apaga nada. Quem instala do zero e roda o `schema.sql` e o `painel.sql` atuais já fica com essas mudanças.
+8. Registro dos apoios: em **Project Settings > API Keys**, copie a chave **service_role** (ou a **secret key**) e cole na Vercel como `SUPABASE_SERVICE_ROLE_KEY` (Production). Essa chave é secreta: só na Vercel, nunca no código. Depois, faça um redeploy.
 
 ## Onde ficam os dados
 
-- Tabela `perfis`: tipo (vanguardista ou apoiador), nome, celular, e-mail, CPF ou CNPJ, CEP, rua, bairro, número, complemento, cidade e estado. Ao mudar o `schema.sql`, rode-o de novo no SQL Editor (não apaga dados). Vanguardistas também podem informar, de forma opcional, porte, tipo de negócio e faixa de faturamento. Cada pessoa só lê e altera o próprio perfil.
+- Tabela `perfis`: tipo (vanguardista ou apoiador), nome, celular, e-mail, CPF ou CNPJ, CEP, rua, bairro, número, complemento, cidade e estado. CPF/CNPJ e endereço são opcionais para vanguardista e obrigatórios para apoiador (o Apoiar exige tudo na hora do apoio, para a nota fiscal). Ao mudar o `schema.sql`, rode-o de novo no SQL Editor (não apaga dados). Porte, tipo de negócio e faixa de faturamento (opcionais) ficam só aqui e são preenchidos em Minha conta > Meu negócio, por vanguardistas e apoiadores. Cada pessoa só lê e altera o próprio perfil.
 - As senhas ficam no Supabase Auth, nunca na tabela.
-- Tabela `apoiador_perfil`: marca, número de apadrinhados, porte, setor, objetivos e selos escolhidos pelo apoiador (usados na recomendação de selos e no material de divulgação). Cada apoiador só lê e altera o próprio.
+- Tabela `apoiador_perfil`: marca, número de apadrinhados, objetivos e selos (porte e setor ficam como cópia do perfil, para a recomendação de selos) escolhidos pelo apoiador (usados na recomendação de selos e no material de divulgação). Cada apoiador só lê e altera o próprio.
 - Tabela `atividades`: desativada. O `painel.sql` apaga a tabela e o site não registra mais o uso dos simuladores (LGPD, minimização de dados).
-- Tabela `grupos`: filtros (estado, cidade, CPF ou CNPJ) que o apoiador escolheu acompanhar. Nunca guarda uma lista de pessoas.
+- Tabela `grupos`: filtros (estado e cidade) que o apoiador escolheu acompanhar. O antigo filtro por CPF ou CNPJ é ignorado, porque o documento ficou opcional no cadastro. Nunca guarda uma lista de pessoas.
 - Tabela `apoios`: um registro por pagamento de apoio confirmado no Asaas (CPF/CNPJ, celular e e-mail do cliente, vanguardistas, meses, valor, data, ambiente sandbox ou produção, estorno). Quem grava é o webhook `api/asaas/webhook.js`, com a chave de serviço; ninguém lê pelo site. O apoio só conta no painel da conta com o mesmo CPF/CNPJ e o mesmo celular ou e-mail, para ninguém ver o apoio de outra empresa só por saber o CNPJ dela.
 - Tabela `apoio_vanguardistas`: liga cada apoio aos vanguardistas cadastrados que ele custeia. A função `alocar_apoios` distribui as vagas dando preferência a quem tem menos apoios, e roda a cada pagamento e a cada novo vanguardista.
 - Função `impacto_apoiador`: números do painel e do material, calculados a partir dos apoios do CPF/CNPJ do apoiador. Regiões vêm dos vanguardistas custeados: estado só com 5 ou mais vanguardistas, cidade só com 5 ou mais; o resto vira "outras regiões".
@@ -26,6 +27,11 @@ O site guarda as contas de vanguardistas e apoiadores no Supabase. Enquanto as c
 - Selo Powered by: além do apoio confirmado, só pode ser usado por quem pagou pelo menos 180 meses de uso do portal (vanguardistas × meses, somando os apoios pagos e não estornados, com qualquer número de vanguardistas; campo `meses_vanguardista` do impacto). Antes disso o painel mostra o selo bloqueado, com a exigência, e ele não entra no material; a página pública do selo também o esconde.
 - Página pública do selo: cada apoiador tem um `codigo` em `apoiador_perfil`. O link do material (`/?selo=codigo`) abre a página do selo com os números atuais (função `selo_publico`), conta visitas por dia (`selo_visitas`) e grava em `perfis.indicado_por` quem se cadastrou vindo dele.
 - Funções `contar_grupo` e `painel_grupo`: devolvem só o total do grupo e a distribuição por porte, tipo de negócio e faixa de faturamento. Nada sai quando o grupo tem menos de 5 vanguardistas, ou quando, tirando um filtro, a diferença entre os grupos isolaria de 1 a 4 pessoas. O apoiador não tem acesso de leitura a `perfis` de vanguardistas.
+
+## CPF/CNPJ repetido e busca por CNPJ
+
+- O banco aceita o mesmo CPF/CNPJ em mais de uma conta (só celular e e-mail são únicos). Quando o CPF/CNPJ digitado no cadastro, no Apoiar ou em Dados da conta já consta na base, o site avisa e pergunta se a pessoa quer continuar assim mesmo, em vez de mostrar erro. A função `dados_em_uso` só diz que o número existe, nunca de quem é.
+- Ao digitar um CNPJ válido, o site busca os dados públicos da empresa na Receita Federal pela BrasilAPI (`brasilapi.com.br/api/cnpj/v1/`), direto do navegador, e completa nome (no Apoiar) e endereço quando CEP e rua estão vazios. Não usa os cadastros do portal, que têm dados pessoais de outras contas.
 
 ## Privacidade dos vanguardistas (LGPD)
 
@@ -37,8 +43,8 @@ O site guarda as contas de vanguardistas e apoiadores no Supabase. Enquanto as c
 
 ## Redirecionamento
 
-- Vanguardista: entra direto na área de simuladores (`#simuladores`).
-- Apoiador: entra direto no painel do apoiador (`#painel`): selos sociais recomendados, material de divulgação e grupos de vanguardistas.
+- Vanguardista: entra direto na área de simuladores (`#simuladores`). Logo depois de criar a conta, vai para Minha conta > Meu negócio.
+- Apoiador: entra direto em Minha conta (`#painel`), na aba Selos e divulgação. As outras abas são Meu negócio, Vanguardistas (grupos) e Dados da conta.
 
 ## Versão do Supabase
 
@@ -46,7 +52,7 @@ Testado no Supabase atual (imagem `supabase/postgres:17.12.0.002`, Postgres 17.1
 
 ## Excluir a própria conta
 
-O botão **Excluir minha conta** (abas Vanguardistas e Apoiar, só para quem está logado) chama a função `excluir_minha_conta()` do `painel.sql`. Ela só age sobre a conta logada (`auth.uid()`), sem receber nenhum id do site, e só a role `authenticated` pode executá-la. Ela apaga:
+O botão **Excluir minha conta** (Minha conta > Dados da conta, só para quem está logado) chama a função `excluir_minha_conta()` do `painel.sql`. Ela só age sobre a conta logada (`auth.uid()`), sem receber nenhum id do site, e só a role `authenticated` pode executá-la. Ela apaga:
 
 - os apoios da pessoa (mesmo CPF/CNPJ e mesmo celular ou e-mail, a regra do painel) e as visitas do selo dela;
 - o usuário em `auth.users`, o que leva em cascata `perfis`, `apoiador_perfil`, `grupos` e os vínculos em `apoio_vanguardistas`.
