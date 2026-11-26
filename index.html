@@ -85,6 +85,9 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 .bones .bar i{display:block;height:100%;background:var(--glow)}
 .bones li.head-bone{border-color:var(--glow)}
 .bones li.head-bone .bar i{background:var(--amber)}
+.bones li[data-edit]{cursor:pointer;transition:border-color .15s}
+.bones li[data-edit]:hover,.bones li[data-edit]:focus-visible{border-color:var(--glow);outline:none}
+.bones .v-in{width:100%;min-width:0;box-sizing:border-box;background:var(--bg);border:1px solid var(--glow);border-radius:6px;color:var(--glow);font:inherit;padding:2px 8px}
 
 /* raio x do preço */
 .pr{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:24px;align-items:start}
@@ -788,7 +791,7 @@ section.band#apoiadores > .in{padding-top:48px}
       <div class="price"><span>R$</span><input id="preco" type="number" min="1" max="100000" step="0.5" value="15" inputmode="decimal"></div>
       <input id="preco-faixa" type="range" min="1" max="200" step="0.5" value="15" aria-label="Ajustar preço">
       <div class="fields sim-extras" data-extras="raio-x" hidden></div>
-      <div class="rule">
+      <div class="rule" hidden>
         <span>Valor sem lucro = <code>preço × 0,9</code> (lucro de 10%)</span>
         <span>Insumos = <code>valor sem lucro ÷ 1,5</code></span>
         <span>Cada comissão = <code>(valor sem lucro − insumos) ÷ 3</code></span>
@@ -1225,6 +1228,33 @@ section.band#apoiadores > .in{padding-top:48px}
   }
   num.addEventListener('input',function(){var p=parseFloat(num.value);if(p>0){if(p<=200)rng.value=p;render(p);}});
   rng.addEventListener('input',function(){num.value=rng.value;render(parseFloat(rng.value));});
+  /* cards do raio X da venda: clicar abre a edição do valor; ao terminar, recalcula o preço */
+  var INV={venda:function(v){return v;},insumos:function(v){return v/0.6;},com:function(v){return v/0.1;},lucro:function(v){return (v+extras('calc'))/0.1;}};
+  function lerValor(t){t=String(t).replace(/R\$|\s/g,'');if(t.indexOf(',')>=0)t=t.replace(/\./g,'').replace(',','.');return parseFloat(t);}
+  document.querySelectorAll('#bones li').forEach(function(li){
+    var v=li.querySelector('.v'),k=v&&v.dataset.k;if(!INV[k])return;
+    li.setAttribute('data-edit','');li.tabIndex=0;li.setAttribute('role','button');li.title='Clique para alterar o valor';
+    function abrir(){
+      if(v.querySelector('input'))return;
+      var atual=calc(parseFloat(num.value)||0)[k],inp=document.createElement('input'),feito=false;
+      inp.type='text';inp.inputMode='decimal';inp.className='v-in';inp.setAttribute('enterkeyhint','done');
+      inp.setAttribute('aria-label',li.querySelector('b').textContent);
+      inp.value=(Math.round(atual*100)/100).toFixed(2).replace('.',',');
+      v.textContent='';v.appendChild(inp);inp.focus();inp.select();
+      function fechar(ok,teclado){
+        if(feito)return;feito=true;
+        var n=lerValor(inp.value),p=ok&&n>=0?INV[k](n):NaN;
+        if(p>0){p=Math.min(100000,Math.max(1,Math.round(p*100)/100));num.value=p;num.dispatchEvent(new Event('input',{bubbles:true}));}
+        else render(parseFloat(num.value));
+        if(teclado)li.focus();
+      }
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();fechar(true,true);}else if(e.key==='Escape'){e.preventDefault();fechar(false,true);}});
+      inp.addEventListener('blur',function(){fechar(true);});
+      inp.addEventListener('click',function(e){e.stopPropagation();});
+    }
+    li.addEventListener('click',abrir);
+    li.addEventListener('keydown',function(e){if(e.target===li&&(e.key==='Enter'||e.key===' ')){e.preventDefault();abrir();}});
+  });
   document.querySelectorAll('.copy[data-copy]').forEach(function(b){b.addEventListener('click',function(){
     var el=document.getElementById(b.dataset.copy),txt=el.textContent;
     function sel(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selecionado';}
