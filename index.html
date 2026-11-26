@@ -272,7 +272,34 @@ details.opcional summary{cursor:pointer;font-size:15px;color:var(--muted)}
 details.opcional[open] summary{margin-bottom:12px}
 .selo .divulgar{margin-top:auto;align-self:center;min-width:160px;justify-content:center} /* Divulgar centralizado, no pé do card, na mesma linha em todos */
 .selo.lib{display:flex;flex-direction:column;border-color:var(--glow);background:var(--panel);box-shadow:0 0 0 1px var(--glow),0 0 22px color-mix(in srgb,var(--glow) 22%,transparent)}
-.selo.lib.on{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber),0 0 22px color-mix(in srgb,var(--amber) 22%,transparent)}
+.selo.lib{box-shadow:0 0 0 1px color-mix(in srgb,var(--glow) 55%,transparent)} /* desbloqueado: contorno azul claro */
+.selo.lib.on{border-color:var(--glow);background:color-mix(in srgb,var(--glow) 16%,var(--panel));box-shadow:0 0 0 2px var(--glow),0 0 26px color-mix(in srgb,var(--glow) 40%,transparent)} /* selecionado para divulgar: azul */
+.selo.lib.on .selo-badge{border-color:var(--glow);background:var(--glow);color:var(--ink)}
+.selo.lib .tag.sel{border-color:var(--glow)!important;color:var(--ink)!important;background:var(--glow)!important;font-weight:600}
+.selo.lib.on .divulgar{background:var(--glow);border-color:var(--glow);color:var(--ink);font-weight:600}
+.sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* Meu negócio e Intenções: textos, campos e botão centralizados */
+#pn-perfil .head,#pn-intencao .head{text-align:center;margin-inline:auto}
+#pn-form-perfil,#pn-form-obj{max-width:760px;margin-inline:auto;width:100%}
+#pn-form-obj .fields{grid-template-columns:1fr;width:100%}
+#pn-perfil .chips,#pn-intencao .chips{justify-content:center}
+#pn-perfil .fields .chips legend{text-align:center}
+#pn-intencao .pn-acts{justify-content:center;flex-direction:column;align-items:center}
+#pn-perfil .pn-acts{align-items:center}
+/* Intenções: cada opção numa pílula alta, sem letras sobrepostas */
+#pn-obj{width:100%;box-sizing:border-box;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;padding:14px}
+#pn-obj label{display:flex!important;align-items:center;gap:10px;min-height:56px;padding:12px 14px!important;border:1px solid var(--line)!important;border-radius:12px;background:var(--bg)!important;line-height:1.35}
+#pn-obj label:has(input:checked){border-color:var(--glow)!important;background:color-mix(in srgb,var(--glow) 14%,var(--bg))!important}
+#pn-obj input{position:static!important;opacity:1!important;pointer-events:auto!important;width:18px;height:18px;flex:none;accent-color:var(--glow)}
+#pn-obj input+span,#pn-obj input:checked+span{font-family:var(--body)!important;font-size:15px!important;padding:0!important;border:0!important;background:none!important;color:var(--fg)!important;border-radius:0}
+/* Apadrinhar no painel: Durante mais alto e conteúdo centralizado */
+#pn-apoiar .head{text-align:center;margin-inline:auto}
+#pn-apoiar-form,#pn-apoiar .pn-acts{max-width:760px;margin-inline:auto;justify-content:center}
+#pn-apoiar #ap-periodo{padding:14px;gap:10px;justify-content:center}
+#pn-apoiar #ap-periodo legend{text-align:center}
+#pn-apoiar #ap-periodo input[type=radio]+span{display:inline-block;padding:11px 16px;line-height:1.35;white-space:normal}
+#pn-apoiar .fields-tit,#pn-apoiar .sum{text-align:center}
+#pn-apoiar form .actions,#pn-apoiar form .pn-acts{justify-content:center}
 .selo .tag.lib{border-color:var(--glow);color:var(--bg);background:var(--glow);font-weight:600}
 #pn-perfil .pn-acts{justify-content:center;flex-direction:column}
 #pn-impacto .kpi{text-align:center;justify-items:center;align-content:center}
@@ -1090,14 +1117,6 @@ details.opcional[open] summary{margin-bottom:12px}
       </fieldset>
       <label for="pn-setor"><span>Tipo de negócio</span><select id="pn-setor"><option value="">Prefiro não informar</option><option value="comercio">Comércio e varejo</option><option value="alimentacao">Alimentação</option><option value="servicos">Serviços</option><option value="tecnologia">Tecnologia</option><option value="industria">Indústria</option><option value="educacao">Educação</option><option value="saude">Saúde e bem-estar</option><option value="financas">Finanças, contabilidade e seguros</option><option value="construcao">Construção e imóveis</option><option value="outro">Outro</option></select></label>
       <label for="pn-fat"><span>Faturamento mensal</span><select id="pn-fat"><option value="">Prefiro não informar</option><option value="ate5k">Até R$ 5 mil</option><option value="5a20k">De R$ 5 mil a R$ 20 mil</option><option value="20a50k">De R$ 20 mil a R$ 50 mil</option><option value="50a100k">De R$ 50 mil a R$ 100 mil</option><option value="acima100k">Acima de R$ 100 mil</option></select></label>
-      <fieldset class="chips pn-checks wide" id="pn-obj" data-so-apoiador><legend>O que você quer com o apoio (marque quantos quiser)</legend>
-        <label><input type="checkbox" value="redes"><span>Mostrar impacto nas redes sociais</span></label>
-        <label><input type="checkbox" value="local"><span>Fortalecer a marca no bairro e na cidade</span></label>
-        <label><input type="checkbox" value="esg"><span>Relatório ESG ou de sustentabilidade</span></label>
-        <label><input type="checkbox" value="educacao"><span>Apoiar a educação empreendedora</span></label>
-        <label><input type="checkbox" value="comunidade"><span>Apoiar comunidades vulneráveis</span></label>
-        <label><input type="checkbox" value="clientes"><span>Atrair clientes e parceiros</span></label>
-      </fieldset>
     </div>
     <div class="pn-acts"><button class="btn go" type="submit" id="pn-perfil-btn">Salvar</button><span class="note" id="pn-perfil-msg" aria-live="polite"></span></div>
   </form>
@@ -1109,6 +1128,22 @@ details.opcional[open] summary{margin-bottom:12px}
   <p class="notice" id="pn-selos-bloq" hidden><b>Bloqueados</b><span>Todos os selos ficam liberados depois de pelo menos 1 apoio pago (e não estornado). Até lá, nenhum selo pode ser selecionado nem entra no material de divulgação. <a href="#pn-apoiar">Apadrinhar vanguardistas</a></span></p>
   <div class="selos" id="pn-lista-selos"></div>
   <div class="pn-acts"><span class="note" id="pn-selos-msg" aria-live="polite"></span></div>
+</div></section>
+<section class="band" id="pn-intencao"><div class="in">
+  <div class="head"><p class="eyebrow">Suas intenções</p><h2>O que você quer com o apoio?</h2><p class="lede">Marque quantas quiser. Ao salvar, o portal reordena os selos acima e destaca os que mais combinam com você.</p></div>
+  <form class="pn-form" id="pn-form-obj" novalidate>
+    <div class="fields">
+      <fieldset class="chips pn-checks wide" id="pn-obj"><legend class="sr">O que você quer com o apoio</legend>
+        <label><input type="checkbox" value="redes"><span>Mostrar impacto nas redes sociais</span></label>
+        <label><input type="checkbox" value="local"><span>Fortalecer a marca no bairro e na cidade</span></label>
+        <label><input type="checkbox" value="esg"><span>Relatório ESG ou de sustentabilidade</span></label>
+        <label><input type="checkbox" value="educacao"><span>Apoiar a educação empreendedora</span></label>
+        <label><input type="checkbox" value="comunidade"><span>Apoiar comunidades vulneráveis</span></label>
+        <label><input type="checkbox" value="clientes"><span>Atrair clientes e parceiros</span></label>
+      </fieldset>
+    </div>
+    <div class="pn-acts"><button class="btn go" type="submit" id="pn-obj-btn">Salvar e ver selos recomendados</button><span class="note" id="pn-obj-msg" aria-live="polite"></span></div>
+  </form>
 </div></section>
 <section class="band" id="pn-material"><div class="in">
   <div class="head"><p class="eyebrow">Material de divulgação</p><h2>Divulgue no LinkedIn, Instagram ou WhatsApp</h2><p class="lede">Escolha um dos selos selecionados e o canal. O portal gera a imagem e o texto com os números do seu impacto, que mudam a cada novo apadrinhamento e conforme o desempenho dos vanguardistas, e com o convite para www.vanguarda.social.br.</p></div>
@@ -2064,20 +2099,26 @@ details.opcional[open] summary{margin-bottom:12px}
     $('pn-setor').value=a.setor||'';$('pn-fat').value=a.faturamento||'';
     document.querySelectorAll('[data-so-apoiador]').forEach(function(el){el.hidden=!apoiador();});
     $('pn-perfil-lede').textContent=apoiador()?'Com essas respostas o portal indica os selos mais adequados para você. Leva menos de um minuto e dá para mudar quando quiser.':'Porte, tipo de negócio e faturamento entram nos números da comunidade só somados, em grupos de pelo menos 5 pessoas, sem identificar ninguém. Tudo é opcional e dá para mudar quando quiser.';
-    $('pn-perfil-btn').textContent=apoiador()?'Salvar e ver selos recomendados':'Salvar';
     document.querySelectorAll('#pn-obj input').forEach(function(c){c.checked=(a.objetivos||[]).indexOf(c.value)>=0;});
   }
   function lerPerfil(){
     var a=st.ap;a.marca=$('pn-marca').value.trim();
     var pr=document.querySelector('input[name="pn-porte"]:checked');a.porte=pr?pr.value:'';a.setor=$('pn-setor').value;a.faturamento=$('pn-fat').value;
-    a.objetivos=[].slice.call(document.querySelectorAll('#pn-obj input:checked')).map(function(c){return c.value;});
   }
+  function lerObj(){st.ap.objetivos=[].slice.call(document.querySelectorAll('#pn-obj input:checked')).map(function(c){return c.value;});}
+  /* Meu negócio: salva e, para apoiador, segue para os selos (já reordenados pelo porte e tipo de negócio) */
   $('pn-form-perfil').addEventListener('submit',function(e){
     e.preventDefault();lerPerfil();var msg=$('pn-perfil-msg');msg.textContent='Salvando…';
     var ap=apoiador();
-    if(ap){var rec=recomendados(st.ap).top.filter(liberado);if(!(st.ap.selos||[]).length&&rec.length)st.ap.selos=rec.slice(0,1);}
     Promise.all([salvarNegocio(),salvar()]).then(function(rs){var ok=rs[0].ok&&rs[1].ok;msg.textContent=ok?(rs[1].local?'Guardado neste navegador.':'Salvo.'):'Não foi possível salvar agora. Tente de novo.';});
     if(ap){desenharSelos();material();aba('selos');$('pn-selos').scrollIntoView({block:'start'});}
+  });
+  /* Intenções (aba Selos): salva os objetivos, recalcula as recomendações e volta para a lista de selos */
+  $('pn-form-obj').addEventListener('submit',function(e){
+    e.preventDefault();lerObj();var msg=$('pn-obj-msg');msg.textContent='Salvando…';
+    var rec=recomendados(st.ap).top.filter(liberado);if(!(st.ap.selos||[]).length&&rec.length)st.ap.selos=rec.slice(0,1);
+    salvar().then(function(r){msg.textContent=r.ok?(r.local?'Guardado neste navegador. Selos atualizados.':'Salvo. Selos atualizados.'):'Não foi possível salvar agora. Tente de novo.';});
+    desenharSelos();material();$('pn-selos').scrollIntoView({block:'start'});
   });
 
   /* 2. selos */
@@ -2100,11 +2141,11 @@ details.opcional[open] summary{margin-bottom:12px}
       return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':' lib')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
         '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
         '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'<span class="tag lib">Desbloqueado</span>')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
-        '<p>'+esc(s.desc)+'</p>'+condHtml(s,bloq?faltaSelo(s):'Cumprida.')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+
+        '<p>'+esc(s.desc)+'</p>'+(bloq?condHtml(s,faltaSelo(s)):'')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+
         (bloq?'':'<button type="button" class="btn divulgar'+(on?'':' go')+'" data-divulgar="'+s.id+'">Divulgar</button>')+'</label>';
     }).join('');
     $('pn-selos-bloq').hidden=temApoio();
-    $('pn-selos-msg').textContent=top.length?'':'Preencha o passo 1 para ver os selos recomendados para você.';
+    $('pn-selos-msg').textContent=top.length?'':'Preencha Meu negócio e as suas intenções logo abaixo para ver os selos recomendados para você.';
   }
   /* Divulgar: seleciona o selo (se ainda não estiver) e abre o material já com ele */
   $('pn-lista-selos').addEventListener('click',function(e){
@@ -2482,7 +2523,7 @@ details.opcional[open] summary{margin-bottom:12px}
       $('sp-impacto').hidden=false;$('sp-erro').hidden=true;
       $('sp-selos').innerHTML=(d.selos||[]).filter(function(id){return SELO[id];}).map(function(id){var s=SELO[id];
         return '<div class="selo on"><div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
-          '<div class="tags"><span class="tag">'+esc(s.cat)+'</span></div><p>'+esc(m)+' '+esc(s.frase)+'.</p>'+condHtml(s,'Cumprida.')+'</div>';}).join('');
+          '<div class="tags"><span class="tag">'+esc(s.cat)+'</span></div><p>'+esc(m)+' '+esc(s.frase)+'.</p></div>';}).join('');
     });
   }
   function noSelo(){return location.hash==='#selo';}
