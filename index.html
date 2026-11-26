@@ -1254,8 +1254,9 @@ section.band#apoiadores > .in{padding-top:48px}
   function extras(form){var t=0;document.querySelectorAll('#'+form+' [data-extra] input').forEach(function(i){if(CODS_CARDS[i.dataset.cod])return;var n=parseFloat(i.value);if(n>0)t+=n;});return t;}
   /* passo a passo do simulador 1 (Administrador > Simuladores), com price = preço do card Cabeça:
      cstdelivery = último dígito do preço; profit = (price − cstdelivery) × 0,1;
-     gaindelivery = gainseller = gainproducer = profit; insumos = price − profit − os três ganhos */
-  function calc(p,ex){var cst=Math.floor(p+1e-9)%10,pr=(p-cst)*0.1,e=ex!=null?ex:extras('calc'),ins=p-4*pr;
+     gaindelivery = gainseller = gainproducer = profit; insumos = price − cstdelivery − profit − os três ganhos
+     (assim os cards somam o preço da venda) */
+  function calc(p,ex){var cst=Math.floor(p+1e-9)%10,pr=(p-cst)*0.1,e=ex!=null?ex:extras('calc'),ins=p-cst-4*pr;
     return{venda:p,cst:cst,lucro:pr-e,insumos:ins,seller:pr,producer:pr,delivery:pr,extra:e};}
   /* sliders sem teto fixo: quando o preço chega perto do limite, o limite dobra (todos os sliders juntos); mínimo de R$ 200 */
   function ajustarLimite(p){var m=parseFloat(rng.max)||200,m0=m;while(p>=m*0.95)m*=2;
