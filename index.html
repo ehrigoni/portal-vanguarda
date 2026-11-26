@@ -298,6 +298,18 @@ details.opcional[open] summary{margin-bottom:12px}
 #pn-apoiar #ap-periodo input[type=radio]+span{display:inline-block;padding:11px 16px;line-height:1.35;white-space:normal}
 #pn-apoiar .fields-tit,#pn-apoiar .sum{text-align:center}
 #pn-apoiar form .actions,#pn-apoiar form .pn-acts{justify-content:center}
+/* Apadrinhar no painel: formulário ocupando toda a largura central, campos maiores e centralizados, botões no centro */
+#pn-apoiar .signup{grid-template-columns:1fr;max-width:760px;margin-inline:auto}
+#pn-apoiar .signup form{width:100%}
+#pn-apoiar .fields label,#pn-apoiar .fields fieldset{text-align:center}
+#pn-apoiar .fields label>span{text-align:center}
+#pn-apoiar .fields input,#pn-apoiar .fields select{text-align:center;text-align-last:center;font-size:18px;min-height:30px}
+#pn-apoiar .fields label{padding:14px 16px}
+#pn-apoiar .guardar{justify-content:center}
+#pn-apoiar form>.btn,#pn-apoiar #ap-btn-so{justify-self:center;width:min(100%,360px);justify-content:center}
+#pn-apoiar>.in>.pn-acts{display:flex;justify-content:center}
+/* Minha conta: Apadrinhar vanguardistas e Usar os simuladores centralizados */
+[data-view="painel"] .pagehead .in{text-align:center}
 #pn-perfil .pn-acts{justify-content:center;flex-direction:column}
 #pn-impacto .kpi{text-align:center;justify-items:center;align-content:center}
 #como-funciona-vanguardistas .head h2{text-wrap:wrap}
@@ -513,7 +525,7 @@ details.opcional[open] summary{margin-bottom:12px}
 .selo.dh .btn{margin-top:auto;align-self:stretch;padding:10px 14px;font-size:14px}
 /* botões do painel em linha, com a mesma largura e altura, ocupando a largura do quadro */
 [data-view="painel"] .pagehead .pn-acts,.mat-ctl .pn-acts{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:10px;align-items:stretch}
-[data-view="painel"] .pagehead .pn-acts{max-width:720px}
+[data-view="painel"] .pagehead .pn-acts{max-width:720px;margin-inline:auto}
 [data-view="painel"] .pagehead .pn-acts .btn,.mat-ctl .pn-acts .btn{width:100%;min-height:46px;white-space:normal;text-align:center;line-height:1.25;padding:10px 12px}
 @media (max-width:460px){[data-view="painel"] .pagehead .pn-acts .btn,.mat-ctl .pn-acts .btn{font-size:14px;padding:8px 8px}}
 .mat{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
