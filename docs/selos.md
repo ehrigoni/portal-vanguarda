@@ -169,3 +169,14 @@ A página pública do apoiador exibe os selos selecionados. Qualquer selo sem ap
 | **Parceiro ODS 10**                       | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas (desbloqueia seleção e geração) | Exige apoio ativo        |
 | **Tecnologia para o Bem**                 | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas                                                             | Exige apoio ativo        |
 | **Powered by**                            | 180 meses apadrinhados | Mínimo 180 meses pagos e confirmados no Asaas                                                       | Exige apoio ativo + meta |
+
+## Requisitos configuráveis (Administrador > Requisitos dos selos)
+
+Desde o `supabase/precos-selos-2026-11.sql`, os requisitos de cada selo ficam em `config_site.selos` e são editados na aba Administrador. Todo selo continua exigindo pelo menos 1 apoio pago e não estornado; somam-se a isso, por selo:
+
+- valor total investido (R$, soma dos apoios);
+- vanguardistas apadrinhados (soma dos apoios);
+- convidados que se cadastraram pelo link do selo do apoiador;
+- meses de uso apadrinhados (vanguardistas × meses; o Powered by começa com 180).
+
+O painel mostra o texto da condição só nos selos bloqueados, com o quanto falta. Abaixo de 5 convidados, o número exato não aparece (LGPD). O banco confere os mesmos requisitos em `_selos_liberados`, ao aceitar um selo novo e ao mostrar a página pública.
