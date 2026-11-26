@@ -97,6 +97,8 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 #calc .bones li.head-bone .v-in{color:var(--amber)}
 #calc .bones li.head-bone:hover,#calc .bones li.head-bone:focus-visible{border-color:var(--amber);box-shadow:0 0 0 3px color-mix(in srgb,var(--amber) 25%,transparent)}
 .bone-rng{width:100%;margin:6px 0 0;accent-color:var(--glow);cursor:pointer}
+.bones .pct{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px;color:var(--muted)}
+#calc .head-bone .pct{font-size:13px}
 #calc .head-bone .bone-rng{accent-color:var(--amber)}
 #raio-x-preco .pr{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;align-items:stretch;grid-auto-flow:row dense;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
 #raio-x-preco .pr-in,#raio-x-preco .pr-in fieldset,#raio-x-preco .pr-in .fields,#raio-x-preco .pr-out{display:contents}
@@ -1246,6 +1248,7 @@ section.band#apoiadores > .in{padding-top:48px}
 <script>
 (function(){
   var fmt=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+  var fmtPct=new Intl.NumberFormat('pt-BR',{style:'percent',maximumFractionDigits:1});
   var num=document.getElementById('preco'), rng=document.getElementById('preco-faixa');
   var svgV=document.querySelectorAll('.rx .lbl-v'), svgP=document.getElementById('rx-price');
   /* campos acrescentados pelo administrador (aba Administrador > Simuladores) */
@@ -1259,17 +1262,21 @@ section.band#apoiadores > .in{padding-top:48px}
   function calc(p,ex){var cst=Math.floor(p+1e-9)%10,pr=(p-cst)*0.1,e=ex!=null?ex:extras('calc'),ins=p-cst-4*pr;
     return{venda:p,cst:cst,lucro:pr-e,insumos:ins,seller:pr,producer:pr,delivery:pr,extra:e};}
   /* sliders sem teto fixo: quando o preço chega perto do limite, o limite dobra (todos os sliders juntos); mínimo de R$ 200 */
-  function ajustarLimite(p){var m=parseFloat(rng.max)||200,m0=m;while(p>=m*0.95)m*=2;
+  /* cada slider tem o próprio limite (os dos cards são independentes do da cabeça), calculado pelo próprio valor */
+  function limiteDe(sl,val){var m=parseFloat(sl.max)||200,m0=m;while(val>=m*0.95)m*=2;
     /* fora do arraste (valor digitado num card), o limite volta a encolher para o slider não ficar grande demais */
-    var ae=document.activeElement;if(!(ae&&ae.type==='range'))while(m>200&&p<m*0.25)m/=2;
-    if(m!==m0)[rng].concat([].slice.call(document.querySelectorAll('.bone-rng'))).forEach(function(sl){sl.max=m;});}
+    var ae=document.activeElement;if(!(ae&&ae.type==='range'))while(m>200&&val<m*0.25)m/=2;
+    if(m!==m0)sl.max=m;}
+  function ajustarLimite(p){limiteDe(rng,p);var h=document.querySelector('.bone-rng[data-k="venda"]');if(h)h.max=rng.max;}
   function render(p){
     if(!(p>0))return;
     ajustarLimite(p);
     var r=calc(p);
     document.querySelectorAll('[data-k]').forEach(function(el){if(!el.querySelector('input'))el.textContent=fmt.format(r[el.dataset.k]);});
     document.querySelectorAll('[data-b]').forEach(function(el){el.style.width=Math.max(0,r[el.dataset.b]/p*100).toFixed(1)+'%';});
-    document.querySelectorAll('.bone-rng').forEach(function(sl){if(document.activeElement!==sl)sl.value=Math.min(parseFloat(sl.max),Math.max(parseFloat(sl.min),p));});
+    /* cada slider de card mostra o valor do próprio card (independente dos outros); o percentual é sobre o preço da venda */
+    document.querySelectorAll('.bone-rng').forEach(function(sl){if(sl.dataset.k!=='venda'&&sl.dataset.k!=='cst')limiteDe(sl,r[sl.dataset.k]);if(document.activeElement!==sl)sl.value=Math.min(parseFloat(sl.max),Math.max(parseFloat(sl.min),r[sl.dataset.k]));});
+    document.querySelectorAll('[data-pk]').forEach(function(el){el.textContent=fmtPct.format(r[el.dataset.pk]/p)+' da venda';});
     var be=document.querySelector('[data-bone-extra]');if(be)be.hidden=!(r.extra>0);
     var order=[r.venda,r.insumos,r.seller,r.producer,r.delivery,r.lucro];
     svgV.forEach(function(t,k){if(order[k]!=null)t.textContent=fmt.format(order[k]);});
@@ -1294,14 +1301,20 @@ section.band#apoiadores > .in{padding-top:48px}
   document.querySelectorAll('#bones li').forEach(function(li){
     var v=li.querySelector('.v'),k=v&&v.dataset.k;if(!INV[k])return;
     li.setAttribute('data-edit','');li.tabIndex=0;li.setAttribute('role','button');li.title='Clique para alterar o valor';
-    /* slider do card: percorre os mesmos limites do slider da cabeça (preço) e mostra o valor do card */
+    /* percentual do card sobre o preço, entre o valor em R$ e o slider */
+    var pc=document.createElement('span');pc.className='pct';pc.dataset.pk=k;v.after(pc);
+    /* slider do card: independente, vai de 0 a um limite próprio (que cresce com o valor) e mostra o valor do próprio card;
+       arrastar define o valor desse card e o preço é recalculado a partir dele. O custo de entrega (último dígito) vai de 0 a 9 */
     var bar=li.querySelector('.bar'),sl=document.createElement('input');
-    sl.type='range';sl.className='bone-rng';sl.min=rng.min;sl.max=rng.max;sl.step=rng.step;sl.value=rng.value;
+    sl.type='range';sl.className='bone-rng';sl.dataset.k=k;sl.min=k==='venda'?rng.min:0;sl.max=k==='cst'?9:rng.max;sl.step=k==='venda'?rng.step:k==='cst'?1:0.01;sl.value=rng.value;
     sl.setAttribute('aria-label','Ajustar '+li.querySelector('b').textContent);
     if(bar)bar.replaceWith(sl);else li.appendChild(sl);
     sl.addEventListener('click',function(e){e.stopPropagation();});
     sl.addEventListener('keydown',function(e){e.stopPropagation();});
-    sl.addEventListener('input',function(){num.value=sl.value;num.dispatchEvent(new Event('input',{bubbles:true}));});
+    sl.addEventListener('input',function(){var n=parseFloat(sl.value),p=k==='venda'?n:INV[k](n);
+      if(p>0){num.value=Math.max(1,Math.round(p*100)/100);num.dispatchEvent(new Event('input',{bubbles:true}));}});
+    /* ao soltar, o slider encosta no valor que o card de fato ficou (o preço anda em centavos) */
+    sl.addEventListener('change',function(){var r=calc(parseFloat(num.value)||1);sl.value=Math.min(parseFloat(sl.max),Math.max(parseFloat(sl.min),r[k]));});
     function abrir(){
       if(v.querySelector('input'))return;
       var atual=calc(parseFloat(num.value)||0)[k],inp=document.createElement('input'),feito=false;
