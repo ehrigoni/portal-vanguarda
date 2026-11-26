@@ -822,7 +822,7 @@ section.band#apoiadores > .in{padding-top:48px}
   <div class="xr">
     <form class="calc" id="calc" onsubmit="return false">
       <label for="preco"><span class="sim-rot">Preço de venda</span></label>
-      <div class="price"><span>R$</span><input id="preco" type="number" min="1" max="100000" step="0.5" value="15" inputmode="decimal"></div>
+      <div class="price"><span>R$</span><input id="preco" type="number" min="1" step="0.5" value="15" inputmode="decimal"></div>
       <input id="preco-faixa" type="range" min="1" max="200" step="0.5" value="15" aria-label="Ajustar preço">
       <div class="fields sim-extras" data-extras="raio-x" hidden></div>
       <div class="rule" hidden>
@@ -1257,8 +1257,14 @@ section.band#apoiadores > .in{padding-top:48px}
      gaindelivery = gainseller = gainproducer = profit; insumos = price − profit − os três ganhos */
   function calc(p,ex){var cst=Math.floor(p+1e-9)%10,pr=(p-cst)*0.1,e=ex!=null?ex:extras('calc'),ins=p-4*pr;
     return{venda:p,cst:cst,lucro:pr-e,insumos:ins,seller:pr,producer:pr,delivery:pr,extra:e};}
+  /* sliders sem teto fixo: quando o preço chega perto do limite, o limite dobra (todos os sliders juntos); mínimo de R$ 200 */
+  function ajustarLimite(p){var m=parseFloat(rng.max)||200,m0=m;while(p>=m*0.95)m*=2;
+    /* fora do arraste (valor digitado num card), o limite volta a encolher para o slider não ficar grande demais */
+    var ae=document.activeElement;if(!(ae&&ae.type==='range'))while(m>200&&p<m*0.25)m/=2;
+    if(m!==m0)[rng].concat([].slice.call(document.querySelectorAll('.bone-rng'))).forEach(function(sl){sl.max=m;});}
   function render(p){
     if(!(p>0))return;
+    ajustarLimite(p);
     var r=calc(p);
     document.querySelectorAll('[data-k]').forEach(function(el){if(!el.querySelector('input'))el.textContent=fmt.format(r[el.dataset.k]);});
     document.querySelectorAll('[data-b]').forEach(function(el){el.style.width=Math.max(0,r[el.dataset.b]/p*100).toFixed(1)+'%';});
@@ -1268,13 +1274,15 @@ section.band#apoiadores > .in{padding-top:48px}
     svgV.forEach(function(t,k){if(order[k]!=null)t.textContent=fmt.format(order[k]);});
     if(svgP)svgP.textContent='por venda de '+fmt.format(p);
   }
-  num.addEventListener('input',function(){var p=parseFloat(num.value);if(p>0){if(p<=200)rng.value=p;render(p);}});
+  num.addEventListener('input',function(){var p=parseFloat(num.value);if(p>0){render(p);rng.value=p;}});
   rng.addEventListener('input',function(){num.value=rng.value;render(parseFloat(rng.value));});
   /* cards do raio X da venda: clicar abre a edição do valor; ao terminar, recalcula o preço */
   /* inverso: o preço (entre 1 e 100.000) que leva o card ao valor digitado. Cada fórmula é linear entre dois inteiros,
      então resolve em cada trecho [n, n+1) e fica com a solução mais próxima do preço atual (ou o valor mais próximo, se não houver exata) */
   function precoPara(k,v){var atual=parseFloat(num.value)||1,melhor=null,dm=Infinity,aprox=null,da=Infinity,ex=extras('calc');
-    for(var n=1;n<=100000;n++){var a=calc(n,ex)[k],b=calc(n+0.99,ex)[k],sl=(b-a)/0.99,cand=[];
+    var r1=calc(1000,ex)[k]/1000,ini=1,fim=100000;
+    if(r1>0.01){var est=v/r1;ini=Math.max(1,Math.floor(est-100000));fim=Math.max(100000,Math.ceil(est+100000));}else{ini=Math.max(1,Math.floor(atual-1000));fim=Math.ceil(atual+1000);}
+    for(var n=ini;n<=fim;n++){var a=calc(n,ex)[k],b=calc(n+0.99,ex)[k],sl=(b-a)/0.99,cand=[];
       if(Math.abs(sl)<1e-12){if(Math.abs(a-v)<0.005)cand.push(n);}else{var f=(v-a)/sl;if(f>=-1e-9&&f<=0.99+1e-9)cand.push(n+Math.max(0,f));}
       for(var j=0;j<cand.length;j++){var d=Math.abs(cand[j]-atual);if(d<dm){dm=d;melhor=cand[j];}}
       if(melhor===null){var e1=Math.min(Math.abs(a-v),Math.abs(b-v));if(e1<da){da=e1;aprox=Math.abs(a-v)<=Math.abs(b-v)?n:n+0.99;}}
@@ -1304,7 +1312,7 @@ section.band#apoiadores > .in{padding-top:48px}
         if(feito)return;feito=true;
         var n=lerValor(inp.value),p=ok&&n>=0?INV[k](n):NaN;
         v.textContent='';
-        if(p>0){p=Math.min(100000,Math.max(1,Math.round(p*100)/100));num.value=p;num.dispatchEvent(new Event('input',{bubbles:true}));}
+        if(p>0){p=Math.max(1,Math.round(p*100)/100);num.value=p;num.dispatchEvent(new Event('input',{bubbles:true}));}
         else render(parseFloat(num.value));
         if(teclado)li.focus();
       }
