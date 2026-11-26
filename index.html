@@ -88,8 +88,16 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 /* simuladores só com cards */
 .bones{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
 #raio-x .xr{grid-template-columns:1fr}
-#calc>label[for="preco"],#calc>.price,#calc>input[type=range],#calc .sim-grp{display:none}
-#calc:not(:has([data-extra])){display:none}
+#calc>label[for="preco"],#calc>.price,#calc>input[type=range],#calc .sim-grp,#calc [data-extra],#calc .sim-extras{display:none}
+#calc .bones li{background:var(--bg)}
+#calc .bones li.head-bone{grid-column:1/-1;border:2px solid var(--amber);background:color-mix(in srgb,var(--amber) 9%,var(--bg));padding:18px 20px;gap:6px}
+#calc .bones li.head-bone small{color:var(--amber)}
+#calc .bones li.head-bone b{font-size:20px}
+#calc .bones li.head-bone .v{color:var(--amber);font-size:34px;font-weight:600}
+#calc .bones li.head-bone .v-in{color:var(--amber)}
+#calc .bones li.head-bone:hover,#calc .bones li.head-bone:focus-visible{border-color:var(--amber);box-shadow:0 0 0 3px color-mix(in srgb,var(--amber) 25%,transparent)}
+.bone-rng{width:100%;margin:6px 0 0;accent-color:var(--glow);cursor:pointer}
+#calc .head-bone .bone-rng{accent-color:var(--amber)}
 #raio-x-preco .pr{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;align-items:stretch;grid-auto-flow:row dense}
 #raio-x-preco .pr-in,#raio-x-preco .pr-in fieldset,#raio-x-preco .pr-in .fields,#raio-x-preco .pr-out{display:contents}
 #raio-x-preco .pr-in legend,#raio-x-preco .hint,#raio-x-preco .mix{display:none}
@@ -818,16 +826,16 @@ section.band#apoiadores > .in{padding-top:48px}
         <span>Insumos = <code>valor sem lucro ÷ 1,5</code></span>
         <span>Cada comissão = <code>(valor sem lucro − insumos) ÷ 3</code></span>
       </div>
+      <ul class="bones" id="bones">
+        <li class="head-bone"><small>Cabeça</small><b>Vendas (Faturamento)</b><span class="v" data-k="venda"></span><span class="bar"><i data-b="venda"></i></span></li>
+        <li><small>Costelas</small><b>Insumos: pessoas, recursos, conhecimento</b><span class="v" data-k="insumos"></span><span class="bar"><i data-b="insumos"></i></span></li>
+        <li><small>Braço esquerdo</small><b>Comissão dos vendedores</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
+        <li><small>Braço direito</small><b>Comissão dos trabalhadores</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
+        <li><small>Pernas</small><b>Comissão da logística de entregas</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
+        <li data-bone-extra hidden><small>Extras</small><b>Custos adicionais por venda</b><span class="v" data-k="extra"></span><span class="bar"><i data-b="extra"></i></span></li>
+        <li><small>Bacia</small><b>Lucro</b><span class="v" data-k="lucro"></span><span class="bar"><i data-b="lucro"></i></span></li>
+      </ul>
     </form>
-    <ul class="bones" id="bones">
-      <li class="head-bone"><small>Cabeça</small><b>Vendas (Faturamento)</b><span class="v" data-k="venda"></span><span class="bar"><i data-b="venda"></i></span></li>
-      <li><small>Costelas</small><b>Insumos: pessoas, recursos, conhecimento</b><span class="v" data-k="insumos"></span><span class="bar"><i data-b="insumos"></i></span></li>
-      <li><small>Braço esquerdo</small><b>Comissão dos vendedores</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
-      <li><small>Braço direito</small><b>Comissão dos trabalhadores</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
-      <li><small>Pernas</small><b>Comissão da logística de entregas</b><span class="v" data-k="com"></span><span class="bar"><i data-b="com"></i></span></li>
-      <li data-bone-extra hidden><small>Extras</small><b>Custos adicionais por venda</b><span class="v" data-k="extra"></span><span class="bar"><i data-b="extra"></i></span></li>
-      <li><small>Bacia</small><b>Lucro</b><span class="v" data-k="lucro"></span><span class="bar"><i data-b="lucro"></i></span></li>
-    </ul>
   </div>
 </div></section>
 <section class="band" id="raio-x-preco"><div class="in">
@@ -1241,8 +1249,9 @@ section.band#apoiadores > .in{padding-top:48px}
   function render(p){
     if(!(p>0))return;
     var r=calc(p);
-    document.querySelectorAll('[data-k]').forEach(function(el){el.textContent=fmt.format(r[el.dataset.k]);});
+    document.querySelectorAll('[data-k]').forEach(function(el){if(!el.querySelector('input'))el.textContent=fmt.format(r[el.dataset.k]);});
     document.querySelectorAll('[data-b]').forEach(function(el){el.style.width=Math.max(0,r[el.dataset.b]/p*100).toFixed(1)+'%';});
+    document.querySelectorAll('.bone-rng').forEach(function(sl){if(document.activeElement!==sl)sl.value=Math.min(parseFloat(sl.max),Math.max(parseFloat(sl.min),p));});
     var be=document.querySelector('[data-bone-extra]');if(be)be.hidden=!(r.extra>0);
     var order=[r.venda,r.insumos,r.com,r.com,r.com,r.lucro];
     svgV.forEach(function(t,k){if(order[k]!=null)t.textContent=fmt.format(order[k]);});
@@ -1256,6 +1265,14 @@ section.band#apoiadores > .in{padding-top:48px}
   document.querySelectorAll('#bones li').forEach(function(li){
     var v=li.querySelector('.v'),k=v&&v.dataset.k;if(!INV[k])return;
     li.setAttribute('data-edit','');li.tabIndex=0;li.setAttribute('role','button');li.title='Clique para alterar o valor';
+    /* slider do card: percorre os mesmos limites do slider da cabeça (preço) e mostra o valor do card */
+    var bar=li.querySelector('.bar'),sl=document.createElement('input');
+    sl.type='range';sl.className='bone-rng';sl.min=rng.min;sl.max=rng.max;sl.step=rng.step;sl.value=rng.value;
+    sl.setAttribute('aria-label','Ajustar '+li.querySelector('b').textContent);
+    if(bar)bar.replaceWith(sl);else li.appendChild(sl);
+    sl.addEventListener('click',function(e){e.stopPropagation();});
+    sl.addEventListener('keydown',function(e){e.stopPropagation();});
+    sl.addEventListener('input',function(){num.value=sl.value;num.dispatchEvent(new Event('input',{bubbles:true}));});
     function abrir(){
       if(v.querySelector('input'))return;
       var atual=calc(parseFloat(num.value)||0)[k],inp=document.createElement('input'),feito=false;
@@ -1266,12 +1283,14 @@ section.band#apoiadores > .in{padding-top:48px}
       function fechar(ok,teclado){
         if(feito)return;feito=true;
         var n=lerValor(inp.value),p=ok&&n>=0?INV[k](n):NaN;
+        v.textContent='';
         if(p>0){p=Math.min(100000,Math.max(1,Math.round(p*100)/100));num.value=p;num.dispatchEvent(new Event('input',{bubbles:true}));}
         else render(parseFloat(num.value));
         if(teclado)li.focus();
       }
-      inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();fechar(true,true);}else if(e.key==='Escape'){e.preventDefault();fechar(false,true);}});
+      inp.addEventListener('keydown',function(e){e.stopPropagation();if(e.key==='Enter'){e.preventDefault();fechar(true,true);}else if(e.key==='Escape'){e.preventDefault();fechar(false,true);}});
       inp.addEventListener('blur',function(){fechar(true);});
+      inp.addEventListener('input',function(e){e.stopPropagation();});
       inp.addEventListener('click',function(e){e.stopPropagation();});
     }
     li.addEventListener('click',abrir);
