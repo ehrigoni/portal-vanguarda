@@ -837,7 +837,7 @@ section.band#apoiadores > .in{padding-top:48px}
         <li><small>Braço esquerdo</small><b>Ganho do vendedor</b><span class="v" data-k="seller"></span><span class="bar"><i data-b="seller"></i></span></li>
         <li><small>Braço direito</small><b>Ganho do produtor</b><span class="v" data-k="producer"></span><span class="bar"><i data-b="producer"></i></span></li>
         <li><small>Pernas</small><b>Ganho do entregador</b><span class="v" data-k="delivery"></span><span class="bar"><i data-b="delivery"></i></span></li>
-        <li data-bone-extra hidden><small>Extras</small><b>Custos adicionais por venda</b><span class="v" data-k="extra"></span><span class="bar"><i data-b="extra"></i></span></li>
+        <li data-bone-extra hidden><small>Extras</small><b>Custos relacionados à entrega do produto/valor</b><span class="v" data-k="extra"></span><span class="bar"><i data-b="extra"></i></span></li>
         <li><small>Bacia</small><b>Lucro</b><span class="v" data-k="lucro"></span><span class="bar"><i data-b="lucro"></i></span></li>
       </ul>
     </form>
@@ -2623,7 +2623,7 @@ section.band#apoiadores > .in{padding-top:48px}
           (x.fixo?'<span class="msg">Principal</span>':'<button type="button" class="btn" data-del="'+esc(x.id)+'">Excluir</button>')+'</div></div>';}).join('')+
         (excl.length?'<div class="adm-excl">Campos excluídos: '+excl.map(function(x){return '<button type="button" class="btn" data-res="'+esc(x.id)+'">Restaurar '+esc(x.rotulo)+'</button>';}).join('')+'</div>':'')+
         '<div class="adm-bar"><button type="button" class="btn" data-add="'+id+'">Acrescentar campo</button></div>'+
-        '<p class="msg">'+(id==='raio-x'?'Campos novos são custos por venda: aparecem como "Custos adicionais por venda" e são descontados do lucro.':'Campos novos são custos mensais: entram no custo operacional e na meta de faturamento.')+'</p>'+
+        '<p class="msg">'+(id==='raio-x'?'Campos novos são custos por venda: aparecem como "Custos relacionados à entrega do produto/valor" e são descontados do lucro.':'Campos novos são custos mensais: entram no custo operacional e na meta de faturamento.')+'</p>'+
         '<div class="fields adm-passos"><label><span>Passo a passo para executar o simulador</span><textarea data-f="passos" maxlength="'+LIM.passos+'" placeholder="Descreva aqui, passo a passo, como o simulador deve funcionar.">'+esc(o.passos||'')+'</textarea></label></div>'+
         cmdsHtml(o)+
         '<div class="fields"><label><span>Código gerador de imagens (opcional)</span><textarea data-f="codigoImg" class="adm-img" maxlength="'+LIM.codigoImg+'" spellcheck="false" placeholder="Cole aqui o código SVG (&lt;svg&gt;…&lt;/svg&gt;). Ao salvar, o portal gera a imagem e guarda só a imagem processada.">'+esc(o.codigoImg||'')+'</textarea></label></div>'+
