@@ -466,6 +466,20 @@ details.opcional[open] summary{margin-bottom:12px}
 .selos{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
 #sp-selos .selo{cursor:default}
 .selo{position:relative;border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:10px;align-content:start;cursor:pointer;background:transparent}
+/* Harmonia vertical: cada cartão ocupa 5 linhas da grade (subgrid), e cada bloco fica na mesma linha em todos os
+   cartões lado a lado: 1 ícone e nome, 2 etiquetas, 3 descrição, 4 condição ou "Por quê", 5 botão Divulgar no pé. */
+@supports (grid-template-rows:subgrid){
+  #pn-lista-selos{row-gap:0}
+  #pn-lista-selos .selo{display:grid!important;grid-row:span 5;grid-template-rows:subgrid;row-gap:12px;align-content:stretch;margin-bottom:14px}
+  #pn-lista-selos .selo>.selo-top{grid-row:1;align-self:start}
+  #pn-lista-selos .selo>.tags{grid-row:2;align-self:start;align-content:start}
+  #pn-lista-selos .selo>.desc{grid-row:3;align-self:start}
+  #pn-lista-selos .selo>.req,#pn-lista-selos .selo>.por{grid-row:4;align-self:start;margin:0}
+  #pn-lista-selos .selo>.divulgar{grid-row:5;align-self:end;justify-self:center;margin-top:0}
+  #sp-selos{row-gap:0}
+  #sp-selos .selo{grid-row:span 3;grid-template-rows:subgrid;row-gap:12px;margin-bottom:14px}
+}
+.selo-top{min-height:52px}
 .selo:hover{border-color:var(--glow)}
 .selo.rec{border-color:var(--glow);background:var(--panel)}
 .selo.lib.rec{border-color:var(--amber);background:transparent} /* desbloqueado e recomendado: mesmo cartão dos outros desbloqueados */
@@ -2210,7 +2224,7 @@ details.opcional[open] summary{margin-bottom:12px}
       return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':' lib')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
         '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
         '<div class="tags"><span class="tag meta">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'<span class="tag lib">Desbloqueado</span>')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
-        '<p>'+esc(s.desc)+'</p>'+(bloq?condHtml(s,faltaSelo(s)):'')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+
+        '<p class="desc">'+esc(s.desc)+'</p>'+(bloq?condHtml(s,faltaSelo(s)):'')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+
         (bloq?'':'<button type="button" class="btn divulgar'+(on?'':' go')+'" data-divulgar="'+s.id+'">Divulgar</button>')+'</label>';
     }).join('');
     $('pn-selos-bloq').hidden=temApoio();
@@ -2592,7 +2606,7 @@ details.opcional[open] summary{margin-bottom:12px}
       $('sp-impacto').hidden=false;$('sp-erro').hidden=true;
       $('sp-selos').innerHTML=(d.selos||[]).filter(function(id){return SELO[id];}).map(function(id){var s=SELO[id];
         return '<div class="selo on"><div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
-          '<div class="tags"><span class="tag meta">'+esc(s.cat)+'</span></div><p>'+esc(m)+' '+esc(s.frase)+'.</p></div>';}).join('');
+          '<div class="tags"><span class="tag meta">'+esc(s.cat)+'</span></div><p class="desc">'+esc(m)+' '+esc(s.frase)+'.</p></div>';}).join('');
     });
   }
   function noSelo(){return location.hash==='#selo';}
