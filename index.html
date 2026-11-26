@@ -271,12 +271,11 @@ details.opcional{border:1px solid var(--line);border-radius:12px;padding:12px 16
 details.opcional summary{cursor:pointer;font-size:15px;color:var(--muted)}
 details.opcional[open] summary{margin-bottom:12px}
 .selo .divulgar{margin-top:auto;align-self:center;min-width:160px;justify-content:center} /* Divulgar centralizado, no pé do card, na mesma linha em todos */
-.selo.lib{display:flex;flex-direction:column;border-color:var(--glow);background:var(--panel);box-shadow:0 0 0 1px var(--glow),0 0 22px color-mix(in srgb,var(--glow) 22%,transparent)}
-.selo.lib{box-shadow:0 0 0 1px color-mix(in srgb,var(--glow) 55%,transparent)} /* desbloqueado: contorno azul claro */
-.selo.lib.on{border-color:var(--glow);background:color-mix(in srgb,var(--glow) 16%,var(--panel));box-shadow:0 0 0 2px var(--glow),0 0 26px color-mix(in srgb,var(--glow) 40%,transparent)} /* selecionado para divulgar: azul */
-.selo.lib.on .selo-badge{border-color:var(--glow);background:var(--glow);color:var(--ink)}
-.selo.lib .tag.sel{border-color:var(--glow)!important;color:var(--ink)!important;background:var(--glow)!important;font-weight:600}
-.selo.lib.on .divulgar{background:var(--glow);border-color:var(--glow);color:var(--ink);font-weight:600}
+.selo.lib{display:flex;flex-direction:column;background:transparent;border-color:var(--amber);box-shadow:none} /* desbloqueado: só a borda âmbar, sem preenchimento */
+.selo.lib.on{border-color:var(--amber);background:transparent;box-shadow:0 0 0 2px var(--amber)} /* selecionado: borda âmbar mais forte, sem preenchimento */
+.selo.lib.on .selo-badge{border-color:var(--amber);background:transparent;color:var(--amber)}
+.selo.lib .tag.sel,.selo .tag.lib{border-color:var(--amber)!important;color:var(--amber)!important;background:transparent!important;font-weight:600}
+.selo.lib.on .divulgar{background:transparent;border-color:var(--amber);color:var(--amber);font-weight:600}
 .sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 /* Meu negócio e Intenções: textos, campos e botão centralizados */
 #pn-perfil .head,#pn-intencao .head{text-align:center;margin-inline:auto}
@@ -300,7 +299,6 @@ details.opcional[open] summary{margin-bottom:12px}
 #pn-apoiar #ap-periodo input[type=radio]+span{display:inline-block;padding:11px 16px;line-height:1.35;white-space:normal}
 #pn-apoiar .fields-tit,#pn-apoiar .sum{text-align:center}
 #pn-apoiar form .actions,#pn-apoiar form .pn-acts{justify-content:center}
-.selo .tag.lib{border-color:var(--glow);color:var(--bg);background:var(--glow);font-weight:600}
 #pn-perfil .pn-acts{justify-content:center;flex-direction:column}
 #pn-impacto .kpi{text-align:center;justify-items:center;align-content:center}
 #como-funciona-vanguardistas .head h2{text-wrap:wrap}
@@ -470,6 +468,7 @@ details.opcional[open] summary{margin-bottom:12px}
 .selo{position:relative;border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:10px;align-content:start;cursor:pointer;background:transparent}
 .selo:hover{border-color:var(--glow)}
 .selo.rec{border-color:var(--glow);background:var(--panel)}
+.selo.lib.rec{border-color:var(--amber);background:transparent} /* desbloqueado e recomendado: mesmo cartão dos outros desbloqueados */
 .selo.on{border-color:var(--amber);box-shadow:inset 0 0 0 1px var(--amber)}
 .selo input{position:absolute;left:0;top:0;opacity:0;pointer-events:none}
 #pn-conteudo .chips label{position:relative}
@@ -807,7 +806,7 @@ details.opcional[open] summary{margin-bottom:12px}
 </div>
   <div class="doors">
     <a class="door" href="#simuladores"><span class="tag">Grátis</span><h3>Usar os simuladores</h3><p><b class="sim-nome venda">Raio X da Venda</b> e <b class="sim-nome preco">Raio X do Preço</b>. Sem cadastro.</p><b>Simular agora →</b></a>
-    <a class="door" href="#apoiar"><span class="tag">Pessoas</span><h3>Apoiar o portal</h3><p>Apoie vanguardistas a partir de 1 mês.</p><b>Quero apoiar →</b></a>
+    <a class="door" href="#apoiar"><span class="tag">Pessoas</span><h3>Apoiar o portal</h3><p>Apoie vanguardistas a partir de 1 mês.</p><b>Apoiar agora</b></a>
   </div>
   <div class="facts">
     <div><b>100% gratuito</b><small>simuladores e trilhas para quem empreende</small></div>
