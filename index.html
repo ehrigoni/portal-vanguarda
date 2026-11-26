@@ -85,9 +85,31 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 .bones .bar i{display:block;height:100%;background:var(--glow)}
 .bones li.head-bone{border-color:var(--glow)}
 .bones li.head-bone .bar i{background:var(--amber)}
+/* simuladores só com cards */
+.bones{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+#raio-x .xr{grid-template-columns:1fr}
+#calc>label[for="preco"],#calc>.price,#calc>input[type=range],#calc .sim-grp{display:none}
+#calc:not(:has([data-extra])){display:none}
+#raio-x-preco .pr{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;align-items:stretch;grid-auto-flow:row dense}
+#raio-x-preco .pr-in,#raio-x-preco .pr-in fieldset,#raio-x-preco .pr-in .fields,#raio-x-preco .pr-out{display:contents}
+#raio-x-preco .pr-in legend,#raio-x-preco .hint,#raio-x-preco .mix{display:none}
+#raio-x-preco .fields label,#raio-x-preco .out-row{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--panel);display:grid;gap:4px;align-content:start;min-width:0}
+#raio-x-preco .fields input{color:var(--glow);font-size:20px;font-weight:400}
+#raio-x-preco .fields input.sim-auto{color:var(--fg)}
+#raio-x-preco .out-row b{font-size:20px;color:var(--glow);font-family:var(--mono);font-weight:400}
+#raio-x-preco .out-row p{font-size:13px}
+#raio-x-preco .out-row{grid-column:span 2;order:-1}
+#raio-x-preco .fields label>span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+#raio-x-preco .fields input{-moz-appearance:textfield;appearance:textfield}
+#raio-x-preco .fields input::-webkit-inner-spin-button,#raio-x-preco .fields input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+#raio-x-preco .goalbox{border-color:var(--amber)}
+#raio-x-preco .goalbox b{color:var(--amber);font-size:20px}
+#raio-x-preco .out-row[data-edit]{cursor:pointer}
+#raio-x-preco .out-row[data-edit]:hover,#raio-x-preco .out-row[data-edit]:focus-visible{border-color:var(--glow);outline:none}
+#raio-x-preco .goalbox[data-edit]:hover,#raio-x-preco .goalbox[data-edit]:focus-visible{border-color:var(--amber)}
 .bones li[data-edit]{cursor:pointer;transition:border-color .15s}
 .bones li[data-edit]:hover,.bones li[data-edit]:focus-visible{border-color:var(--glow);outline:none}
-.bones .v-in{width:100%;min-width:0;box-sizing:border-box;background:var(--bg);border:1px solid var(--glow);border-radius:6px;color:var(--glow);font:inherit;padding:2px 8px}
+.bones .v-in,.out-row .v-in{width:100%;min-width:0;box-sizing:border-box;background:var(--bg);border:1px solid var(--glow);border-radius:6px;color:var(--glow);font:inherit;padding:2px 8px}
 
 /* raio x do preço */
 .pr{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:24px;align-items:start}
@@ -1230,7 +1252,7 @@ section.band#apoiadores > .in{padding-top:48px}
   rng.addEventListener('input',function(){num.value=rng.value;render(parseFloat(rng.value));});
   /* cards do raio X da venda: clicar abre a edição do valor; ao terminar, recalcula o preço */
   var INV={venda:function(v){return v;},insumos:function(v){return v/0.6;},com:function(v){return v/0.1;},lucro:function(v){return (v+extras('calc'))/0.1;}};
-  function lerValor(t){t=String(t).replace(/R\$|\s/g,'');if(t.indexOf(',')>=0)t=t.replace(/\./g,'').replace(',','.');return parseFloat(t);}
+  function lerValor(t){t=String(t).replace(/R\$|\s/g,'');if(t.indexOf(',')>=0)t=t.replace(/\./g,'').replace(',','.');else if(/^\d{1,3}(\.\d{3})+$/.test(t))t=t.replace(/\./g,'');return parseFloat(t);}
   document.querySelectorAll('#bones li').forEach(function(li){
     var v=li.querySelector('.v'),k=v&&v.dataset.k;if(!INV[k])return;
     li.setAttribute('data-edit','');li.tabIndex=0;li.setAttribute('role','button');li.title='Clique para alterar o valor';
@@ -1285,6 +1307,36 @@ section.band#apoiadores > .in{padding-top:48px}
       if(k>=0&&k<lista.length-1)lista[k+1].focus();else e.target.blur();});
     form.querySelectorAll('input:not([type=range])').forEach(function(i){i.setAttribute('enterkeyhint','next');});});
   window.vgSimRecalc=function(){render(parseFloat(num.value));custos();};
+  /* cards do raio X do preço: custo total e meta também são editáveis; o novo valor é distribuído
+     proporcionalmente entre os campos em reais (o número de pessoas fica como está) */
+  function aplicarCusto(alvo,atual){
+    var lista=[].slice.call(document.querySelectorAll('#custos input[type=number]')).filter(function(i){
+      return i.id!=='c-pessoas'&&!i.readOnly&&!i.closest('.sim-campo-off');});
+    if(atual>0){var f=alvo/atual;lista.forEach(function(i){var n=parseFloat(i.value);if(n>0)i.value=Math.round(n*f*100)/100;});}
+    else{var o=document.getElementById('c-outros');if(o&&lista.indexOf(o)>=0)o.value=Math.round(alvo*100)/100;else if(lista[0])lista[0].value=Math.round(alvo*100)/100;}
+    document.getElementById('custos').dispatchEvent(new Event('input',{bubbles:true}));custos();
+  }
+  [['r-custo',function(v){return v;}],['r-meta',function(v){return v*0.9/1.5;}]].forEach(function(x){
+    var b=document.getElementById(x[0]),card=b.closest('.out-row'),ida=x[1];
+    card.setAttribute('data-edit','');card.tabIndex=0;card.setAttribute('role','button');card.title='Clique para alterar o valor';
+    function abrir(){
+      if(b.querySelector('input'))return;
+      var atual=lerValor(b.textContent)||0,inp=document.createElement('input'),feito=false;
+      inp.type='text';inp.inputMode='decimal';inp.className='v-in';inp.setAttribute('enterkeyhint','done');
+      inp.setAttribute('aria-label',card.querySelector('small').textContent);
+      inp.value=atual.toFixed(2).replace('.',',');b.textContent='';b.appendChild(inp);inp.focus();inp.select();
+      function fechar(ok,teclado){
+        if(feito)return;feito=true;var n=lerValor(inp.value);
+        if(ok&&n>=0&&isFinite(n))aplicarCusto(ida(n),ida(atual));else custos();
+        if(teclado)card.focus();
+      }
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();e.stopPropagation();fechar(true,true);}else if(e.key==='Escape'){e.preventDefault();fechar(false,true);}});
+      inp.addEventListener('blur',function(){fechar(true);});
+      inp.addEventListener('click',function(e){e.stopPropagation();});
+    }
+    card.addEventListener('click',abrir);
+    card.addEventListener('keydown',function(e){if(e.target===card&&(e.key==='Enter'||e.key===' ')){e.preventDefault();abrir();}});
+  });
 
   /* como vai funcionar: números e apoio */
   var VG={total:0,custeados:0}; /* atualizar com os números reais */
