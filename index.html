@@ -1354,6 +1354,12 @@ section.band#apoiadores > .in{padding-top:48px}
       if(k>=0&&k<lista.length-1)lista[k+1].focus();else e.target.blur();});
     form.querySelectorAll('input:not([type=range])').forEach(function(i){i.setAttribute('enterkeyhint','next');});});
   window.vgSimRecalc=function(){render(parseFloat(num.value));custos();};
+  /* carga do painel dos simuladores: recalcula todos os cards a partir dos campos principais.
+     No raio X da venda o ponto de partida é o card Vendas (cabeça): o slider e os demais cards seguem o preço dele.
+     Roda ao abrir a página, ao voltar a ela pelo histórico (o navegador pode restaurar valores antigos) e a cada vez que o painel é aberto. */
+  window.vgSimCarregar=function(){var p=parseFloat(num.value);if(!(p>0)){p=15;num.value=p;}
+    ajustarLimite(p);rng.value=p;render(p);custos();};
+  window.addEventListener('pageshow',function(){window.vgSimCarregar();});
   /* cards do raio X do preço: custo total e meta também são editáveis; o novo valor é distribuído
      proporcionalmente entre os campos em reais (o número de pessoas fica como está) */
   function aplicarCusto(alvo,atual){
@@ -1619,6 +1625,7 @@ section.band#apoiadores > .in{padding-top:48px}
     var aviso=document.getElementById('aviso');if(aviso)aviso.hidden=v.getAttribute('data-view')==='admin'; /* o aviso do rodapé não aparece na aba Administrador */
     var name=v.getAttribute('data-view');
     document.querySelectorAll('[data-nav]').forEach(function(a){if(a.dataset.nav===name)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+    if(name==='simuladores'&&typeof window.vgSimCarregar==='function')window.vgSimCarregar(); /* painel dos simuladores: cards recalculados na carga */
     if(target)target.scrollIntoView({block:'start'});else window.scrollTo(0,0);
   }
   window.addEventListener('hashchange',show);show();
@@ -1832,7 +1839,7 @@ section.band#apoiadores > .in{padding-top:48px}
     var K='vg-sim-nota-vista';try{if(localStorage.getItem(K))n.classList.add('visto');}catch(e){}
     ok.addEventListener('click',function(){n.classList.add('visto');try{localStorage.setItem(K,'1');}catch(e){}});
   })();
-  render(15);
+  window.vgSimCarregar();
 })();
 </script>
 <script>
