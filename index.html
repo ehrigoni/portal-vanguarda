@@ -270,7 +270,12 @@ section.band#apoiadores > .in{padding-top:48px}
 details.opcional{border:1px solid var(--line);border-radius:12px;padding:12px 16px}
 details.opcional summary{cursor:pointer;font-size:15px;color:var(--muted)}
 details.opcional[open] summary{margin-bottom:12px}
-.selo .divulgar{justify-self:start;margin-top:4px}
+.selo .divulgar{margin-top:auto;align-self:center;min-width:160px;justify-content:center} /* Divulgar centralizado, no pé do card, na mesma linha em todos */
+.selo.lib{display:flex;flex-direction:column;border-color:var(--glow);background:var(--panel);box-shadow:0 0 0 1px var(--glow),0 0 22px color-mix(in srgb,var(--glow) 22%,transparent)}
+.selo.lib.on{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber),0 0 22px color-mix(in srgb,var(--amber) 22%,transparent)}
+.selo .tag.lib{border-color:var(--glow);color:var(--bg);background:var(--glow);font-weight:600}
+#pn-perfil .pn-acts{justify-content:center;flex-direction:column}
+#pn-impacto .kpi{text-align:center;justify-items:center;align-content:center}
 #como-funciona-vanguardistas .head h2{text-wrap:wrap}
 .sim-nota{font-size:15px;padding:14px 16px;border-style:solid}
 .sim-nota span{display:grid;gap:12px;justify-items:start}
@@ -2092,9 +2097,9 @@ details.opcional[open] summary{margin-bottom:12px}
     var ord=SELOS.slice().sort(function(a,b){var ta=top.indexOf(a.id),tb=top.indexOf(b.id);if(ta>=0||tb>=0)return (ta<0?9:ta)-(tb<0?9:tb);return 0;});
     $('pn-lista-selos').innerHTML=ord.map(function(s){
       var bloq=!liberado(s.id),rec=!bloq&&top.indexOf(s.id)>=0,on=!bloq&&sel.indexOf(s.id)>=0,por=R[s.id].por.filter(Boolean).slice(0,2);
-      return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':'')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
+      return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':' lib')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
         '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
-        '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
+        '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'<span class="tag lib">Desbloqueado</span>')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
         '<p>'+esc(s.desc)+'</p>'+condHtml(s,bloq?faltaSelo(s):'Cumprida.')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+
         (bloq?'':'<button type="button" class="btn divulgar'+(on?'':' go')+'" data-divulgar="'+s.id+'">Divulgar</button>')+'</label>';
     }).join('');
