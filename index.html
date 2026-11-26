@@ -520,9 +520,11 @@ section.band#apoiadores > .in{padding-top:48px}
 .sim-campo-off{display:none!important}
 #raio-x > .in{padding-bottom:36px}
 #raio-x + #raio-x-preco > .in{padding-top:36px}
+/* nome de cada simulador em destaque: no título da seção vira uma etiqueta colorida; no texto corrido, negrito na cor do simulador */
 .sim-nome{font-weight:700}
-#raio-x .sim-nome{color:var(--amber)}
-#raio-x-preco .sim-nome{color:var(--glow)}
+#raio-x .sim-nome,.sim-nome.venda{color:var(--amber)}
+#raio-x-preco .sim-nome,.sim-nome.preco{color:var(--glow)}
+.eyebrow .sim-nome{display:inline-block;font-size:15px;letter-spacing:.1em;padding:3px 10px;border-radius:999px;border:1px solid currentColor;background:color-mix(in srgb,currentColor 12%,transparent);vertical-align:middle}
 .sim-desc{display:block;font-size:12.5px;color:var(--muted);line-height:1.35;font-family:var(--body);font-weight:400}
 .calc .sim-extras{gap:10px}
 .adm-simc{border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:12px}
@@ -748,7 +750,7 @@ section.band#apoiadores > .in{padding-top:48px}
 </svg>
 </div>
   <div class="doors">
-    <a class="door" href="#simuladores"><span class="tag">Grátis</span><h3>Usar os simuladores</h3><p>Raio X da venda e raio X do preço. Sem cadastro.</p><b>Simular agora →</b></a>
+    <a class="door" href="#simuladores"><span class="tag">Grátis</span><h3>Usar os simuladores</h3><p><b class="sim-nome venda">Raio X da Venda</b> e <b class="sim-nome preco">Raio X do Preço</b>. Sem cadastro.</p><b>Simular agora →</b></a>
     <a class="door" href="#apoiar"><span class="tag">Pessoas</span><h3>Apoiar o portal</h3><p>Apoie vanguardistas a partir de 1 mês.</p><b>Quero apoiar →</b></a>
   </div>
   <div class="facts">
@@ -821,7 +823,7 @@ section.band#apoiadores > .in{padding-top:48px}
 </div></section>
 <section class="band" id="raio-x"><div class="in">
   <div class="head">
-    <p class="eyebrow">Simulador · raio X da venda</p>
+    <p class="eyebrow">Simulador · <span class="sim-nome">Raio X da Venda</span></p>
     <h2>Para onde vai cada real que você vende</h2>
     <p class="lede">Digite o preço de um produto. O raio X separa a venda nos ossos do negócio: insumos, as três comissões e o lucro. É a mesma regra usada nas empresas da comunidade.</p>
   </div>
@@ -852,7 +854,7 @@ section.band#apoiadores > .in{padding-top:48px}
 </div></section>
 <section class="band" id="raio-x-preco"><div class="in">
   <div class="head">
-    <p class="eyebrow">Simulador · raio X do preço</p>
+    <p class="eyebrow">Simulador · <span class="sim-nome">Raio X do Preço</span></p>
     <h2>Quanto o seu negócio precisa faturar por mês</h2>
     <p class="lede">Preencha as despesas mensais da operação. O simulador soma o custo operacional e mostra a meta de faturamento que cobre esses custos, as comissões e o lucro.</p>
   </div>
@@ -1865,7 +1867,7 @@ section.band#apoiadores > .in{padding-top:48px}
   /* Indique para 3 empreendedores: compartilha o site (menu do celular ou WhatsApp) */
   (function(){var a=document.getElementById('indicar');if(!a)return;
     var url=location.href.split('#')[0];
-    var txt='Conheci o Portal Vanguarda: simuladores gratuitos para quem empreende, como o raio X da venda e o raio X do preço. Vale testar: '+url;
+    var txt='Conheci o Portal Vanguarda: simuladores gratuitos para quem empreende, como o Raio X da Venda e o Raio X do Preço. Vale testar: '+url;
     a.href='https://wa.me/?text='+encodeURIComponent(txt);
     a.addEventListener('click',function(e){if(navigator.share&&matchMedia('(pointer:coarse)').matches){e.preventDefault();navigator.share({title:'Portal Vanguarda',text:txt}).catch(function(){});}});
   })();
