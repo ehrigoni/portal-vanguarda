@@ -96,6 +96,10 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 #calc .bones li.head-bone .v{color:var(--amber);font-size:34px;font-weight:600}
 #calc .bones li.head-bone .v-in{color:var(--amber)}
 #calc .bones li.head-bone:hover,#calc .bones li.head-bone:focus-visible{border-color:var(--amber);box-shadow:0 0 0 3px color-mix(in srgb,var(--amber) 25%,transparent)}
+.bones-reset{margin-top:14px;width:100%}
+/* textos dos cards dos simuladores alinhados ao centro do card */
+.bones li,#raio-x-preco .fields label,#raio-x-preco .out-row{text-align:center}
+.bones .v-in,.out-row .v-in,#raio-x-preco .fields input{text-align:center}
 .bone-rng{width:100%;margin:6px 0 0;accent-color:var(--glow);cursor:pointer}
 .bones .pct{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12px;color:var(--muted)}
 #calc .head-bone .pct{font-size:13px}
@@ -516,9 +520,11 @@ section.band#apoiadores > .in{padding-top:48px}
 .sim-campo-off{display:none!important}
 #raio-x > .in{padding-bottom:36px}
 #raio-x + #raio-x-preco > .in{padding-top:36px}
+/* nome de cada simulador em destaque: no título da seção vira uma etiqueta colorida; no texto corrido, negrito na cor do simulador */
 .sim-nome{font-weight:700}
-#raio-x .sim-nome{color:var(--amber)}
-#raio-x-preco .sim-nome{color:var(--glow)}
+#raio-x .sim-nome,.sim-nome.venda{color:var(--amber)}
+#raio-x-preco .sim-nome,.sim-nome.preco{color:var(--glow)}
+.eyebrow .sim-nome{display:inline-block;font-size:15px;letter-spacing:.1em;padding:3px 10px;border-radius:999px;border:1px solid currentColor;background:color-mix(in srgb,currentColor 12%,transparent);vertical-align:middle}
 .sim-desc{display:block;font-size:12.5px;color:var(--muted);line-height:1.35;font-family:var(--body);font-weight:400}
 .calc .sim-extras{gap:10px}
 .adm-simc{border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:12px}
@@ -744,7 +750,7 @@ section.band#apoiadores > .in{padding-top:48px}
 </svg>
 </div>
   <div class="doors">
-    <a class="door" href="#simuladores"><span class="tag">Grátis</span><h3>Usar os simuladores</h3><p>Raio X da venda e raio X do preço. Sem cadastro.</p><b>Simular agora →</b></a>
+    <a class="door" href="#simuladores"><span class="tag">Grátis</span><h3>Usar os simuladores</h3><p><b class="sim-nome venda">Raio X da Venda</b> e <b class="sim-nome preco">Raio X do Preço</b>. Sem cadastro.</p><b>Simular agora →</b></a>
     <a class="door" href="#apoiar"><span class="tag">Pessoas</span><h3>Apoiar o portal</h3><p>Apoie vanguardistas a partir de 1 mês.</p><b>Quero apoiar →</b></a>
   </div>
   <div class="facts">
@@ -817,7 +823,7 @@ section.band#apoiadores > .in{padding-top:48px}
 </div></section>
 <section class="band" id="raio-x"><div class="in">
   <div class="head">
-    <p class="eyebrow">Simulador · raio X da venda</p>
+    <p class="eyebrow">Simulador · <span class="sim-nome">Raio X da Venda</span></p>
     <h2>Para onde vai cada real que você vende</h2>
     <p class="lede">Digite o preço de um produto. O raio X separa a venda nos ossos do negócio: insumos, as três comissões e o lucro. É a mesma regra usada nas empresas da comunidade.</p>
   </div>
@@ -842,12 +848,13 @@ section.band#apoiadores > .in{padding-top:48px}
         <li data-bone-extra hidden><small>Extras</small><b>Custos relacionados à entrega do produto/valor</b><span class="v" data-k="extra"></span><span class="bar"><i data-b="extra"></i></span></li>
         <li><small>Bacia</small><b>Lucro</b><span class="v" data-k="lucro"></span><span class="bar"><i data-b="lucro"></i></span></li>
       </ul>
+      <button type="button" class="btn bones-reset" id="bones-reset">Restaurar valores padrão</button>
     </form>
   </div>
 </div></section>
 <section class="band" id="raio-x-preco"><div class="in">
   <div class="head">
-    <p class="eyebrow">Simulador · raio X do preço</p>
+    <p class="eyebrow">Simulador · <span class="sim-nome">Raio X do Preço</span></p>
     <h2>Quanto o seu negócio precisa faturar por mês</h2>
     <p class="lede">Preencha as despesas mensais da operação. O simulador soma o custo operacional e mostra a meta de faturamento que cobre esses custos, as comissões e o lucro.</p>
   </div>
@@ -1271,6 +1278,13 @@ section.band#apoiadores > .in{padding-top:48px}
   /* valores ajustados à mão nos cards (slider ou edição): só aquele card muda; mexer no card principal (Vendas) zera os ajustes */
   var AJ={};
   function valores(p){var r=calc(p);for(var k in AJ)r[k]=AJ[k];return r;}
+  /* ajuste num card que não é o principal: aquele card fica com o valor novo, os outros ficam como estão
+     e o card Vendas passa a ser a soma de todos (o preço acompanha, sem reajustar os demais) */
+  var CARDS_SOMA=['cst','insumos','seller','producer','delivery','lucro'];
+  function ajustarCard(k,n){var p=parseFloat(num.value)||0,r=valores(p);
+    CARDS_SOMA.forEach(function(c){AJ[c]=r[c];});AJ[k]=Math.round(n*100)/100;
+    var t=r.extra;CARDS_SOMA.forEach(function(c){t+=AJ[c];});t=Math.round(t*100)/100;
+    if(t>0){num.value=t;rng.value=t;render(t);}else render(p);}
   function render(p){
     if(!(p>0))return;
     ajustarLimite(p);
@@ -1314,10 +1328,10 @@ section.band#apoiadores > .in{padding-top:48px}
     if(bar)bar.replaceWith(sl);else li.appendChild(sl);
     sl.addEventListener('click',function(e){e.stopPropagation();});
     sl.addEventListener('keydown',function(e){e.stopPropagation();});
-    /* slider da cabeça muda o preço e reajusta todos os cards; slider de outro card muda só o valor (e o percentual) dele */
+    /* slider da cabeça muda o preço e reajusta todos os cards; slider de outro card muda só o valor dele, e a cabeça vira a soma dos cards */
     sl.addEventListener('input',function(){var n=parseFloat(sl.value);
       if(k==='venda'){if(n>0){num.value=n;num.dispatchEvent(new Event('input',{bubbles:true}));}}
-      else if(n>=0){AJ[k]=Math.round(n*100)/100;render(parseFloat(num.value));}});
+      else if(n>=0)ajustarCard(k,n);});
     function abrir(){
       if(v.querySelector('input'))return;
       var atual=valores(parseFloat(num.value)||0)[k],inp=document.createElement('input'),feito=false;
@@ -1327,11 +1341,12 @@ section.band#apoiadores > .in{padding-top:48px}
       v.textContent='';v.appendChild(inp);inp.focus();inp.select();
       function fechar(ok,teclado){
         if(feito)return;feito=true;
-        /* valor digitado: na cabeça muda o preço e reajusta todos; nos outros cards muda só aquele card */
+        /* valor digitado: na cabeça muda o preço e reajusta todos; nos outros cards muda só aquele card e a cabeça vira a soma */
         var n=lerValor(inp.value),p=ok&&n>=0&&k==='venda'?n:NaN;
         v.textContent='';
         if(p>0){p=Math.max(1,Math.round(p*100)/100);num.value=p;num.dispatchEvent(new Event('input',{bubbles:true}));}
-        else{if(ok&&n>=0&&k!=='venda')AJ[k]=Math.round(n*100)/100;render(parseFloat(num.value));}
+        else if(ok&&n>=0&&k!=='venda')ajustarCard(k,n);
+        else render(parseFloat(num.value));
         if(teclado)li.focus();
       }
       inp.addEventListener('keydown',function(e){e.stopPropagation();if(e.key==='Enter'){e.preventDefault();fechar(true,true);}else if(e.key==='Escape'){e.preventDefault();fechar(false,true);}});
@@ -1378,6 +1393,10 @@ section.band#apoiadores > .in{padding-top:48px}
   window.vgSimCarregar=function(){var p=parseFloat(num.value);if(!(p>0)){p=15;num.value=p;}
     AJ={};ajustarLimite(p);rng.value=p;render(p);custos();};
   window.addEventListener('pageshow',function(){window.vgSimCarregar();});
+  /* restaurar valores padrão: volta o preço ao valor inicial do simulador e desfaz os ajustes feitos nos cards */
+  var reset=document.getElementById('bones-reset');
+  if(reset)reset.addEventListener('click',function(){var p=parseFloat(num.defaultValue)||15;AJ={};num.value=p;rng.max=200;ajustarLimite(p);rng.value=p;
+    document.querySelectorAll('.bone-rng').forEach(function(sl){if(sl.dataset.k!=='cst')sl.max=rng.max;});render(p);});
   /* cards do raio X do preço: custo total e meta também são editáveis; o novo valor é distribuído
      proporcionalmente entre os campos em reais (o número de pessoas fica como está) */
   function aplicarCusto(alvo,atual){
@@ -1848,7 +1867,7 @@ section.band#apoiadores > .in{padding-top:48px}
   /* Indique para 3 empreendedores: compartilha o site (menu do celular ou WhatsApp) */
   (function(){var a=document.getElementById('indicar');if(!a)return;
     var url=location.href.split('#')[0];
-    var txt='Conheci o Portal Vanguarda: simuladores gratuitos para quem empreende, como o raio X da venda e o raio X do preço. Vale testar: '+url;
+    var txt='Conheci o Portal Vanguarda: simuladores gratuitos para quem empreende, como o Raio X da Venda e o Raio X do Preço. Vale testar: '+url;
     a.href='https://wa.me/?text='+encodeURIComponent(txt);
     a.addEventListener('click',function(e){if(navigator.share&&matchMedia('(pointer:coarse)').matches){e.preventDefault();navigator.share({title:'Portal Vanguarda',text:txt}).catch(function(){});}});
   })();
