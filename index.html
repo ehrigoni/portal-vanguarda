@@ -2581,9 +2581,9 @@ section.band#apoiadores > .in{padding-top:48px}
         (excl.length?'<div class="adm-excl">Campos excluídos: '+excl.map(function(x){return '<button type="button" class="btn" data-res="'+esc(x.id)+'">Restaurar '+esc(x.rotulo)+'</button>';}).join('')+'</div>':'')+
         '<div class="adm-bar"><button type="button" class="btn" data-add="'+id+'">Acrescentar campo</button></div>'+
         '<p class="msg">'+(id==='raio-x'?'Campos novos são custos por venda: aparecem como "Custos adicionais por venda" e são descontados do lucro.':'Campos novos são custos mensais: entram no custo operacional e na meta de faturamento.')+'</p>'+
+        '<div class="fields adm-passos"><label><span>Passo a passo para executar o simulador</span><textarea data-f="passos" maxlength="'+LIM.passos+'" placeholder="Descreva aqui, passo a passo, como o simulador deve funcionar.">'+esc(o.passos||'')+'</textarea></label></div>'+
         '<div class="fields"><label><span>Código gerador de imagens (opcional)</span><textarea data-f="codigoImg" class="adm-img" maxlength="'+LIM.codigoImg+'" spellcheck="false" placeholder="Cole aqui o código SVG (&lt;svg&gt;…&lt;/svg&gt;). Ao salvar, o portal gera a imagem e guarda só a imagem processada.">'+esc(o.codigoImg||'')+'</textarea></label></div>'+
         (o.imagem?'<div class="adm-img-prev"><img src="'+esc(o.imagem)+'" alt="Imagem processada de '+esc(o.nome)+'"><div><p class="msg">Imagem processada e salva. Cole um novo código acima para substituir.</p><button type="button" class="btn" data-rmimg="'+id+'">Remover imagem</button></div></div>':'')+
-        '<div class="fields adm-passos"><label><span>Passo a passo para executar o simulador</span><textarea data-f="passos" maxlength="'+LIM.passos+'" placeholder="Descreva aqui, passo a passo, como o simulador deve funcionar.">'+esc(o.passos||'')+'</textarea></label></div>'+
         '</div>'+
         '<div class="adm-bar"><button type="button" class="btn go" data-salvar="'+id+'">Salvar '+esc(o.nome)+'</button></div>'+
         '<p class="msg'+(id===alvo&&bad?' bad':'')+'" data-msg>'+(id===alvo?esc(msg):'')+'</p>'+
