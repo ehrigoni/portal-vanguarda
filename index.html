@@ -482,6 +482,7 @@ details.opcional[open] summary{margin-bottom:12px}
 .selo .por{font-size:13px;color:var(--fg);border-top:1px dashed var(--line);padding-top:8px}
 .selo .tags{display:flex;gap:6px;flex-wrap:wrap}
 .selo .tag.ok{border-color:var(--glow);color:var(--glow)}
+.selo .tag.meta{border-color:var(--glow);color:var(--glow)} /* tipo de meta circulado em azul */
 .selo .tag.sel{border-color:var(--amber);color:var(--amber)}
 .selo.bloq{cursor:not-allowed;border-style:dashed}
 .selo.bloq .selo-badge,.selo.bloq h3{opacity:.6}
@@ -2208,7 +2209,7 @@ details.opcional[open] summary{margin-bottom:12px}
       var bloq=!liberado(s.id),rec=!bloq&&top.indexOf(s.id)>=0,on=!bloq&&sel.indexOf(s.id)>=0,por=R[s.id].por.filter(Boolean).slice(0,2);
       return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':' lib')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
         '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
-        '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'<span class="tag lib">Desbloqueado</span>')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
+        '<div class="tags"><span class="tag meta">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'<span class="tag lib">Desbloqueado</span>')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
         '<p>'+esc(s.desc)+'</p>'+(bloq?condHtml(s,faltaSelo(s)):'')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+
         (bloq?'':'<button type="button" class="btn divulgar'+(on?'':' go')+'" data-divulgar="'+s.id+'">Divulgar</button>')+'</label>';
     }).join('');
@@ -2591,7 +2592,7 @@ details.opcional[open] summary{margin-bottom:12px}
       $('sp-impacto').hidden=false;$('sp-erro').hidden=true;
       $('sp-selos').innerHTML=(d.selos||[]).filter(function(id){return SELO[id];}).map(function(id){var s=SELO[id];
         return '<div class="selo on"><div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
-          '<div class="tags"><span class="tag">'+esc(s.cat)+'</span></div><p>'+esc(m)+' '+esc(s.frase)+'.</p></div>';}).join('');
+          '<div class="tags"><span class="tag meta">'+esc(s.cat)+'</span></div><p>'+esc(m)+' '+esc(s.frase)+'.</p></div>';}).join('');
     });
   }
   function noSelo(){return location.hash==='#selo';}
