@@ -18,8 +18,15 @@
 //                       Se não existir, vale ASAAS_AMBIENTE: "producao" cobra de verdade; outro valor ou vazio usa o sandbox.
 //   ASAAS_VALOR_MINIMO  opcional; menor cobrança aceita, padrão 5 (mínimo do Asaas por cobrança).
 //   ASAAS_VENCIMENTO_DIAS opcional; dias até o vencimento, padrão 3.
+//   SUPABASE_URL / SUPABASE_ANON_KEY opcionais; de onde vem o preço (padrão: o mesmo projeto e a chave pública do site).
+//
+// Preço e períodos: vêm de config_site.apoio no Supabase, editados na aba Administrador > Preço e períodos
+// (valor unitário por vanguardista a cada mês, períodos oferecidos, "Outro" e assinatura ligados ou não).
+// Total = valor unitário x apadrinhados x meses, sempre calculado aqui. Sem a linha no banco, vale APOIO_PADRAO.
 
-const CUSTO_MEDIO = 1; // R$ por vanguardista por mês; igual a CUSTO_MEDIO no index.html
+const APOIO_PADRAO = { valor_unitario: 156, periodos: [1, 6, 12], outro: true, assinatura: true }; // igual ao index.html
+const SUPABASE_URL = (process.env.SUPABASE_URL || "https://ycqhjtlcczcypzdfeznf.supabase.co").trim().replace(/\/+$/, "");
+const SUPABASE_PUBLICA = (process.env.SUPABASE_ANON_KEY || "sb_publishable_HTyKQ4PwyVEkjpARrwBriA_qeVpZyC5").trim();
 const MAX_VANGUARDISTAS = 1000;
 const MAX_MESES = 120;
 
@@ -66,6 +73,32 @@ function cnpjOk(d) {
 function inteiro(v, max) {
   const n = Number(v);
   return Number.isInteger(n) && n >= 1 && n <= max ? n : null;
+}
+
+// Lê config_site.apoio (leitura pública). Guarda por 60 s. Se o banco não responder, a cobrança para
+// (melhor não cobrar do que cobrar um valor diferente do que o site mostrou).
+let cacheApoio = { t: 0, v: null };
+function normalizarApoio(v) {
+  const o = v && typeof v === "object" ? v : {};
+  const un = Number(o.valor_unitario);
+  const per = Array.isArray(o.periodos) ? o.periodos.map(Number).filter((n) => Number.isInteger(n) && n >= 1 && n <= MAX_MESES) : [];
+  return {
+    valor_unitario: un > 0 ? un : APOIO_PADRAO.valor_unitario,
+    periodos: per.length ? per : APOIO_PADRAO.periodos,
+    outro: o.outro !== false,
+    assinatura: o.assinatura !== false,
+  };
+}
+async function configApoio() {
+  if (cacheApoio.v && Date.now() - cacheApoio.t < 60000) return cacheApoio.v;
+  const headers = { apikey: SUPABASE_PUBLICA };
+  if (/^eyJ/.test(SUPABASE_PUBLICA)) headers.Authorization = "Bearer " + SUPABASE_PUBLICA;
+  const r = await fetch(SUPABASE_URL + "/rest/v1/config_site?chave=eq.apoio&select=valor", { headers });
+  if (!r.ok) throw new Error("config " + r.status);
+  const linhas = await r.json();
+  const v = normalizarApoio(Array.isArray(linhas) && linhas[0] ? linhas[0].valor : null);
+  cacheApoio = { t: Date.now(), v };
+  return v;
 }
 
 function vencimento() {
@@ -144,9 +177,21 @@ module.exports = async function handler(req, res) {
   }
   if (!b || typeof b !== "object") return res.status(400).json({ erro: "Dados inválidos." });
 
+  let cfg;
+  try {
+    cfg = await configApoio();
+  } catch (e) {
+    console.error("config apoio", String(e && e.message));
+    return res.status(503).json({ erro: "Não foi possível consultar o valor do apoio agora. Tente de novo em instantes.", codigo: "sem_config" });
+  }
   const n = inteiro(b.vanguardistas, MAX_VANGUARDISTAS);
   const assinatura = b.assinatura === true;
-  const meses = assinatura ? 1 : inteiro(b.meses, MAX_MESES); // assinatura: cada cobrança mensal paga 1 mês
+  if (assinatura && !cfg.assinatura) return res.status(400).json({ erro: "A assinatura mensal não está disponível no momento.", codigo: "periodo_indisponivel" });
+  let meses = assinatura ? 1 : inteiro(b.meses, MAX_MESES); // assinatura: cada cobrança mensal paga 1 mês
+  if (meses && !assinatura && !cfg.outro && cfg.periodos.indexOf(meses) < 0) {
+    return res.status(400).json({ erro: "Escolha um dos períodos oferecidos: " + cfg.periodos.join(", ") + " meses.", codigo: "periodo_indisponivel" });
+  }
+  const CUSTO_MEDIO = cfg.valor_unitario;
   const d = {
     nome: txt(b.nome, 120),
     email: txt(b.email, 120).toLowerCase(),

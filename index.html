@@ -556,6 +556,16 @@ details.opcional[open] summary{margin-bottom:12px}
 .adm-a{display:inline-grid;place-items:center;width:18px;height:18px;margin-left:6px;border-radius:50%;background:var(--amber);color:var(--btn-ink);font:700 11px/1 var(--display);vertical-align:middle}
 .adm-chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin:1px 2px;font-size:12px;white-space:nowrap}
 .adm-ed{display:grid;gap:10px;padding:12px;border:1px solid var(--glow);border-radius:10px}
+.adm-per{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.adm-per input,.adm-req input,.adm-req select,.adm-un{background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--fg);font:500 15px var(--body);padding:7px 10px;min-width:0}
+.adm-per input{width:110px}
+.adm-un{width:160px;font-family:var(--mono)}
+.adm-req input{width:100%}
+.adm-req td{min-width:90px}
+.adm-req td.sig{min-width:70px}
+.adm-req td.nome{min-width:220px}
+.adm-req td.cat{min-width:170px}
+.adm-sw{display:flex;gap:8px;align-items:center;font-size:15px}
 .adm-ed .fields{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
 .adm-sim{display:flex;gap:10px;align-items:flex-start;font-size:15px}
 .adm-sim input{width:18px;height:18px;margin-top:3px;accent-color:var(--amber)}
@@ -996,7 +1006,7 @@ details.opcional[open] summary{margin-bottom:12px}
           <label><input type="radio" name="ap-p" value="A"><span>Todo mês (assinatura)</span></label>
           <label class="nmeses" hidden><input id="ap-meses" type="number" min="1" step="1" value="24" inputmode="numeric" aria-label="Número de meses"><span>meses</span></label>
         </fieldset>
-        <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 12,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 1,00</b> por mês.</p><p class="note" id="ap-assin-nota" hidden>Assinatura: a cobrança se repete todo mês, no mesmo dia, e cada pagamento gera a sua nota fiscal. Você escolhe PIX, boleto ou cartão em cada fatura e pode cancelar quando quiser pelo WhatsApp (51) 99291-0038.</p></div>
+        <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 1.872,00</b><p>Valor de cada apadrinhamento: <b class="mono" data-custo>R$ 156,00</b> por vanguardista, a cada mês.</p><p class="note" id="ap-assin-nota" hidden>Assinatura: a cobrança se repete todo mês, no mesmo dia, e cada pagamento gera a sua nota fiscal. Você escolhe PIX, boleto ou cartão em cada fatura e pode cancelar quando quiser pelo WhatsApp (51) 99291-0038.</p></div>
         <h3 class="wide fields-tit">Seus dados para a nota fiscal</h3>
         <label for="ap-nome" class="wide"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
         <label for="ap-whats"><span>Celular ou WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
@@ -1130,16 +1140,16 @@ details.opcional[open] summary{margin-bottom:12px}
   <div class="pn-acts"><span class="note" id="pn-selos-msg" aria-live="polite"></span></div>
 </div></section>
 <section class="band" id="pn-intencao"><div class="in">
-  <div class="head"><p class="eyebrow">Suas intenções</p><h2>O que você quer com o apoio?</h2><p class="lede">Marque quantas quiser. Ao salvar, o portal reordena os selos acima e destaca os que mais combinam com você.</p></div>
+  <div class="head"><p class="eyebrow">Reconhecimento</p><h2>Por qual impacto você quer ser reconhecido?</h2><p class="lede">Escolha que tipo de reconhecimento social ou de impacto na sociedade combina com a sua marca. Marque quantos quiser: ao salvar, o portal reordena os selos acima e destaca os que mais combinam com você.</p></div>
   <form class="pn-form" id="pn-form-obj" novalidate>
     <div class="fields">
-      <fieldset class="chips pn-checks wide" id="pn-obj"><legend class="sr">O que você quer com o apoio</legend>
-        <label><input type="checkbox" value="redes"><span>Mostrar impacto nas redes sociais</span></label>
-        <label><input type="checkbox" value="local"><span>Fortalecer a marca no bairro e na cidade</span></label>
-        <label><input type="checkbox" value="esg"><span>Relatório ESG ou de sustentabilidade</span></label>
-        <label><input type="checkbox" value="educacao"><span>Apoiar a educação empreendedora</span></label>
-        <label><input type="checkbox" value="comunidade"><span>Apoiar comunidades vulneráveis</span></label>
-        <label><input type="checkbox" value="clientes"><span>Atrair clientes e parceiros</span></label>
+      <fieldset class="chips pn-checks wide" id="pn-obj"><legend class="sr">Por qual impacto você quer ser reconhecido</legend>
+        <label><input type="checkbox" value="redes"><span>Nas redes sociais, pelo impacto que o seu apoio gera</span></label>
+        <label><input type="checkbox" value="local"><span>No bairro e na cidade, como marca que fortalece a região</span></label>
+        <label><input type="checkbox" value="esg"><span>Em relatório ESG ou de sustentabilidade</span></label>
+        <label><input type="checkbox" value="educacao"><span>Por apoiar a educação empreendedora</span></label>
+        <label><input type="checkbox" value="comunidade"><span>Por apoiar comunidades vulneráveis</span></label>
+        <label><input type="checkbox" value="clientes"><span>Por clientes e parceiros, como empresa que apoia</span></label>
       </fieldset>
     </div>
     <div class="pn-acts"><button class="btn go" type="submit" id="pn-obj-btn">Salvar e ver selos recomendados</button><span class="note" id="pn-obj-msg" aria-live="polite"></span></div>
@@ -1272,6 +1282,8 @@ details.opcional[open] summary{margin-bottom:12px}
 </div></section>
 <section class="band adm" data-admin hidden><div class="in">
   <details class="adm-p" id="adm-sim"><summary><span>Simuladores</span><small>Nome, descrição, instruções, campos e visibilidade de cada simulador</small></summary><div class="adm-c"></div></details>
+  <details class="adm-p" id="adm-preco"><summary><span>Preço e períodos</span><small>Valor unitário do apadrinhamento e os períodos que o Apoiar oferece</small></summary><div class="adm-c"></div></details>
+  <details class="adm-p" id="adm-req"><summary><span>Requisitos dos selos</span><small>Ícone, nome, tipo de meta e o que cada selo exige para desbloquear</small></summary><div class="adm-c"></div></details>
   <details class="adm-p" id="adm-selos"><summary><span>Selos</span><small>Selos escolhidos, visitas e cadastros pelo link de cada apoiador</small></summary><div class="adm-c"></div></details>
   <details class="adm-p" id="adm-imp"><summary><span>Impacto</span><small>Números do portal inteiro</small></summary><div class="adm-c"></div></details>
   <details class="adm-p" id="adm-apo"><summary><span>Apoiadores</span><small>Apoiadores, apoios recebidos e vagas de apadrinhamento</small></summary><div class="adm-c"></div></details>
@@ -1465,7 +1477,10 @@ details.opcional[open] summary{margin-bottom:12px}
 
   /* como vai funcionar: números e apoio */
   var VG={total:0,custeados:0}; /* atualizar com os números reais */
-  var CUSTO_MEDIO=1; /* custo médio mensal de cada vanguardista apadrinhado, em R$ */
+  /* preço e períodos do apoio: config_site.apoio, editado em Administrador > Preço e períodos. Total = valor unitário x apadrinhados x meses.
+     APOIO_PADRAO vale até a configuração chegar do banco (o mesmo padrão de api/asaas/cobranca.js, que recalcula o total no servidor). */
+  var APOIO_PADRAO={valor_unitario:156,periodos:[1,6,12],outro:true,assinatura:true},APOIO=APOIO_PADRAO;
+  var CUSTO_MEDIO=APOIO.valor_unitario; /* valor de cada vanguardista apadrinhado por mês, em R$ */
   document.querySelectorAll('[data-vg]').forEach(function(el){el.textContent=VG[el.dataset.vg].toLocaleString('pt-BR');});
   /* escala: começa em 0–100; quando um número passa do limite, o limite sobe para o próximo valor redondo (1, 2 ou 5 × 10^k) e as duas barras usam a mesma escala */
   function escala(v){var m=100;while(v>m){var k=Math.pow(10,Math.floor(Math.log10(m))),d=m/k;m=(d<2?2:d<5?5:10)*k;}return m;}
@@ -1483,6 +1498,22 @@ details.opcional[open] summary{margin-bottom:12px}
   [apN,apM].forEach(function(el){el.addEventListener('input',ap);});
   document.querySelectorAll('input[name="ap-p"]').forEach(function(r){r.addEventListener('change',ap);});
   ap();
+  /* monta as opções de "Durante" com os períodos configurados (e Outro e assinatura, se ligados) */
+  function normApoio(v){var o=v&&typeof v==='object'?v:{},un=Number(o.valor_unitario),per=(Array.isArray(o.periodos)?o.periodos:[]).map(Number).filter(function(n){return n>=1&&n<=120&&n%1===0;}).sort(function(x,y){return x-y;});
+    return {valor_unitario:un>0?un:APOIO_PADRAO.valor_unitario,periodos:per.length?per:APOIO_PADRAO.periodos,outro:o.outro!==false,assinatura:o.assinatura!==false};}
+  function montarPeriodos(v){
+    APOIO=normApoio(v);CUSTO_MEDIO=APOIO.valor_unitario;
+    var fs=document.getElementById('ap-periodo'),nm=fs.querySelector('.nmeses'),atual=(document.querySelector('input[name="ap-p"]:checked')||{}).value;
+    fs.querySelectorAll('label:not(.nmeses)').forEach(function(l){l.remove();});
+    var ops=APOIO.periodos.map(function(p){return [String(p),p===1?'1 mês':p+' meses'];});
+    if(APOIO.outro)ops.push(['N','Outro']);if(APOIO.assinatura)ops.push(['A','Todo mês (assinatura)']);
+    var def=ops.some(function(o){return o[0]===atual;})?atual:(APOIO.periodos.indexOf(12)>=0?'12':ops[0][0]);
+    ops.forEach(function(o){var l=document.createElement('label');l.innerHTML='<input type="radio" name="ap-p" value="'+o[0]+'"'+(o[0]===def?' checked':'')+'><span>'+o[1]+'</span>';
+      l.querySelector('input').addEventListener('change',ap);fs.insertBefore(l,nm);});
+    document.querySelectorAll('[data-custo]').forEach(function(el){el.textContent=fmt.format(CUSTO_MEDIO);});
+    ap();
+  }
+  montarPeriodos(APOIO_PADRAO);
   /* máscaras */
   function dig(v){return String(v).replace(/\D/g,'');}
   function maskFone(v){var d=dig(v).slice(0,11);if(!d)return '';if(d.length<=2)return '('+d;var a='('+d.slice(0,2)+') ',r=d.slice(2);
@@ -1515,7 +1546,11 @@ details.opcional[open] summary{margin-bottom:12px}
     if(!location.hash)history.replaceState(null,'',location.pathname+location.search+'#selo');})();
   function refSelo(){try{var r=JSON.parse(localStorage.getItem(REF)||'null');return r&&r.c&&Date.now()-r.t<30*864e5?r.c:null;}catch(e){return null;}}
   try{if(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){sb=null;}
-  window.VG={sb:sb,perfil:function(){return perfil;},ref:refSelo,
+  /* configuração pública do site (preço do apoio e requisitos dos selos), lida uma vez; o painel e a aba Administrador usam VG.config */
+  var CONFIG;try{CONFIG=sb?sb.from('config_site').select('chave,valor').in('chave',['apoio','selos']).then(function(r){var c={};(r.data||[]).forEach(function(x){c[x.chave]=x.valor;});return c;},function(){return {};}):Promise.resolve({});}catch(e){CONFIG=Promise.resolve({});}
+  CONFIG.then(function(c){if(c.apoio)montarPeriodos(c.apoio);});
+  window.VG={sb:sb,perfil:function(){return perfil;},ref:refSelo,config:CONFIG,
+    apoio:function(){return APOIO;},montarPeriodos:function(v){montarPeriodos(v);},
     /* painel: Transformar em assinatura abre o Apoiar com o mesmo número de apadrinhados e o período Todo mês */
     assinar:function(n){if(n>0)apN.value=n;var r=document.querySelector('input[name="ap-p"][value="A"]');if(r)r.checked=true;ap();location.hash='apoiar-cadastro';},
     /* Minha conta (Dados da conta): grava no perfil o que a pessoa mudou e atualiza o cabeçalho */
@@ -2022,7 +2057,31 @@ details.opcional[open] summary{margin-bottom:12px}
      req:{meses:180}}
   ];
   VG.selos=SELOS; /* usado pela aba Administrador */
-  var SELO={};SELOS.forEach(function(s){SELO[s.id]=s;});
+  var SELO={};SELOS.forEach(function(s){SELO[s.id]=s;s.orig={nome:s.nome,sigla:s.sigla,cat:s.cat};});
+  /* requisitos dos selos: config_site.selos, editado em Administrador > Requisitos dos selos (o banco confere os mesmos
+     requisitos em _selos_liberados). Todo selo exige 1 apoio pago; valor, vanguardistas, convidados e meses se somam a isso. */
+  var REQ_PADRAO={powered:{meses:180}};
+  var brl=function(v){return Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:Number(v)%1?2:0});};
+  function textoReq(r){
+    var p=['Ter pelo menos 1 apoio pago e não estornado'];
+    if(r.valor>0)p.push('somar pelo menos '+brl(r.valor)+' investidos');
+    if(r.vanguardistas>0)p.push('apadrinhar pelo menos '+r.vanguardistas.toLocaleString('pt-BR')+(r.vanguardistas>1?' vanguardistas':' vanguardista'));
+    if(r.meses>0)p.push('ter pelo menos '+r.meses.toLocaleString('pt-BR')+' meses de uso apadrinhados (somando os apoios)');
+    if(r.convidados>0)p.push('ter pelo menos '+r.convidados.toLocaleString('pt-BR')+(r.convidados>1?' convidados que se cadastraram':' convidado que se cadastrou')+' pelo link do seu selo');
+    return (p.length>2?p.slice(0,-1).join(', ')+' e '+p[p.length-1]:p.join(' e '))+'.';
+  }
+  function aplicarReqSelos(cfg){
+    cfg=cfg&&typeof cfg==='object'?cfg:REQ_PADRAO;
+    SELOS.forEach(function(s){
+      var c=cfg[s.id]||{},r={};
+      ['valor','vanguardistas','convidados','meses'].forEach(function(k){var n=Number(c[k]);if(n>0)r[k]=n;});
+      if(s.id==='powered'&&!('meses' in c))r.meses=180;
+      s.req=Object.keys(r).length?r:null;s.cond=textoReq(r);
+      s.nome=(c.nome||'').trim()||s.orig.nome;s.sigla=(c.sigla||'').trim()||s.orig.sigla;s.cat=(c.cat||'').trim()||s.orig.cat;
+    });
+  }
+  aplicarReqSelos(REQ_PADRAO);
+  VG.aplicarReqSelos=aplicarReqSelos;
 
   /* regras de recomendação: cada regra soma pontos e explica o porquê */
   function pontuar(p){
@@ -2125,12 +2184,22 @@ details.opcional[open] summary{margin-bottom:12px}
   /* regra geral: nenhum selo é livre. Todo selo exige pelo menos 1 apoio pago e não estornado
      (st.fin.apoios, de impacto_apoiador). Powered by exige, além disso, 180 meses de uso apadrinhados somando os apoios. */
   function mesesPagos(){return st.fin?Number(st.fin.meses_vanguardista)||0:0;}
-  function liberado(id){var s=SELO[id];return !!s&&temApoio()&&(!s.req||mesesPagos()>=s.req.meses);}
+  function progresso(){var f=st.fin||{};return {valor:Number(f.valor_total)||0,vanguardistas:Number(f.vanguardistas_total)||0,meses:mesesPagos(),convidados:st.indic?st.indic.cadastros:0};}
+  function faltas(s){var r=s.req||{},p=progresso();return Object.keys(r).filter(function(k){return p[k]<r[k];});}
+  function liberado(id){var s=SELO[id];return !!s&&temApoio()&&!faltas(s).length;}
   /* condição para desbloquear (docs/selos.md), escrita em todo selo: painel (Selos e divulgação) e página pública */
   function condHtml(s,status){return '<p class="req"><b>Condição para desbloquear:</b> '+esc(s.cond)+(status?' '+esc(status):'')+'</p>';}
   function faltaSelo(s){
     var t=!temApoio()?'Ainda não cumprida: falta o primeiro apoio pago.':'Ainda não cumprida.';
-    if(s.req)t+=' Você tem '+mesesPagos().toLocaleString('pt-BR')+' de '+s.req.meses+' meses.';
+    if(temApoio()){var p=progresso(),r=s.req||{},d=[];
+      faltas(s).forEach(function(k){
+        if(k==='valor')d.push(brl(p.valor)+' de '+brl(r.valor)+' investidos');
+        else if(k==='vanguardistas')d.push(p.vanguardistas.toLocaleString('pt-BR')+' de '+r.vanguardistas.toLocaleString('pt-BR')+' vanguardistas apadrinhados');
+        else if(k==='meses')d.push(p.meses.toLocaleString('pt-BR')+' de '+r.meses.toLocaleString('pt-BR')+' meses');
+        /* convidados: abaixo de 5, o número exato não aparece (LGPD), como no painel de impacto */
+        else if(k==='convidados')d.push(p.convidados>=5?p.convidados.toLocaleString('pt-BR')+' de '+r.convidados.toLocaleString('pt-BR')+' convidados cadastrados':'menos de '+r.convidados.toLocaleString('pt-BR')+' convidados cadastrados');
+      });
+      if(d.length)t+=' Você tem '+(d.length>1?d.slice(0,-1).join(', ')+' e '+d[d.length-1]:d[0])+'.';}
     return t+' Até lá, o selo não pode ser selecionado nem entra no material de divulgação.';
   }
   function desenharSelos(){
@@ -2145,7 +2214,7 @@ details.opcional[open] summary{margin-bottom:12px}
         (bloq?'':'<button type="button" class="btn divulgar'+(on?'':' go')+'" data-divulgar="'+s.id+'">Divulgar</button>')+'</label>';
     }).join('');
     $('pn-selos-bloq').hidden=temApoio();
-    $('pn-selos-msg').textContent=top.length?'':'Preencha Meu negócio e as suas intenções logo abaixo para ver os selos recomendados para você.';
+    $('pn-selos-msg').textContent=top.length?'':'Preencha Meu negócio e o reconhecimento que você quer, logo abaixo, para ver os selos recomendados para você.';
   }
   /* Divulgar: seleciona o selo (se ainda não estiver) e abre o material já com ele */
   $('pn-lista-selos').addEventListener('click',function(e){
@@ -2210,7 +2279,7 @@ details.opcional[open] summary{margin-bottom:12px}
     else if(st.fin&&st.fin.vanguardistas_total)nota.push('Região, porte, tipo de negócio e faturamento aparecem quando o seu apoio custear pelo menos 5 vanguardistas cadastrados. Abaixo disso, nada é mostrado, para que ninguém seja identificado.');
     if(st.ambiente==='sandbox')nota.push('Ambiente de teste: os apoios são do sandbox do Asaas.');
     $('pn-imp-nota').textContent=nota.join(' ');
-    $('pn-assinar').hidden=!(st.fin&&st.fin.vanguardistas_total>0&&VG.assinar);
+    $('pn-assinar').hidden=!(st.fin&&st.fin.vanguardistas_total>0&&VG.assinar&&VG.apoio().assinatura);
   }
   $('pn-assinar-btn').addEventListener('click',function(){var f=st.fin||{};VG.assinar(Number(f.vanguardistas_ativos)||Number(f.vanguardistas_total)||5);});
   /* ambiente da cobrança (sandbox ou produção), para contar só os apoios do ambiente ligado */
@@ -2510,8 +2579,8 @@ details.opcional[open] summary{margin-bottom:12px}
     if(seloCarregado===c)return;seloCarregado=c;
     try{var dia=new Date().toISOString().slice(0,10),k='vg-visita-'+c;if(localStorage.getItem(k)!==dia){localStorage.setItem(k,dia);sb.rpc('registrar_visita_selo',{p_codigo:c}).then(function(){},function(){});}}catch(e){}
     ambiente().then(function(amb){
-      return sb.rpc('selo_publico',{p_codigo:c,p_ambiente:amb}).then(function(r){return r.error?null:r.data;},function(){return null;});
-    }).then(function(d){
+      return Promise.all([sb.rpc('selo_publico',{p_codigo:c,p_ambiente:amb}).then(function(r){return r.error?null:r.data;},function(){return null;}),VG.config||Promise.resolve({})]);
+    }).then(function(rs){var d=rs[0];aplicarReqSelos((rs[1]||{}).selos);
       if(!d){$('sp-erro').hidden=false;$('sp-impacto').hidden=true;seloCarregado=null;return;}
       var m=d.marca||'Uma empresa apoiadora';
       $('sp-titulo').textContent=m+' apoia pequenos empreendedores';
@@ -2543,7 +2612,7 @@ details.opcional[open] summary{margin-bottom:12px}
     $('pn-titulo').textContent='Olá, '+String(p.nome||'').split(' ')[0]+'. '+(ap?'Este é o seu painel de impacto':'Esta é a sua conta');
     $('pn-lede').textContent=ap?'Veja os selos sociais que combinam com o seu negócio, gere material para divulgar o seu apoio e acompanhe, de forma agregada, grupos de vanguardistas.':'Conte sobre o seu negócio e mantenha seus dados em dia. Para apoiar o portal, use Apadrinhar vanguardistas.';
     preencherDados();
-    carregar().then(function(){preencherPerfil();if(!ap)return;desenharSelos();material();listarGrupos();conferirGrupo();carregarImpacto();});
+    Promise.all([carregar(),VG.config||Promise.resolve({})]).then(function(rs){aplicarReqSelos((rs[1]||{}).selos);preencherPerfil();if(!ap)return;desenharSelos();material();listarGrupos();conferirGrupo();carregarImpacto();});
   }
   function naTela(){return (decodeURIComponent(location.hash.slice(1))||'').indexOf('painel')===0||location.hash.indexOf('#pn-')===0;}
   window.addEventListener('hashchange',function(){if(naTela())abrir();});
@@ -3009,7 +3078,73 @@ details.opcional[open] summary{margin-bottom:12px}
     };
   }
 
-  var PAINEIS={'adm-sim':pSim,'adm-selos':pSelos,'adm-imp':pImp,'adm-apo':pApo,'adm-usu':pUsu};
+  /* configuração lida direto do banco (config_site), para o painel sempre mostrar o que está salvo */
+  function lerConfig(chave){return sb?sb.from('config_site').select('valor').eq('chave',chave).maybeSingle().then(function(r){if(r.error)throw r.error;return r.data?r.data.valor:null;}):Promise.reject(new Error('sem banco'));}
+
+  /* preço e períodos do apoio (config_site.apoio). Total = valor unitário x apadrinhados x meses; o servidor de cobrança usa o mesmo valor */
+  function pPreco(c){
+    c.innerHTML='<p class="msg">Carregando...</p>';
+    lerConfig('apoio').then(function(v){
+      var a=VG.apoio?VG.apoio():{valor_unitario:156,periodos:[1,6,12],outro:true,assinatura:true};
+      if(v&&typeof v==='object')a={valor_unitario:Number(v.valor_unitario)||a.valor_unitario,periodos:Array.isArray(v.periodos)&&v.periodos.length?v.periodos:a.periodos,outro:v.outro!==false,assinatura:v.assinatura!==false};
+      c.innerHTML='<p class="msg">'+(v?'':'Ainda não há preço salvo no banco: o site usa o padrão abaixo. Rode o supabase/precos-selos-2026-11.sql e salve. ')+'O total que o apoiador vê e que o Asaas cobra é valor unitário × número de apadrinhados × meses.</p>'+
+        '<label class="adm-sw"><span>Valor unitário do apadrinhamento (R$ por vanguardista, a cada mês)</span><input class="adm-un" data-f="un" type="number" min="0.01" step="0.01" inputmode="decimal" value="'+a.valor_unitario+'"></label>'+
+        '<div><b>Períodos oferecidos (em meses)</b><p class="msg">Digite um período e um novo campo aparece para o próximo. Deixe em branco para tirar. Até 12 períodos, de 1 a 120 meses.</p><div class="adm-per" data-f="per"></div></div>'+
+        '<label class="adm-sw"><input type="checkbox" data-f="outro"'+(a.outro?' checked':'')+'> Mostrar "Outro" (o apoiador digita o número de meses)</label>'+
+        '<label class="adm-sw"><input type="checkbox" data-f="assin"'+(a.assinatura?' checked':'')+'> Mostrar "Todo mês (assinatura)"</label>'+
+        '<div data-f="prev"></div>'+
+        '<div class="adm-bar"><button type="button" class="btn go" data-a="ok">Salvar preço e períodos</button></div><p class="msg" data-f="msg"></p>';
+      var box=c.querySelector('[data-f="per"]'),un=c.querySelector('[data-f="un"]');
+      function campo(val){var i=document.createElement('input');i.type='number';i.min='1';i.max='120';i.step='1';i.inputMode='numeric';i.placeholder='meses';i.value=val||'';i.setAttribute('aria-label','Período em meses');
+        i.addEventListener('input',function(){garantirVazio();previa();});box.appendChild(i);}
+      function garantirVazio(){var ins=[].slice.call(box.querySelectorAll('input')),vaz=ins.filter(function(i){return !i.value;});
+        if(!vaz.length&&ins.length<12)campo('');else if(vaz.length>1)vaz.slice(0,-1).forEach(function(i){if(i!==document.activeElement)i.remove();});}
+      function periodos(){return [].slice.call(box.querySelectorAll('input')).map(function(i){return Number(i.value);}).filter(function(n){return n>0;});}
+      function previa(){var u=Number(un.value)||0,ps=periodos().sort(function(x,y){return x-y;});
+        c.querySelector('[data-f="prev"]').innerHTML=tabela(['Período','Total para 1 vanguardista','Total para 5 vanguardistas'],ps.map(function(p){return '<tr><td>'+(p===1?'1 mês':num(p)+' meses')+'</td><td class="n">'+brl(u*p)+'</td><td class="n">'+brl(u*p*5)+'</td></tr>';}));}
+      a.periodos.forEach(function(p){campo(p);});garantirVazio();previa();un.addEventListener('input',previa);
+      c.querySelector('[data-a="ok"]').onclick=function(){var m=c.querySelector('[data-f="msg"]'),u=Math.round(Number(un.value)*100)/100,ps=periodos();
+        m.className='msg bad';
+        if(!(u>0))return (m.textContent='Informe um valor unitário maior que zero.');
+        if(!ps.length)return (m.textContent='Informe pelo menos um período.');
+        if(ps.some(function(p){return p%1||p<1||p>120;}))return (m.textContent='Cada período deve ser um número inteiro de meses, de 1 a 120.');
+        if(ps.length!==ps.filter(function(p,i){return ps.indexOf(p)===i;}).length)return (m.textContent='Há períodos repetidos.');
+        var val={valor_unitario:u,periodos:ps.slice().sort(function(x,y){return x-y;}),outro:c.querySelector('[data-f="outro"]').checked,assinatura:c.querySelector('[data-f="assin"]').checked};
+        m.className='msg';m.textContent='Salvando...';
+        rpc('admin_config_salvar',{p_chave:'apoio',p_valor:val}).then(function(r){if(VG.montarPeriodos)VG.montarPeriodos(r||val);m.textContent='Salvo. O Apoiar e a cobrança já usam '+brl(val.valor_unitario)+' por vanguardista a cada mês.';},
+          function(e){m.className='msg bad';m.textContent='Não foi possível salvar: '+String(e&&e.message||'erro');});};
+    },function(e){c.innerHTML=falhou(c,e);});
+  }
+
+  /* requisitos dos selos (config_site.selos). Todo selo exige 1 apoio pago; o banco confere os requisitos em _selos_liberados */
+  var TIPOS_META=['Meta social','Agenda ONU','Visibilidade digital','Outro'];
+  function pReq(c){
+    c.innerHTML='<p class="msg">Carregando...</p>';
+    lerConfig('selos').then(function(v){
+      var cfg=v&&typeof v==='object'?v:{powered:{meses:180}},sel=VG.selos||[];
+      c.innerHTML='<p class="msg">Todo selo exige pelo menos 1 apoio pago e não estornado. Os requisitos abaixo se somam a isso; 0 quer dizer sem exigência. O selo fica desbloqueado enquanto o apoiador cumpre todos, e o texto do requisito some do card.</p>'+
+        '<div class="adm-tw adm-req"><table class="adm-t"><thead><tr><th>Ícone</th><th>Nome do selo</th><th>Tipo de meta</th><th>Valor investido (R$)</th><th>Vanguardistas apadrinhados</th><th>Convidados cadastrados</th><th>Meses de uso</th></tr></thead><tbody>'+
+        sel.map(function(s,i){var r=cfg[s.id]||{},o=s.orig||s,cat=r.cat||o.cat,ops=TIPOS_META.indexOf(cat)<0?TIPOS_META.concat([cat]):TIPOS_META;
+          var nmr=function(k,step){var d=r[k]!=null?r[k]:(s.id==='powered'&&k==='meses'?180:0);return '<td><input data-k="'+k+'" type="number" min="0" step="'+step+'" inputmode="decimal" value="'+d+'"></td>';};
+          return '<tr data-i="'+i+'"><td class="sig"><input data-k="sigla" maxlength="6" value="'+esc(r.sigla||o.sigla)+'"></td><td class="nome"><input data-k="nome" maxlength="80" value="'+esc(r.nome||o.nome)+'"></td>'+
+            '<td class="cat"><select data-k="cat">'+ops.map(function(t){return '<option'+(t===cat?' selected':'')+'>'+esc(t)+'</option>';}).join('')+'</select></td>'+
+            nmr('valor','0.01')+nmr('vanguardistas','1')+nmr('convidados','1')+nmr('meses','1')+'</tr>';}).join('')+
+        '</tbody></table></div><p class="msg">Vanguardistas apadrinhados soma os apadrinhados de todos os apoios. Meses de uso é vanguardistas × meses, somando os apoios. Convidados são as pessoas que se cadastraram pelo link do selo do apoiador.</p>'+
+        '<div class="adm-bar"><button type="button" class="btn go" data-a="ok">Salvar requisitos</button></div><p class="msg" data-f="msg"></p>';
+      c.querySelector('[data-a="ok"]').onclick=function(){var m=c.querySelector('[data-f="msg"]'),out={},erro='';
+        c.querySelectorAll('tr[data-i]').forEach(function(tr){var s=sel[+tr.dataset.i],o=s.orig||s,r={},g=function(k){return tr.querySelector('[data-k="'+k+'"]').value.trim();};
+          ['valor','vanguardistas','convidados','meses'].forEach(function(k){var n=Number(g(k)||0);if(!(n>=0)||(k!=='valor'&&n%1))erro='Confira os números de '+o.nome+'.';r[k]=k==='valor'?Math.round(n*100)/100:n;});
+          if(!g('sigla')||!g('nome'))erro='Ícone e nome não podem ficar vazios ('+o.nome+').';
+          if(g('sigla')!==o.sigla)r.sigla=g('sigla');if(g('nome')!==o.nome)r.nome=g('nome');if(g('cat')!==o.cat)r.cat=g('cat');
+          out[s.id]=r;});
+        if(erro)return (m.className='msg bad',m.textContent=erro);
+        m.className='msg';m.textContent='Salvando...';
+        rpc('admin_config_salvar',{p_chave:'selos',p_valor:out}).then(function(r){if(VG.aplicarReqSelos)VG.aplicarReqSelos(r||out);m.textContent='Salvo. Os painéis dos apoiadores usam os novos requisitos a partir do próximo acesso.';},
+          function(e){m.className='msg bad';m.textContent='Não foi possível salvar: '+String(e&&e.message||'erro');});};
+    },function(e){c.innerHTML=falhou(c,e);});
+  }
+
+  var PAINEIS={'adm-sim':pSim,'adm-preco':pPreco,'adm-req':pReq,'adm-selos':pSelos,'adm-imp':pImp,'adm-apo':pApo,'adm-usu':pUsu};
   Object.keys(PAINEIS).forEach(function(id){var d=$(id);d.addEventListener('toggle',function(){if(d.open&&admin())PAINEIS[id](d.querySelector('.adm-c'));});});
   $('adm-amb').addEventListener('change',function(){['adm-imp','adm-apo'].forEach(function(id){var d=$(id);if(d.open)PAINEIS[id](d.querySelector('.adm-c'));});});
   document.addEventListener('vg:perfil',function(){var a=admin();$('adm-fora').hidden=a;$('adm-fora-acts').hidden=a;aplicarSims();
