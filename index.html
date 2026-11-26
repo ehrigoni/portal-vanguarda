@@ -275,7 +275,6 @@ details.opcional[open] summary{margin-bottom:12px}
 .selo.lib.on{border-color:var(--amber);background:transparent;box-shadow:0 0 0 2px var(--amber)} /* selecionado: borda âmbar mais forte, sem preenchimento */
 .selo.lib.on .selo-badge{border-color:var(--amber);background:transparent;color:var(--amber)}
 .selo.lib .tag.sel,.selo .tag.lib{border-color:var(--amber)!important;color:var(--amber)!important;background:transparent!important;font-weight:600}
-.selo.lib.on .divulgar{background:transparent;border-color:var(--amber);color:var(--amber);font-weight:600}
 .sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 /* Meu negócio e Intenções: textos, campos e botão centralizados */
 #pn-perfil .head,#pn-intencao .head{text-align:center;margin-inline:auto}
@@ -299,6 +298,18 @@ details.opcional[open] summary{margin-bottom:12px}
 #pn-apoiar #ap-periodo input[type=radio]+span{display:inline-block;padding:11px 16px;line-height:1.35;white-space:normal}
 #pn-apoiar .fields-tit,#pn-apoiar .sum{text-align:center}
 #pn-apoiar form .actions,#pn-apoiar form .pn-acts{justify-content:center}
+/* Apadrinhar no painel: formulário ocupando toda a largura central, campos maiores e centralizados, botões no centro */
+#pn-apoiar .signup{grid-template-columns:1fr;max-width:760px;margin-inline:auto}
+#pn-apoiar .signup form{width:100%}
+#pn-apoiar .fields label,#pn-apoiar .fields fieldset{text-align:center}
+#pn-apoiar .fields label>span{text-align:center}
+#pn-apoiar .fields input,#pn-apoiar .fields select{text-align:center;text-align-last:center;font-size:18px;min-height:30px}
+#pn-apoiar .fields label{padding:14px 16px}
+#pn-apoiar .guardar{justify-content:center}
+#pn-apoiar form>.btn,#pn-apoiar #ap-btn-so{justify-self:center;width:min(100%,360px);justify-content:center}
+#pn-apoiar>.in>.pn-acts{display:flex;justify-content:center}
+/* Minha conta: Apadrinhar vanguardistas e Usar os simuladores centralizados */
+[data-view="painel"] .pagehead .in{text-align:center}
 #pn-perfil .pn-acts{justify-content:center;flex-direction:column}
 #pn-impacto .kpi{text-align:center;justify-items:center;align-content:center}
 #como-funciona-vanguardistas .head h2{text-wrap:wrap}
@@ -514,7 +525,7 @@ details.opcional[open] summary{margin-bottom:12px}
 .selo.dh .btn{margin-top:auto;align-self:stretch;padding:10px 14px;font-size:14px}
 /* botões do painel em linha, com a mesma largura e altura, ocupando a largura do quadro */
 [data-view="painel"] .pagehead .pn-acts,.mat-ctl .pn-acts{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:10px;align-items:stretch}
-[data-view="painel"] .pagehead .pn-acts{max-width:720px}
+[data-view="painel"] .pagehead .pn-acts{max-width:720px;margin-inline:auto}
 [data-view="painel"] .pagehead .pn-acts .btn,.mat-ctl .pn-acts .btn{width:100%;min-height:46px;white-space:normal;text-align:center;line-height:1.25;padding:10px 12px}
 @media (max-width:460px){[data-view="painel"] .pagehead .pn-acts .btn,.mat-ctl .pn-acts .btn{font-size:14px;padding:8px 8px}}
 .mat{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
@@ -2225,7 +2236,7 @@ details.opcional[open] summary{margin-bottom:12px}
         '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
         '<div class="tags"><span class="tag meta">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'<span class="tag lib">Desbloqueado</span>')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
         '<p class="desc">'+esc(s.desc)+'</p>'+(bloq?condHtml(s,faltaSelo(s)):'')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+
-        (bloq?'':'<button type="button" class="btn divulgar'+(on?'':' go')+'" data-divulgar="'+s.id+'">Divulgar</button>')+'</label>';
+        (bloq?'':'<button type="button" class="btn go divulgar" data-divulgar="'+s.id+'">Divulgar</button>')+'</label>';
     }).join('');
     $('pn-selos-bloq').hidden=temApoio();
     $('pn-selos-msg').textContent=top.length?'':'Preencha Meu negócio e o reconhecimento que você quer, logo abaixo, para ver os selos recomendados para você.';
