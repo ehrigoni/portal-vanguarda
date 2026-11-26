@@ -86,7 +86,7 @@ Os selos exibem etiquetas e comportamentos específicos de acordo com a situaç�
 
 ## Condição para desbloquear (escrita em todo selo)
 
-Todo cartão de selo mostra a linha **"Condição para desbloquear: …"** no painel (lista principal), na aba Desenvolvimento humano e na página pública (#selo):
+Todo cartão de selo mostra a linha **"Condição para desbloquear: …"** no painel (aba Selos e divulgação) e na página pública (#selo):
 
 - Selos de entrada, ODS e Tecnologia para o Bem: "Condição para desbloquear: Ter pelo menos 1 apoio pago e não estornado."
 - Powered by: "Condição para desbloquear: Ter pelo menos 180 meses de uso apadrinhados (somando apoios pagos e não estornados)."
@@ -121,11 +121,11 @@ A recomendação automática cruza os dados do formulário de perfil com os crit
 
 # 5. Selos de desenvolvimento humano
 
-A aba **Desenvolvimento humano** reúne os selos ligados aos Objetivos de Desenvolvimento Sustentável (ODS 4, ODS 8 e ODS 10).
+Os selos ligados aos Objetivos de Desenvolvimento Sustentável (ODS 4, ODS 8 e ODS 10) ficam na mesma lista dos outros selos, na aba **Selos e divulgação** de Minha conta, com cadeado até o primeiro apoio pago. A antiga aba Desenvolvimento humano foi removida porque repetia esses três selos. Cada selo liberado tem o botão **Divulgar**, que abre o material de divulgação já com ele.
 
-- Os selos ODS 4, ODS 8 e ODS 10 só podem ser selecionados, gerados e divulgados após a confirmação de pelo menos 1 apoio pago no Asaas (tanto na lista principal quanto na aba Desenvolvimento humano).
+- Os selos ODS 4, ODS 8 e ODS 10 só podem ser selecionados, gerados e divulgados após a confirmação de pelo menos 1 apoio pago no Asaas .
 
-- Não existe exceção ou liberação prévia sem pagamento para os selos desta aba.
+- Não existe exceção ou liberação prévia sem pagamento para esses selos.
 
 - Ao atingir a confirmação do pagamento, os três selos ficam disponíveis para escolha, permitindo ao apoiador destacar o compromisso social alinhado à sua estratégia ESG.
 
@@ -164,8 +164,8 @@ A página pública do apoiador exibe os selos selecionados. Qualquer selo sem ap
 | **Empresa Madrinha**                      | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas                                                             | Exige apoio ativo        |
 | **Investidora em Educação Empreendedora** | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas                                                             | Exige apoio ativo        |
 | **Aceleradora de Negócios Periféricos**   | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas                                                             | Exige apoio ativo        |
-| **Parceiro ODS 8**                        | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas (desbloqueia seleção, geração e aba Desenvolvimento humano) | Exige apoio ativo        |
-| **Parceiro ODS 4**                        | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas (desbloqueia seleção, geração e aba Desenvolvimento humano) | Exige apoio ativo        |
-| **Parceiro ODS 10**                       | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas (desbloqueia seleção, geração e aba Desenvolvimento humano) | Exige apoio ativo        |
+| **Parceiro ODS 8**                        | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas (desbloqueia seleção e geração) | Exige apoio ativo        |
+| **Parceiro ODS 4**                        | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas (desbloqueia seleção e geração) | Exige apoio ativo        |
+| **Parceiro ODS 10**                       | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas (desbloqueia seleção e geração) | Exige apoio ativo        |
 | **Tecnologia para o Bem**                 | Apoio confirmado       | Mínimo 1 apoio pago confirmado no Asaas                                                             | Exige apoio ativo        |
 | **Powered by**                            | 180 meses apadrinhados | Mínimo 180 meses pagos e confirmados no Asaas                                                       | Exige apoio ativo + meta |

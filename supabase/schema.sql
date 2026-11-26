@@ -8,11 +8,20 @@ create table if not exists public.perfis (
   nome       text not null check (length(trim(nome)) > 0),
   fone       text not null unique check (fone ~ '^[0-9]{10,11}$'),
   email      text unique,
-  doc        text not null check (doc ~ '^([0-9]{11}|[0-9]{14})$'),
+  doc        text check (doc ~ '^([0-9]{11}|[0-9]{14})$'), -- opcional para vanguardista; obrigatório para apoiador
   cidade     text not null,
   uf         char(2) not null,
   criado_em  timestamptz not null default now()
 );
+
+-- CPF/CNPJ: opcional no cadastro do vanguardista, obrigatório para apoiador (vai na nota fiscal).
+alter table public.perfis alter column doc drop not null;
+do $$
+begin
+  if not exists (select 1 from pg_constraint where conname = 'perfis_doc_apoiador' and conrelid = 'public.perfis'::regclass) then
+    alter table public.perfis add constraint perfis_doc_apoiador check (tipo <> 'apoiador' or doc is not null);
+  end if;
+end $$;
 
 -- Perfil do negócio do vanguardista (opcional). É o único dado de vanguardistas que chega aos
 -- apoiadores, e só somado em grupos de 5 ou mais (supabase/painel.sql). Nunca nome, CPF/CNPJ ou contato.
@@ -83,7 +92,7 @@ begin
     trim(new.raw_user_meta_data ->> 'nome'),
     regexp_replace(coalesce(new.raw_user_meta_data ->> 'fone', ''), '[^0-9]', '', 'g'),
     nullif(lower(trim(coalesce(new.raw_user_meta_data ->> 'email_contato', ''))), ''),
-    regexp_replace(coalesce(new.raw_user_meta_data ->> 'doc', ''), '[^0-9]', '', 'g'),
+    nullif(regexp_replace(coalesce(new.raw_user_meta_data ->> 'doc', ''), '[^0-9]', '', 'g'), ''),
     trim(new.raw_user_meta_data ->> 'cidade'),
     upper(new.raw_user_meta_data ->> 'uf'),
     case when new.raw_user_meta_data ->> 'porte_negocio' in ('autonomo', 'mei', 'me', 'epp', 'media')

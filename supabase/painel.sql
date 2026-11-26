@@ -133,10 +133,8 @@ as $$
   where p.tipo = 'vanguardista'
     and (nullif(trim(coalesce(p_uf, '')), '') is null or p.uf = upper(trim(p_uf)))
     and (nullif(trim(coalesce(p_cidade, '')), '') is null
-         or lower(unaccent_safe(p.cidade)) = lower(unaccent_safe(trim(p_cidade))))
-    and (p_tipo_doc is null
-         or (p_tipo_doc = 'cpf' and length(p.doc) = 11)
-         or (p_tipo_doc = 'cnpj' and length(p.doc) = 14));
+         or lower(unaccent_safe(p.cidade)) = lower(unaccent_safe(trim(p_cidade))));
+  -- p_tipo_doc é ignorado: com o CPF/CNPJ opcional no cadastro, filtrar por ele deixaria descobrir um grupo pequeno por subtração
 $$;
 
 -- 4b. Um grupo só é mostrado se tiver pelo menos 5 vanguardistas E se, tirando qualquer um dos filtros,

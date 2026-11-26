@@ -131,6 +131,8 @@ section.band > .in{padding-block:64px;display:grid;gap:28px}
 .fields.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .fields.four{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media (max-width:640px){.fields.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fields.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:640px){.fields.three{grid-template-columns:1fr}}
 @media (max-width:420px){.fields.two{grid-template-columns:1fr}}
 .fields label{display:grid;gap:6px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel);min-width:0}
 .fields label:focus-within{border-color:var(--glow)}
@@ -242,7 +244,7 @@ footer .notice{flex-basis:100%}
 .top nav a.hl[aria-current="page"]{color:var(--glow)}
 @media (max-width:760px){
   .top .in{flex-wrap:wrap;row-gap:8px}
-  .top nav{display:flex;order:3;width:100%;margin-left:0;flex-wrap:nowrap;overflow-x:auto;gap:18px;padding-bottom:2px}
+  .top nav{display:flex;order:3;width:100%;margin-left:0;flex-wrap:nowrap;overflow-x:auto;gap:14px;padding-bottom:2px}
   .top nav a{white-space:nowrap}
 }
 .pagehead .in{padding-block:48px 8px;display:grid;gap:12px}
@@ -256,7 +258,14 @@ section.band#apoiadores > .in{padding-top:48px}
 @media (min-width:861px){.hero h1{font-size:clamp(28px,3.4vw,44px)}}
 [data-view="simuladores"] .pagehead h1,[data-view="simuladores"] .pagehead .lede,#raio-x .head h2,#raio-x .head .lede,#raio-x-preco .head h2,#raio-x-preco .head .lede{max-width:none}
 /* Vanguardistas e Sobre: textos ocupam toda a largura da tela */
-#como-funciona-vanguardistas .head h2,[data-view="sobre"] .head h2,[data-view="sobre"] .head .lede{max-width:none}
+#como-funciona-vanguardistas .head h2,#sobre .head h2,#sobre .head .lede{max-width:none}
+.guardar{display:flex;gap:10px;align-items:flex-start;font-size:15px;cursor:pointer;margin:4px 0}
+.guardar input{margin-top:3px;width:18px;height:18px;flex:none}
+.fields-tit{margin:12px 0 0;font-family:var(--display);font-size:18px}
+details.opcional{border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+details.opcional summary{cursor:pointer;font-size:15px;color:var(--muted)}
+details.opcional[open] summary{margin-bottom:12px}
+.selo .divulgar{justify-self:start;margin-top:4px}
 #como-funciona-vanguardistas .head h2{text-wrap:wrap}
 .sim-nota{font-size:15px;padding:14px 16px;border-style:solid}
 .sim-nota span{display:grid;gap:12px;justify-items:start}
@@ -590,7 +599,7 @@ section.band#apoiadores > .in{padding-top:48px}
 <header class="top"><div class="in">
   <a class="brand" href="#inicio">Portal <span>Vanguarda</span></a>
   <nav aria-label="Páginas">
-    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#vanguardistas" data-nav="vanguardistas">Vanguardistas</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#painel" data-nav="painel" data-apoiador hidden>Painel</a><a href="/admin" data-nav="admin" data-admin hidden>Administrador</a><a href="#sobre" data-nav="sobre">Sobre</a>
+    <a href="#inicio" data-nav="inicio">Início</a><a class="hl" href="#simuladores" data-nav="simuladores">Simuladores</a><a href="#vanguardistas" data-nav="vanguardistas">Vanguardistas</a><a href="#apoiar" data-nav="apoiar">Apoiar</a><a href="#painel" data-nav="painel" data-conta hidden>Minha conta</a><a href="/admin" data-nav="admin" data-admin hidden>Administrador</a>
   </nav>
   <div class="acc-top">
     <a class="btn go" href="#entrar" data-guest>Entrar</a>
@@ -792,6 +801,25 @@ section.band#apoiadores > .in{padding-top:48px}
     </article>
   </div>
 </div></section>
+<section class="band" id="sobre"><div class="in">
+  <div class="head">
+    <p class="eyebrow">Como o portal se sustenta</p>
+    <h2>Acesso aberto para todos, pago por quem pode</h2>
+    <p class="lede">Funcionamos como um negócio de impacto social: a causa de um instituto com a agilidade de uma empresa. O apadrinhamento mantém o conteúdo gratuito.</p>
+  </div>
+  <div class="models">
+    <article class="model rec">
+      <span class="tag">Base do modelo</span>
+      <h3>Freemium + apadrinhamento</h3>
+      <p>Conteúdo e simuladores básicos são livres. Apoiadores apadrinham vanguardistas pelo período que escolherem, a partir de 1 mês, e custeiam recursos avançados nos simuladores.</p>
+      <p class="who">Quem paga: padrinhos recorrentes</p>
+    </article>
+  </div>
+  <div class="loop">
+    <span class="eyebrow">Ciclo</span>
+    <p><b>Cada padrinho ou veio da jornada ou é independente.</b> O portal cresce pelo boca a boca dos próprios empreendedores, sem depender de anúncios. Os padrinhos podem mostrar em suas redes o impacto que vêm causando.</p>
+  </div>
+</div></section>
 <section class="cta" id="contato"><div class="in">
   <div class="head">
     <p class="eyebrow">Apoie</p>
@@ -904,11 +932,11 @@ section.band#apoiadores > .in{padding-top:48px}
   <div class="head apoiar-topo">
     <p class="eyebrow">Apoiar · apoiadores e vanguardistas</p>
     <h1>Apoie vanguardistas a partir de 1 mês</h1>
-    <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Cadastrar e Apoiar ou em Apenas Apoiar.</p>
+    <p class="lede">Escolha quantos vanguardistas quer apadrinhar e por quanto tempo. Preencha o formulário e clique em Apoiar. Se quiser, marque Guardar meus dados para não digitar tudo de novo no próximo apoio.</p>
   </div>
   <ol class="steps">
       <li><h3>Apadrinhamento</h3><p>Escolha do número de apadrinhados e período.</p></li>
-      <li><h3>Informações para a nota fiscal</h3><p>Nome, celular ou WhatsApp, e-mail, CPF ou CNPJ e endereço. Se quiser guardar seu cadastro, crie uma senha. Leva um minuto.</p></li>
+      <li><h3>Informações para a nota fiscal</h3><p>Nome, celular ou WhatsApp, e-mail, CPF ou CNPJ e endereço. Digite o CEP e o endereço se preenche sozinho. Leva um minuto.</p></li>
       <li><h3>Pagamento</h3><p>Você recebe o link e apoia por PIX, boleto ou cartão. O pagamento compensa e o sistema de cobrança registra o valor.</p></li>
       <li><h3>Nota fiscal sem burocracia</h3><p>A NFS-e é emitida direto com a prefeitura, por integração, e chega no seu e-mail a cada pagamento, sem ninguém abrir sistema do governo.</p></li>
     </ol>
@@ -918,45 +946,33 @@ section.band#apoiadores > .in{padding-top:48px}
         <label for="ap-n" class="wide"><span>Número de apadrinhados</span><input id="ap-n" type="number" min="1" step="1" value="1" required inputmode="numeric"></label>
         <fieldset class="chips wide" id="ap-periodo"><legend>Durante</legend>
           <label><input type="radio" name="ap-p" value="1"><span>1 mês</span></label>
-          <label><input type="radio" name="ap-p" value="3"><span>3 meses</span></label>
           <label><input type="radio" name="ap-p" value="6"><span>6 meses</span></label>
           <label><input type="radio" name="ap-p" value="12" checked><span>12 meses</span></label>
-          <label><input type="radio" name="ap-p" value="N"><span>N meses</span></label>
+          <label><input type="radio" name="ap-p" value="N"><span>Outro</span></label>
           <label><input type="radio" name="ap-p" value="A"><span>Todo mês (assinatura)</span></label>
           <label class="nmeses" hidden><input id="ap-meses" type="number" min="1" step="1" value="24" inputmode="numeric" aria-label="Número de meses"><span>meses</span></label>
         </fieldset>
         <div class="sum wide" data-extra><small>Total em recursos</small><b class="mono" id="ap-total">R$ 12,00</b><p>Custo médio de cada vanguardista apadrinhado: <b class="mono" data-custo>R$ 1,00</b> por mês.</p><p class="note" id="ap-assin-nota" hidden>Assinatura: a cobrança se repete todo mês, no mesmo dia, e cada pagamento gera a sua nota fiscal. Você escolhe PIX, boleto ou cartão em cada fatura e pode cancelar quando quiser pelo WhatsApp (51) 99291-0038.</p></div>
-        <label for="ap-nome"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
-        <label for="ap-email"><span>E-mail (para a nota fiscal)</span><input id="ap-email" type="email" required autocomplete="email" inputmode="email" data-mask="email"></label>
+        <h3 class="wide fields-tit">Seus dados para a nota fiscal</h3>
+        <label for="ap-nome" class="wide"><span>Nome completo</span><input id="ap-nome" type="text" required autocomplete="name"></label>
         <label for="ap-whats"><span>Celular ou WhatsApp</span><input id="ap-whats" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
-        <label for="ap-doc"><span>CPF ou CNPJ (para a nota fiscal)</span><input id="ap-doc" type="text" required inputmode="numeric" data-mask="doc" maxlength="18" placeholder="000.000.000-00 ou 00.000.000/0000-00"></label>
-        <label for="ap-cep"><span>CEP</span><input id="ap-cep" type="text" required autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9"><small class="hint" id="ap-cep-msg" aria-live="polite"></small></label>
-        <label for="ap-rua"><span>Rua</span><input id="ap-rua" type="text" required autocomplete="address-line1" maxlength="160"></label>
-        <label for="ap-bairro"><span>Bairro</span><input id="ap-bairro" type="text" required maxlength="80"></label>
+        <label for="ap-email"><span>E-mail (a nota fiscal chega nele)</span><input id="ap-email" type="email" required autocomplete="email" inputmode="email" data-mask="email"></label>
+        <label for="ap-doc" class="wide"><span>CPF ou CNPJ</span><input id="ap-doc" type="text" required inputmode="numeric" data-mask="doc" maxlength="18" placeholder="000.000.000-00 ou 00.000.000/0000-00"></label>
+        <label for="ap-cep"><span>CEP (preenche o endereço)</span><input id="ap-cep" type="text" required autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9"><small class="hint" id="ap-cep-msg" aria-live="polite"></small></label>
         <label for="ap-num"><span>Número</span><input id="ap-num" type="text" required inputmode="numeric" placeholder="123 ou s/n" maxlength="10"></label>
-        <label for="ap-comp"><span>Complemento (opcional)</span><input id="ap-comp" type="text" autocomplete="address-line2" placeholder="Apto, sala, bloco"></label>
-        <label for="ap-cidade" class="wide"><span>Cidade e estado</span><input id="ap-cidade" type="text" required autocomplete="address-level2" placeholder="Porto Alegre, RS"></label>
-        <label for="ap-senha" class="wide" data-guest><span>Senha para o seu cadastro (obrigatória em Cadastrar e Apoiar, mínimo de 6 caracteres)</span><input id="ap-senha" type="password" minlength="6" autocomplete="new-password"></label>
+        <label for="ap-rua"><span>Rua</span><input id="ap-rua" type="text" required autocomplete="address-line1" maxlength="160"></label>
+        <label for="ap-comp"><span>Complemento (opcional)</span><input id="ap-comp" type="text" autocomplete="address-line2" placeholder="Apto, sala, bloco" maxlength="60"></label>
+        <label for="ap-bairro"><span>Bairro</span><input id="ap-bairro" type="text" required maxlength="80"></label>
+        <label for="ap-cidade"><span>Cidade</span><input id="ap-cidade" type="text" required autocomplete="address-level2" maxlength="80"></label>
+        <label for="ap-uf"><span>Estado</span><select id="ap-uf" required autocomplete="address-level1"><option value="" selected disabled>Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
       </div>
+      <label class="guardar" data-guest><input type="checkbox" id="ap-guardar"> <span>Guardar meus dados para os próximos apoios (cria a sua conta)</span></label>
+      <div class="fields" id="ap-senha-box" hidden><label for="ap-senha"><span>Crie uma senha (mínimo de 6 caracteres)</span><input id="ap-senha" type="password" minlength="6" autocomplete="new-password"></label></div>
       <p class="err" id="ap-err" hidden>Preencha os campos obrigatórios e confira e-mail, celular, CPF ou CNPJ, CEP e número.</p>
       <p class="notice" id="ap-aviso-pag" hidden><b>Pagamento</b><span>Ao continuar, você vai para a fatura do Asaas, nosso sistema de cobrança, e escolhe PIX, boleto ou cartão. A nota fiscal chega no seu e-mail depois que o pagamento compensa. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-      <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. Ao clicar em Cadastrar e Apoiar ou em Apenas Apoiar, você registra seu apoio, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
-      <button class="btn go" type="submit" id="ap-btn" data-acao="cadastrar" data-guest>Cadastrar e Apoiar</button>
-      <p class="note btn-nota" data-guest>Suas informações ficam guardadas na sua conta para os próximos apoios.</p>
-      <button class="btn go" type="submit" id="ap-btn-so" data-acao="apoiar">Apenas Apoiar</button>
-      <p class="note btn-nota" data-guest>Nenhuma informação fica guardada no portal. Os dados servem só para este apoio e a nota fiscal.</p>
+      <p class="notice" id="ap-aviso"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. Valores e planos são referências e podem mudar; nenhum pagamento deve ser feito até o lançamento oficial. Ao clicar em Apoiar, você registra seu apoio, sem criar contrato. Os simuladores são educativos e não substituem orientação contábil, fiscal ou jurídica.</span></p>
+      <button class="btn go" type="submit" id="ap-btn-so" data-acao="apoiar">Apoiar</button>
       <p class="note nota-centro">Usamos seus dados só para falar com você sobre o lançamento.</p>
-      <div class="excluir" data-user hidden>
-        <button type="button" class="btn excluir-abrir">Excluir minha conta</button>
-        <div class="excluir-box" hidden>
-          <h4>Excluir sua conta?</h4>
-          <p class="excluir-txt"></p>
-          <p class="excluir-fixo">Pagamentos já feitos não são devolvidos por causa da exclusão. As cobranças e as notas fiscais já emitidas continuam guardadas no Asaas, nosso sistema de cobrança, porque a lei fiscal exige. Esta ação não pode ser desfeita: para voltar, será preciso fazer um novo cadastro.</p>
-          <label class="excluir-ok"><input type="checkbox"> <span>Concordo. Entendi que minha conta e todos os dados ligados a ela serão apagados para sempre.</span></label>
-          <p class="err" hidden></p>
-          <div class="excluir-acts"><button type="button" class="btn excluir-sim" disabled>Excluir</button><button type="button" class="btn excluir-nao">Cancelar</button></div>
-        </div>
-      </div>
     </form>
     <div class="aside">
       <div class="done" id="ap-done" hidden>
@@ -986,45 +1002,33 @@ section.band#apoiadores > .in{padding-top:48px}
     <form class="acc" id="form-cadastro" novalidate>
       <div class="people">
         <h3>Por que pedimos esses dados</h3>
-        <p>O celular ou WhatsApp é o seu login e o canal para falarmos com você. O CPF ou CNPJ vai na nota fiscal. O e-mail também serve para entrar e é nele que a nota fiscal chega.</p>
+        <p>O celular ou WhatsApp é o seu login e o canal para falarmos com você. O e-mail também serve para entrar. Cidade e estado contam o seu negócio nos números da comunidade, sempre somados.</p><p>CPF ou CNPJ e endereço são opcionais aqui. Eles só passam a ser obrigatórios quando você apoiar o portal, porque vão na nota fiscal.</p>
         <p>Seus dados ficam guardados no banco de dados do portal e são usados só para o Portal Vanguarda.</p>
       </div>
       <p class="notice" id="cd-vindo" hidden><b>Cadastro</b><span id="cd-vindo-txt"></span></p>
       <div class="fields two">
         <label for="cd-nome" class="wide"><span>Seu nome</span><input id="cd-nome" type="text" required autocomplete="name"></label>
-        <label for="cd-fone"><span>Celular, WhatsApp ou telefone</span><input id="cd-fone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
+        <label for="cd-fone"><span>Celular ou WhatsApp</span><input id="cd-fone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
         <label for="cd-email"><span>E-mail</span><input id="cd-email" type="email" required autocomplete="email" inputmode="email" placeholder="nome@exemplo.com" data-mask="email"></label>
-        <label for="cd-doc" class="wide"><span>CPF ou CNPJ</span><input id="cd-doc" type="text" required inputmode="numeric" placeholder="000.000.000-00" data-mask="doc"></label>
-        <label for="cd-cep"><span>CEP</span><input id="cd-cep" type="text" required autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9"><small class="hint" id="cd-cep-msg" aria-live="polite"></small></label>
-        <label for="cd-rua"><span>Rua</span><input id="cd-rua" type="text" required autocomplete="address-line1" maxlength="160"></label>
-        <label for="cd-bairro"><span>Bairro</span><input id="cd-bairro" type="text" required maxlength="80"></label>
-        <label for="cd-num"><span>Número</span><input id="cd-num" type="text" required inputmode="numeric" placeholder="123 ou s/n" maxlength="10"></label>
-        <label for="cd-comp"><span>Complemento (opcional)</span><input id="cd-comp" type="text" autocomplete="address-line2" placeholder="Apto, sala, bloco" maxlength="60"></label>
-        <label for="cd-cidade"><span>Cidade</span><input id="cd-cidade" type="text" required autocomplete="address-level2"></label>
+        <label for="cd-cep" class="wide"><span>CEP (opcional, preenche cidade e estado)</span><input id="cd-cep" type="text" autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9"><small class="hint" id="cd-cep-msg" aria-live="polite"></small></label>
+        <label for="cd-cidade"><span>Cidade</span><input id="cd-cidade" type="text" required autocomplete="address-level2" maxlength="80"></label>
         <label for="cd-uf"><span>Estado</span><select id="cd-uf" required autocomplete="address-level1"><option value="" selected disabled>Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
-        <div class="wide cd-negocio" id="cd-negocio">
-          <p class="note">Sobre o seu negócio (opcional). Apoiadores veem só totais de grupos com 5 ou mais vanguardistas, nunca o seu nome, documento ou contato.</p>
-        </div>
-        <label for="cd-porte"><span>Porte do negócio (opcional)</span><select id="cd-porte"><option value="">Prefiro não informar</option><option value="autonomo">Autônomo</option><option value="mei">MEI</option><option value="me">Microempresa</option><option value="epp">Pequena empresa</option><option value="media">Média ou grande</option></select></label>
-        <label for="cd-ramo"><span>Tipo de negócio (opcional)</span><select id="cd-ramo"><option value="">Prefiro não informar</option><option value="comercio">Comércio e varejo</option><option value="alimentacao">Alimentação</option><option value="servicos">Serviços</option><option value="tecnologia">Tecnologia</option><option value="industria">Indústria</option><option value="educacao">Educação</option><option value="saude">Saúde e bem-estar</option><option value="financas">Finanças, contabilidade e seguros</option><option value="construcao">Construção e imóveis</option><option value="outro">Outro</option></select></label>
-        <label for="cd-fat" class="wide"><span>Faturamento mensal (opcional)</span><select id="cd-fat"><option value="">Prefiro não informar</option><option value="ate5k">Até R$ 5 mil</option><option value="5a20k">De R$ 5 mil a R$ 20 mil</option><option value="20a50k">De R$ 20 mil a R$ 50 mil</option><option value="50a100k">De R$ 50 mil a R$ 100 mil</option><option value="acima100k">Acima de R$ 100 mil</option></select></label>
         <label for="cd-senha" class="wide"><span>Senha (mínimo de 6 caracteres)</span><input id="cd-senha" type="password" required minlength="6" autocomplete="new-password"></label>
       </div>
+      <details class="opcional">
+        <summary>Dados para a nota fiscal (opcional agora, obrigatório quando você apoiar)</summary>
+        <div class="fields two">
+        <label for="cd-doc" class="wide"><span>CPF ou CNPJ</span><input id="cd-doc" type="text" inputmode="numeric" placeholder="000.000.000-00" data-mask="doc" maxlength="18"></label>
+        <label for="cd-num"><span>Número</span><input id="cd-num" type="text" inputmode="numeric" placeholder="123 ou s/n" maxlength="10"></label>
+        <label for="cd-rua"><span>Rua</span><input id="cd-rua" type="text" autocomplete="address-line1" maxlength="160"></label>
+        <label for="cd-comp"><span>Complemento</span><input id="cd-comp" type="text" autocomplete="address-line2" placeholder="Apto, sala, bloco" maxlength="60"></label>
+        <label for="cd-bairro"><span>Bairro</span><input id="cd-bairro" type="text" maxlength="80"></label>
+        </div>
+      </details>
       <p class="err" id="cd-err" hidden></p>
       <p class="notice"><b>Aviso</b><span>Portal em fase de estruturação: ainda não realizamos vendas, cobranças nem emissão de notas fiscais. O cadastro cria sua conta e registra seu interesse, sem criar contrato.</span></p>
       <button class="btn go" type="submit" id="cd-btn">Cadastrar</button>
       <div class="cd-entrar" id="cd-entrar"><p class="note">Já tem conta?</p><a class="btn" href="#entrar">Entrar</a></div>
-      <div class="excluir" data-user hidden>
-        <button type="button" class="btn excluir-abrir">Excluir minha conta</button>
-        <div class="excluir-box" hidden>
-          <h4>Excluir sua conta?</h4>
-          <p class="excluir-txt"></p>
-          <p class="excluir-fixo">Pagamentos já feitos não são devolvidos por causa da exclusão. As cobranças e as notas fiscais já emitidas continuam guardadas no Asaas, nosso sistema de cobrança, porque a lei fiscal exige. Esta ação não pode ser desfeita: para voltar, será preciso fazer um novo cadastro.</p>
-          <label class="excluir-ok"><input type="checkbox"> <span>Concordo. Entendi que minha conta e todos os dados ligados a ela serão apagados para sempre.</span></label>
-          <p class="err" hidden></p>
-          <div class="excluir-acts"><button type="button" class="btn excluir-sim" disabled>Excluir</button><button type="button" class="btn excluir-nao">Cancelar</button></div>
-        </div>
-      </div>
     </form>
   </div>
 </div>
@@ -1032,13 +1036,13 @@ section.band#apoiadores > .in{padding-top:48px}
 </div>
 <div data-view="painel">
 <section class="pagehead"><div class="in">
-  <p class="eyebrow">Painel do apoiador</p>
-  <h1 id="pn-titulo">Seu painel de impacto</h1>
-  <p class="lede">Veja os selos sociais que combinam com o seu negócio, gere material para divulgar o seu apoio e acompanhe, de forma agregada, grupos de vanguardistas.</p>
-  <div class="pn-acts" data-apoiador hidden><a class="btn go" href="#pn-apoiar">Apadrinhar vanguardistas</a><a class="btn" href="#pn-selos">Ver selos</a><a class="btn" href="#pn-grupos">Acompanhar grupos</a></div>
+  <p class="eyebrow">Minha conta</p>
+  <h1 id="pn-titulo">Sua conta no Portal Vanguarda</h1>
+  <p class="lede" id="pn-lede">Conte sobre o seu negócio e mantenha seus dados em dia. Quem apoia também vê aqui os selos, o material de divulgação e os grupos de vanguardistas.</p>
+  <div class="pn-acts" data-user hidden><a class="btn go" href="#pn-apoiar">Apadrinhar vanguardistas</a><a class="btn" href="#simuladores">Usar os simuladores</a></div>
 </div></section>
 <section class="band" id="pn-fora" hidden><div class="in">
-  <div class="loop"><span class="eyebrow">Acesso</span><p><b>O painel é exclusivo para apoiadores cadastrados.</b> Entre com sua conta ou cadastre-se como apoiador para ver os selos e acompanhar vanguardistas.</p><div class="loop-acts"><a class="btn" href="#entrar">Entrar</a><a class="btn go" href="#apoiar-cadastro">Cadastrar-se como apoiador</a></div></div>
+  <div class="loop"><span class="eyebrow">Acesso</span><p><b>Entre para ver a sua conta.</b> Ainda não tem uma? Crie a sua em um minuto como vanguardista, ou apoie e marque Guardar meus dados.</p><div class="loop-acts"><a class="btn go" href="#entrar">Entrar</a><a class="btn" href="#cadastro">Criar conta</a><a class="btn" href="#apoiar-cadastro">Apoiar</a></div></div>
 </div></section>
 <div id="pn-conteudo" hidden>
 <section class="band" id="pn-apoiar" hidden><div class="in">
@@ -1048,16 +1052,18 @@ section.band#apoiadores > .in{padding-top:48px}
 </div></section>
 <section class="pn-abas-band"><div class="in">
   <div class="pn-abas" role="tablist" aria-label="Seções do painel">
-    <button type="button" role="tab" id="pn-tab-geral" aria-controls="pn-aba-geral" aria-selected="true">Selos e material</button>
-    <button type="button" role="tab" id="pn-tab-dh" aria-controls="pn-aba-dh" aria-selected="false" tabindex="-1" hidden>Desenvolvimento humano</button>
+    <button type="button" role="tab" id="pn-tab-negocio" data-aba="negocio" aria-controls="pn-aba-negocio" aria-selected="true">Meu negócio</button>
+    <button type="button" role="tab" id="pn-tab-selos" data-aba="selos" aria-controls="pn-aba-selos" aria-selected="false" tabindex="-1" hidden>Selos e divulgação</button>
+    <button type="button" role="tab" id="pn-tab-grupos" data-aba="grupos" aria-controls="pn-aba-grupos" aria-selected="false" tabindex="-1" hidden>Vanguardistas</button>
+    <button type="button" role="tab" id="pn-tab-conta" data-aba="conta" aria-controls="pn-aba-conta" aria-selected="false" tabindex="-1">Dados da conta</button>
   </div>
 </div></section>
-<div id="pn-aba-geral" role="tabpanel" aria-labelledby="pn-tab-geral">
+<div id="pn-aba-negocio" class="pn-aba" role="tabpanel" aria-labelledby="pn-tab-negocio">
 <section class="band" id="pn-perfil"><div class="in">
-  <div class="head"><p class="eyebrow">1 · Seu negócio</p><h2>Conte um pouco sobre a sua empresa</h2><p class="lede">Com essas respostas o portal indica os selos mais adequados para você. Leva menos de um minuto e dá para mudar quando quiser.</p></div>
+  <div class="head"><p class="eyebrow">Meu negócio</p><h2>Conte um pouco sobre a sua empresa</h2><p class="lede" id="pn-perfil-lede">Leva menos de um minuto e dá para mudar quando quiser. Tudo é opcional.</p></div>
   <form class="pn-form" id="pn-form-perfil" novalidate>
     <div class="fields two">
-      <label for="pn-marca" class="wide"><span>Nome da empresa ou marca (aparece no material)</span><input id="pn-marca" type="text" maxlength="80" autocomplete="organization"></label>
+      <label for="pn-marca" class="wide" data-so-apoiador><span>Nome da empresa ou marca (aparece no material)</span><input id="pn-marca" type="text" maxlength="80" autocomplete="organization"></label>
       <fieldset class="chips wide" id="pn-porte"><legend>Porte</legend>
         <label><input type="radio" name="pn-porte" value="autonomo"><span>Autônomo</span></label>
         <label><input type="radio" name="pn-porte" value="mei"><span>MEI</span></label>
@@ -1065,8 +1071,9 @@ section.band#apoiadores > .in{padding-top:48px}
         <label><input type="radio" name="pn-porte" value="epp"><span>Pequena empresa</span></label>
         <label><input type="radio" name="pn-porte" value="media"><span>Média ou grande</span></label>
       </fieldset>
-      <label for="pn-setor" class="wide"><span>Setor</span><select id="pn-setor"><option value="">Selecione</option><option value="comercio">Comércio e varejo</option><option value="alimentacao">Alimentação</option><option value="servicos">Serviços</option><option value="tecnologia">Tecnologia</option><option value="industria">Indústria</option><option value="educacao">Educação</option><option value="saude">Saúde e bem-estar</option><option value="financas">Finanças, contabilidade e seguros</option><option value="construcao">Construção e imóveis</option><option value="outro">Outro</option></select></label>
-      <fieldset class="chips pn-checks wide" id="pn-obj"><legend>O que você quer com o apoio (marque quantos quiser)</legend>
+      <label for="pn-setor"><span>Tipo de negócio</span><select id="pn-setor"><option value="">Prefiro não informar</option><option value="comercio">Comércio e varejo</option><option value="alimentacao">Alimentação</option><option value="servicos">Serviços</option><option value="tecnologia">Tecnologia</option><option value="industria">Indústria</option><option value="educacao">Educação</option><option value="saude">Saúde e bem-estar</option><option value="financas">Finanças, contabilidade e seguros</option><option value="construcao">Construção e imóveis</option><option value="outro">Outro</option></select></label>
+      <label for="pn-fat"><span>Faturamento mensal</span><select id="pn-fat"><option value="">Prefiro não informar</option><option value="ate5k">Até R$ 5 mil</option><option value="5a20k">De R$ 5 mil a R$ 20 mil</option><option value="20a50k">De R$ 20 mil a R$ 50 mil</option><option value="50a100k">De R$ 50 mil a R$ 100 mil</option><option value="acima100k">Acima de R$ 100 mil</option></select></label>
+      <fieldset class="chips pn-checks wide" id="pn-obj" data-so-apoiador><legend>O que você quer com o apoio (marque quantos quiser)</legend>
         <label><input type="checkbox" value="redes"><span>Mostrar impacto nas redes sociais</span></label>
         <label><input type="checkbox" value="local"><span>Fortalecer a marca no bairro e na cidade</span></label>
         <label><input type="checkbox" value="esg"><span>Relatório ESG ou de sustentabilidade</span></label>
@@ -1075,17 +1082,19 @@ section.band#apoiadores > .in{padding-top:48px}
         <label><input type="checkbox" value="clientes"><span>Atrair clientes e parceiros</span></label>
       </fieldset>
     </div>
-    <div class="pn-acts"><button class="btn go" type="submit">Salvar e ver selos recomendados</button><span class="note" id="pn-perfil-msg" aria-live="polite"></span></div>
+    <div class="pn-acts"><button class="btn go" type="submit" id="pn-perfil-btn">Salvar</button><span class="note" id="pn-perfil-msg" aria-live="polite"></span></div>
   </form>
 </div></section>
+</div>
+<div id="pn-aba-selos" class="pn-aba" role="tabpanel" aria-labelledby="pn-tab-selos" hidden>
 <section class="band" id="pn-selos"><div class="in">
-  <div class="head"><p class="eyebrow">2 · Selos sociais</p><h2>Selos disponíveis para o seu apoio</h2><p class="lede">Os selos mostram ao mercado o impacto que o seu apoio gera. Todos exigem pelo menos 1 apoio pago. Entre os liberados, os marcados como recomendados combinam melhor com o seu perfil. Selecione os que quiser usar na divulgação.</p></div>
+  <div class="head"><p class="eyebrow">Selos sociais</p><h2>Selos disponíveis para o seu apoio</h2><p class="lede">Os selos mostram ao mercado o impacto que o seu apoio gera. Todos exigem pelo menos 1 apoio pago. Entre os liberados, os marcados como recomendados combinam melhor com o seu perfil. Selecione os que quiser usar, ou clique em Divulgar no selo para gerar o material com ele.</p></div>
   <p class="notice" id="pn-selos-bloq" hidden><b>Bloqueados</b><span>Todos os selos ficam liberados depois de pelo menos 1 apoio pago (e não estornado). Até lá, nenhum selo pode ser selecionado nem entra no material de divulgação. <a href="#pn-apoiar">Apadrinhar vanguardistas</a></span></p>
   <div class="selos" id="pn-lista-selos"></div>
   <div class="pn-acts"><span class="note" id="pn-selos-msg" aria-live="polite"></span></div>
 </div></section>
 <section class="band" id="pn-material"><div class="in">
-  <div class="head"><p class="eyebrow">3 · Material de divulgação</p><h2>Divulgue no LinkedIn, Instagram ou WhatsApp</h2><p class="lede">Escolha um dos selos selecionados e o canal. O portal gera a imagem e o texto com os números do seu impacto, que mudam a cada novo apadrinhamento e conforme o desempenho dos vanguardistas, e com o convite para www.vanguarda.social.br.</p></div>
+  <div class="head"><p class="eyebrow">Material de divulgação</p><h2>Divulgue no LinkedIn, Instagram ou WhatsApp</h2><p class="lede">Escolha um dos selos selecionados e o canal. O portal gera a imagem e o texto com os números do seu impacto, que mudam a cada novo apadrinhamento e conforme o desempenho dos vanguardistas, e com o convite para www.vanguarda.social.br.</p></div>
   <div class="impacto" id="pn-impacto">
     <div class="impacto-top"><h3>Seu impacto, atualizado a cada apoio</h3><button type="button" class="copy" id="pn-imp-atualizar">Atualizar</button></div>
     <div class="kpis" id="pn-imp-kpis"><div class="kpi"><b>…</b><small>carregando</small></div></div>
@@ -1113,26 +1122,52 @@ section.band#apoiadores > .in{padding-top:48px}
     <div class="mat-prev"><canvas id="pn-canvas" width="1200" height="627" aria-label="Prévia da imagem do selo"></canvas></div>
   </div>
 </div></section>
+</div>
+<div id="pn-aba-grupos" class="pn-aba" role="tabpanel" aria-labelledby="pn-tab-grupos" hidden>
 <section class="band" id="pn-grupos"><div class="in">
-  <div class="head"><p class="eyebrow">4 · Acompanhe vanguardistas</p><h2>Grupos de vanguardistas cadastrados</h2><p class="lede">Monte um grupo por estado, cidade ou tipo de cadastro e veja o perfil dele: porte, tipo de negócio e faturamento. Para proteger cada vanguardista (LGPD), os números aparecem sempre somados e só em grupos e faixas com pelo menos 5 pessoas, sem nome, documento, contato ou qualquer dado individual.</p></div>
+  <div class="head"><p class="eyebrow">Acompanhe vanguardistas</p><h2>Grupos de vanguardistas cadastrados</h2><p class="lede">Monte um grupo por estado ou cidade e veja o perfil dele: porte, tipo de negócio e faturamento. Para proteger cada vanguardista (LGPD), os números aparecem sempre somados e só em grupos e faixas com pelo menos 5 pessoas, sem nome, documento, contato ou qualquer dado individual.</p></div>
   <p class="notice" id="pn-grupos-off" hidden><b>Em breve</b><span>O acompanhamento de grupos está sendo ligado no banco de dados do portal. Os selos e o material já funcionam.</span></p>
   <form class="pn-form" id="pn-form-grupo" novalidate>
-    <div class="fields four">
+    <div class="fields three">
       <label for="pn-g-nome"><span>Nome do grupo</span><input id="pn-g-nome" type="text" maxlength="60" placeholder="Ex.: Vanguardistas do RS"></label>
       <label for="pn-g-uf"><span>Estado</span><select id="pn-g-uf"><option value="">Todos</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
       <label for="pn-g-cidade"><span>Cidade (opcional)</span><input id="pn-g-cidade" type="text" maxlength="80" placeholder="Todas"></label>
-      <label for="pn-g-doc"><span>Cadastro</span><select id="pn-g-doc"><option value="">Todos</option><option value="cpf">Pessoa física (CPF)</option><option value="cnpj">Empresa ou MEI (CNPJ)</option></select></label>
     </div>
     <div class="pn-acts"><button class="btn go" type="submit" id="pn-g-salvar" disabled>Acompanhar este grupo</button><span class="note" id="pn-g-msg" aria-live="polite"></span></div>
   </form>
   <div class="grupos" id="pn-lista-grupos"></div>
 </div></section>
 </div>
-<div id="pn-aba-dh" role="tabpanel" aria-labelledby="pn-tab-dh" hidden>
-<section class="band" id="pn-dh"><div class="in">
-  <div class="head"><p class="eyebrow">Selos de desenvolvimento humano</p><h2>Selos conquistados com o seu apoio</h2><p class="lede">Educação, trabalho decente e menos desigualdade (ODS: 4 · 8 · 10). Estes selos só podem ser selecionados, gerados e divulgados depois de pelo menos 1 apoio pago, sem exceção. Como você já tem esse apoio, os três estão liberados para o seu material de divulgação e para destacar o seu compromisso ESG.</p></div>
-  <div class="selos" id="pn-dh-lista"></div>
-  <p class="note" id="pn-dh-nota"></p>
+<div id="pn-aba-conta" class="pn-aba" role="tabpanel" aria-labelledby="pn-tab-conta" hidden>
+<section class="band" id="pn-dados"><div class="in">
+  <div class="head"><p class="eyebrow">Dados da conta</p><h2>Seus dados</h2><p class="lede">Celular e e-mail servem para entrar. CPF ou CNPJ e endereço são opcionais para vanguardistas e obrigatórios para apoiar, porque vão na nota fiscal.</p></div>
+  <form class="pn-form" id="pn-form-dados" novalidate>
+    <div class="fields two">
+      <label for="dd-nome" class="wide"><span>Nome</span><input id="dd-nome" type="text" required autocomplete="name" maxlength="120"></label>
+      <label for="dd-fone"><span>Celular ou WhatsApp</span><input id="dd-fone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(51) 90000-0000" data-mask="fone"></label>
+      <label for="dd-email"><span>E-mail</span><input id="dd-email" type="email" autocomplete="email" inputmode="email" data-mask="email"></label>
+      <label for="dd-doc" class="wide"><span>CPF ou CNPJ</span><input id="dd-doc" type="text" inputmode="numeric" placeholder="000.000.000-00" data-mask="doc" maxlength="18"></label>
+      <label for="dd-cep"><span>CEP (preenche o endereço)</span><input id="dd-cep" type="text" autocomplete="postal-code" inputmode="numeric" placeholder="00000-000" maxlength="9"><small class="hint" id="dd-cep-msg" aria-live="polite"></small></label>
+      <label for="dd-num"><span>Número</span><input id="dd-num" type="text" inputmode="numeric" placeholder="123 ou s/n" maxlength="10"></label>
+      <label for="dd-rua"><span>Rua</span><input id="dd-rua" type="text" autocomplete="address-line1" maxlength="160"></label>
+      <label for="dd-comp"><span>Complemento</span><input id="dd-comp" type="text" autocomplete="address-line2" maxlength="60"></label>
+      <label for="dd-bairro"><span>Bairro</span><input id="dd-bairro" type="text" maxlength="80"></label>
+      <label for="dd-cidade"><span>Cidade</span><input id="dd-cidade" type="text" required autocomplete="address-level2" maxlength="80"></label>
+      <label for="dd-uf"><span>Estado</span><select id="dd-uf" required autocomplete="address-level1"><option value="" disabled>Selecione</option><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select></label>
+    </div>
+    <div class="pn-acts"><button class="btn go" type="submit" id="dd-btn">Salvar dados</button><span class="note" id="dd-msg" aria-live="polite"></span></div>
+  </form>
+  <div class="excluir" data-user hidden>
+    <button type="button" class="btn excluir-abrir">Excluir minha conta</button>
+    <div class="excluir-box" hidden>
+      <h4>Excluir sua conta?</h4>
+      <p class="excluir-txt"></p>
+      <p class="excluir-fixo">Pagamentos já feitos não são devolvidos por causa da exclusão. As cobranças e as notas fiscais já emitidas continuam guardadas no Asaas, nosso sistema de cobrança, porque a lei fiscal exige. Esta ação não pode ser desfeita: para voltar, será preciso fazer um novo cadastro.</p>
+      <label class="excluir-ok"><input type="checkbox"> <span>Concordo. Entendi que minha conta e todos os dados ligados a ela serão apagados para sempre.</span></label>
+      <p class="err" hidden></p>
+      <div class="excluir-acts"><button type="button" class="btn excluir-sim" disabled>Excluir</button><button type="button" class="btn excluir-nao">Cancelar</button></div>
+    </div>
+  </div>
 </div></section>
 </div>
 </div>
@@ -1189,51 +1224,6 @@ section.band#apoiadores > .in{padding-top:48px}
   <details class="adm-p" id="adm-imp"><summary><span>Impacto</span><small>Números do portal inteiro</small></summary><div class="adm-c"></div></details>
   <details class="adm-p" id="adm-apo"><summary><span>Apoiadores</span><small>Apoiadores, apoios recebidos e vagas de apadrinhamento</small></summary><div class="adm-c"></div></details>
   <details class="adm-p" id="adm-usu"><summary><span>Usuários</span><small>Vanguardistas e apoiadores: buscar, editar e excluir</small></summary><div class="adm-c"></div></details>
-</div></section>
-</div>
-<div data-view="sobre">
-<section class="pagehead"><div class="in">
-  <p class="eyebrow">Sobre</p>
-  <h1>Como o Vanguarda funciona</h1>
-</div></section>
-<section class="band" id="trilha"><div class="in">
-  <div class="head">
-    <p class="eyebrow">A trilha da emancipação</p>
-    <h2>Uma jornada com fim: de aprendiz a padrinho</h2>
-    <p class="lede">O objetivo é que a comunidade cresça a ponto de não depender mais de nós. Cada etapa devolve algo para quem vem depois.</p>
-  </div>
-  <ol class="trail">
-    <li><h3>Aprenda</h3><p>Use os simuladores e as trilhas de desenvolvimento sem pagar nada. Precifique, planeje e entenda o próprio negócio.</p></li>
-    <li><h3>Convide</h3><p>Traga outros empreendedores, fortaleça a comunidade.</p></li>
-    <li><h3>Contribua</h3><p>Você pode a qualquer momento contribuir com a comunidade. Isso irá liberar créditos para que você adquira acesso a simuladores mais avançados.</p></li>
-    <li><h3>Apadrinhe</h3><p>Além de contribuir com a comunidade você tem a oportunidade de formar novos integrantes.</p></li>
-  </ol>
-  <div class="loop">
-    <span class="eyebrow">Ciclo</span>
-    <p><b>Cada padrinho ou veio da jornada ou é independente.</b> O portal cresce pelo boca a boca dos próprios empreendedores, sem depender de anúncios. Os padrinhos podem mostrar em suas redes o impacto que vêm causando.</p>
-  </div>
-</div></section>
-<section class="band" id="modelo"><div class="in">
-  <div class="head">
-    <p class="eyebrow">Como o portal se sustenta</p>
-    <h2>Acesso aberto para todos, pago por quem pode</h2>
-    <p class="lede">Funcionamos como um negócio de impacto social: a causa de um instituto com a agilidade de uma empresa. O apadrinhamento mantém o conteúdo gratuito.</p>
-  </div>
-  <div class="models">
-    <article class="model rec">
-      <span class="tag">Base do modelo</span>
-      <h3>Freemium + apadrinhamento</h3>
-      <p>Conteúdo e simuladores básicos são livres. Apoiadores apadrinham vanguardistas pelo período que escolherem, a partir de 1 mês, e custeiam recursos avançados nos simuladores.</p>
-      <p class="who">Quem paga: padrinhos recorrentes</p>
-    </article>
-  </div>
-</div></section>
-<section class="band"><div class="in">
-  <div class="head"><p class="eyebrow">Contato</p><h2>Fale com a gente</h2></div>
-  <ul class="contact" aria-label="Contatos">
-      <li><span>WhatsApp</span><b id="c-wa">(51) 99291-0038</b><button type="button" class="copy" data-copy="c-wa">Copiar</button></li>
-      <li><span>E-mail</span><b id="c-mail">contato@vanguarda.social.br</b><button type="button" class="copy" data-copy="c-mail">Copiar</button></li>
-    </ul>
 </div></section>
 </div>
 </main>
@@ -1463,7 +1453,11 @@ section.band#apoiadores > .in{padding-top:48px}
   try{if(SUPABASE_URL&&SUPABASE_ANON_KEY&&window.supabase)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){sb=null;}
   window.VG={sb:sb,perfil:function(){return perfil;},ref:refSelo,
     /* painel: Transformar em assinatura abre o Apoiar com o mesmo número de apadrinhados e o período Todo mês */
-    assinar:function(n){if(n>0)apN.value=n;var r=document.querySelector('input[name="ap-p"][value="A"]');if(r)r.checked=true;ap();location.hash='apoiar-cadastro';}}; /* usado pelo painel do apoiador e pela página do selo */
+    assinar:function(n){if(n>0)apN.value=n;var r=document.querySelector('input[name="ap-p"][value="A"]');if(r)r.checked=true;ap();location.hash='apoiar-cadastro';},
+    /* Minha conta (Dados da conta): grava no perfil o que a pessoa mudou e atualiza o cabeçalho */
+    perfilMudou:function(upd){if(perfil){Object.assign(perfil,upd);cabecalho();}},
+    util:{dig:dig,maskFone:maskFone,maskDoc:maskDoc,foneOk:foneOk,emailOk:emailOk,docOk:docOk,emUso:function(a,b,c){return emUso(a,b,c);},EM_USO:function(){return EM_USO;},
+      maskCep:function(v){return maskCep(v);},cepFormatoOk:function(v){return cepFormatoOk(v);},consultaCep:function(d){return consultaCep(d);}}}; /* usado pelo painel (Minha conta) e pela página do selo */
   var FORA='O cadastro está sendo ligado e volta em breve. Enquanto isso, fale com a gente pelo WhatsApp (51) 99291-0038.';
   var perfil=null,cobranca={ativo:false,ambiente:''};
   function destino(c){return c.tipo==='admin'||c.admin?'admin':c.tipo==='vanguardista'?'simuladores':'painel';}
@@ -1497,31 +1491,33 @@ section.band#apoiadores > .in{padding-top:48px}
     document.querySelectorAll('[data-user]').forEach(function(el){el.hidden=!c;});
     document.querySelectorAll('[data-apoiador]').forEach(function(el){el.hidden=!(c&&c.tipo==='apoiador');});
     document.querySelectorAll('[data-admin]').forEach(function(el){el.hidden=!(c&&(c.tipo==='admin'||c.admin));});
+    document.querySelectorAll('[data-conta]').forEach(function(el){el.hidden=!(c&&c.tipo!=='admin');});
     document.querySelectorAll('.excluir').forEach(function(el){el.hidden=!c||c.tipo==='admin'||!!c.admin;});
     try{document.dispatchEvent(new CustomEvent('vg:perfil',{detail:c}));}catch(e){}
-    document.getElementById('ap-btn-so').textContent=(c?'Apoiar e atualizar dados':'Apenas Apoiar')+(cobranca.ambiente==='sandbox'?' (teste)':'');
+    document.getElementById('ap-btn-so').textContent='Apoiar'+(cobranca.ambiente==='sandbox'?' (teste)':'');
+    if(c){var gu=document.getElementById('ap-guardar');gu.checked=false;document.getElementById('ap-senha-box').hidden=true;}
     if(c){document.getElementById('me-nome').textContent=(c.nome||'').split(' ')[0];document.getElementById('me-a').hidden=!(c.tipo==='admin'||c.admin);
       preencherApoio();}
   }
   /* logado: o formulário Apoiar já vem com os dados do cadastro; só falta o que o cadastro não tem (CEP, endereço, número) */
   function preencherApoio(){
     var c=perfil;if(!c||c.tipo==='admin')return;
-    var pre={'ap-nome':c.nome,'ap-email':c.email,'ap-whats':maskFone(c.fone||''),'ap-doc':maskDoc(c.doc||''),'ap-cidade':c.cidade?c.cidade+(c.uf?', '+c.uf:''):'',
+    var pre={'ap-nome':c.nome,'ap-email':c.email,'ap-whats':maskFone(c.fone||''),'ap-doc':maskDoc(c.doc||''),'ap-cidade':c.cidade,'ap-uf':c.uf,
       'ap-cep':c.cep?maskCep(c.cep):'','ap-rua':c.rua,'ap-bairro':c.bairro,'ap-num':c.numero,'ap-comp':c.complemento};
     Object.keys(pre).forEach(function(id){var i=document.getElementById(id);if(i&&!i.value.trim()&&pre[id])i.value=pre[id];});
   }
   function focarFaltando(){
     if(!perfil)return;
     var f=document.querySelector('[data-form="ap"]');if(!f)return;
-    var vazio=[].slice.call(f.querySelectorAll('.fields input[required]')).filter(function(i){return !i.closest('label').hidden&&!i.value.trim();})[0];
+    var vazio=[].slice.call(f.querySelectorAll('.fields input[required],.fields select[required]')).filter(function(i){return !i.closest('label').hidden&&!String(i.value||'').trim();})[0];
     if(vazio)setTimeout(function(){vazio.focus({preventScroll:true});},0);
   }
   window.addEventListener('hashchange',function(){var h=location.hash.slice(1);if(h==='apoiar'||h==='apoiar-cadastro'){preencherApoio();if(h==='apoiar-cadastro')focarFaltando();}});
-  function entrou(user,txt){return carregarPerfil(user).then(function(c){perfil=c;cabecalho();if(c){ola(txt.replace('{n}',(c.nome||'').split(' ')[0]));var d=destino(c);if(d==='admin'){history.pushState(null,'','/admin');window.dispatchEvent(new HashChangeEvent('hashchange'));}else location.hash=d;}return c;});}
+  function entrou(user,txt,novo){return carregarPerfil(user).then(function(c){perfil=c;cabecalho();if(c){ola(txt.replace('{n}',(c.nome||'').split(' ')[0]));var d=novo&&c.tipo==='vanguardista'?'pn-perfil':destino(c);if(d==='admin'){history.pushState(null,'','/admin');window.dispatchEvent(new HashChangeEvent('hashchange'));}else location.hash=d;}return c;});}
   function ola(txt){var h=document.getElementById('hello');document.getElementById('hello-txt').textContent=txt;h.hidden=false;}
   document.getElementById('hello-x').addEventListener('click',function(){document.getElementById('hello').hidden=true;});
   document.getElementById('sair').addEventListener('click',function(){var done=function(){perfil=null;document.getElementById('hello').hidden=true;cabecalho();location.hash='inicio';};if(sb)sb.auth.signOut().then(done,done);else done();});
-  /* Excluir minha conta (abas Vanguardistas e Apoiar): confirmação na própria página, com Concordo e Excluir.
+  /* Excluir minha conta (Minha conta > Dados da conta): confirmação na própria página, com Concordo e Excluir.
      O banco (excluir_minha_conta) só apaga a conta logada; nenhum id vai do site para o banco. */
   var EXCLUIR_TXT={vanguardista:'Ao excluir, sua conta de vanguardista sai do portal: seu cadastro (nome, celular, e-mail, CPF ou CNPJ e endereço), os dados do seu negócio e todos os dados ligados às suas simulações. Você deixa de poder ser apadrinhado, e as vagas de apadrinhamento que você ocupava passam para outros vanguardistas. Se você também apoiou o portal, os registros desses apoios são apagados.',
     apoiador:'Ao excluir, sua conta de apoiador sai do portal: seu cadastro (nome, celular, e-mail, CPF ou CNPJ e endereço), o painel de impacto, os selos e o material escolhidos, os grupos que você acompanha, as visitas ao seu selo e todos os dados dos seus apoios. Os apadrinhamentos de vanguardistas ligados aos seus apoios são encerrados.'};
@@ -1562,29 +1558,29 @@ section.band#apoiadores > .in{padding-top:48px}
     if(!g('cd-nome').value.trim())return erro('cd-err','Informe seu nome.',g('cd-nome'));
     if(!foneOk(g('cd-fone').value))return erro('cd-err','Informe um celular, WhatsApp ou telefone com DDD.',g('cd-fone'));
     var email=maskEmail(g('cd-email').value);if(!email)return erro('cd-err','Informe seu e-mail.',g('cd-email'));if(!emailOk(email))return erro('cd-err','Confira o e-mail.',g('cd-email'));
-    if(!docOk(g('cd-doc').value))return erro('cd-err','Confira o CPF ou CNPJ.',g('cd-doc'));
-    if(!cepFormatoOk(g('cd-cep').value))return erro('cd-err','Confira o CEP.',g('cd-cep'));
-    if(!g('cd-rua').value.trim())return erro('cd-err','Informe a rua.',g('cd-rua'));
-    if(!g('cd-bairro').value.trim())return erro('cd-err','Informe o bairro.',g('cd-bairro'));
-    if(!/\d|s\/?n/i.test(g('cd-num').value))return erro('cd-err','Informe o número (ou s/n).',g('cd-num'));
     if(!g('cd-cidade').value.trim())return erro('cd-err','Informe sua cidade.',g('cd-cidade'));
     if(!g('cd-uf').value)return erro('cd-err','Escolha o estado.',g('cd-uf'));
     if(g('cd-senha').value.length<6)return erro('cd-err','A senha precisa ter pelo menos 6 caracteres.',g('cd-senha'));
+    /* CPF/CNPJ e endereço são opcionais no cadastro; se a pessoa preencher, conferimos o formato */
+    var opc=document.querySelector('#form-cadastro details.opcional');
+    function opcErro(msg,campo){if(opc)opc.open=true;return erro('cd-err',msg,campo);}
+    if(g('cd-cep').value.trim()&&!cepFormatoOk(g('cd-cep').value))return erro('cd-err','Confira o CEP.',g('cd-cep'));
+    if(g('cd-doc').value.trim()&&!docOk(g('cd-doc').value))return opcErro('Confira o CPF ou CNPJ, ou deixe em branco.',g('cd-doc'));
+    if(g('cd-num').value.trim()&&!/\d|s\/?n/i.test(g('cd-num').value))return opcErro('Informe o número (ou s/n), ou deixe em branco.',g('cd-num'));
     if(!sb)return erro('cd-err',FORA);
     var fone=dig(g('cd-fone').value);
     var dados={tipo:tipo.value,nome:g('cd-nome').value.trim(),fone:fone,email_contato:email,doc:dig(g('cd-doc').value),cidade:g('cd-cidade').value.trim(),uf:g('cd-uf').value,
       cep:dig(g('cd-cep').value),rua:g('cd-rua').value.trim(),bairro:g('cd-bairro').value.trim(),numero:g('cd-num').value.trim(),complemento:g('cd-comp').value.trim()};
-    if(tipo.value==='vanguardista'){if(g('cd-porte').value)dados.porte_negocio=g('cd-porte').value;if(g('cd-ramo').value)dados.ramo=g('cd-ramo').value;if(g('cd-fat').value)dados.faturamento=g('cd-fat').value;}
     if(refSelo())dados.ref=refSelo();
     erro('cd-err','');ocupado(form,true);
-    emUso(fone,email,dados.doc).then(function(u){
+    emUso(fone,email,dados.doc||null).then(function(u){
       if(u.indexOf('fone')>=0){erro('cd-err',EM_USO.fone,g('cd-fone'));return;}
       if(u.indexOf('email')>=0){erro('cd-err',EM_USO.email,g('cd-email'));return;}
-      if(u.indexOf('doc')>=0){erro('cd-err',EM_USO.doc,g('cd-doc'));return;}
+      if(u.indexOf('doc')>=0){var op=document.querySelector('#form-cadastro details.opcional');if(op)op.open=true;erro('cd-err',EM_USO.doc,g('cd-doc'));return;}
       return sb.auth.signUp({email:emailInterno(),password:g('cd-senha').value,options:{data:dados}}).then(function(res){
         if(res.error)throw res.error;
         if(!res.data.session){erro('cd-err','Conta criada. Assim que a confirmação for liberada, você já pode entrar com seu celular e senha.');return;}
-        form.reset();return entrou(res.data.user,'Conta criada. Bem-vindo, {n}.');
+        form.reset();return entrou(res.data.user,'Conta criada. Bem-vindo, {n}. Conte um pouco sobre o seu negócio, se quiser.',true);
       });
     }).catch(function(err){
       var m=String(err&&err.message||'');
@@ -1603,7 +1599,7 @@ section.band#apoiadores > .in{padding-top:48px}
     document.getElementById('cd-vindo-txt').textContent=txt;document.getElementById('cd-vindo').hidden=!txt;
     erro('en-err','');li.value='';se.value='';
     location.hash='cadastro';
-    alvo=[].slice.call(document.querySelectorAll('#form-cadastro .fields input[required]')).filter(function(i){return !i.value.trim();})[0];
+    alvo=[].slice.call(document.querySelectorAll('#form-cadastro .fields input[required],#form-cadastro .fields select[required]')).filter(function(i){return !String(i.value||'').trim();})[0];
     if(alvo)setTimeout(function(){alvo.focus({preventScroll:true});},50);
   }
   document.getElementById('en-cadastrar').addEventListener('click',function(e){e.preventDefault();paraCadastro(false);});
@@ -1671,8 +1667,10 @@ section.band#apoiadores > .in{padding-top:48px}
       if(r.ok===null){cepMsg('');return r;}
       var j=r.dados;cepMsg('');
       if(preencher){
-        var ci=document.getElementById('ap-cidade'),ru=document.getElementById('ap-rua'),ba=document.getElementById('ap-bairro');
-        if(!ci.value.trim()&&j.localidade)ci.value=j.localidade+(j.uf?', '+j.uf:'');
+        var ci=document.getElementById('ap-cidade'),uf=document.getElementById('ap-uf'),ru=document.getElementById('ap-rua'),ba=document.getElementById('ap-bairro');
+        if(!ci.value.trim()&&j.localidade)ci.value=j.localidade;
+        if(!uf.value&&j.uf){uf.value=j.uf;campoErro(uf,'');}
+        [ci,ru,ba].forEach(function(i){if(i.value.trim()&&i.closest('label').classList.contains('bad'))campoErro(i,'');});
         if(!ru.value.trim()&&j.logradouro)ru.value=j.logradouro;
         if(!ba.value.trim()&&j.bairro)ba.value=j.bairro;
         var nu=document.getElementById('ap-num');if(!nu.value.trim()&&ru.value.trim())nu.focus();
@@ -1694,10 +1692,12 @@ section.band#apoiadores > .in{padding-top:48px}
         var j=r.dados,f=function(id,v){var i=document.getElementById(id);if(i&&!i.value.trim()&&v)i.value=v;};
         f('cd-rua',j.logradouro);f('cd-bairro',j.bairro);f('cd-cidade',j.localidade);
         var uf=document.getElementById('cd-uf');if(uf&&!uf.value&&j.uf)uf.value=j.uf;
-        var nu=document.getElementById('cd-num');if(!nu.value.trim()&&document.getElementById('cd-rua').value.trim())nu.focus();});});
+        if(!document.getElementById('cd-senha').value)document.getElementById('cd-senha').focus();});});
   })();
   /* cobrança do apoio pelo Asaas: a chave fica só no servidor (api/asaas/cobranca.js) */
-  var apBtns=[document.getElementById('ap-btn'),document.getElementById('ap-btn-so')];
+  var apBtns=[document.getElementById('ap-btn-so')];
+  /* Guardar meus dados: a senha só aparece para quem quer criar a conta */
+  document.getElementById('ap-guardar').addEventListener('change',function(){var b=document.getElementById('ap-senha-box');b.hidden=!this.checked;if(this.checked)document.getElementById('ap-senha').focus();else campoErro(document.getElementById('ap-senha'),'');});
   fetch('/api/asaas/cobranca',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.ativo)return;cobranca=j;
     if(j.ambiente==='sandbox')apBtns.forEach(function(b){b.textContent+=' (teste)';});
@@ -1705,7 +1705,7 @@ section.band#apoiadores > .in{padding-top:48px}
   }).catch(function(){});
   function pagar(errEl,semCobranca,btn){
     var v=function(id){return document.getElementById(id).value.trim();};
-    var apBtn=btn||apBtns[1],txtBtn=apBtn.textContent;apBtn.disabled=true;apBtn.textContent='Gerando o pagamento…';
+    var apBtn=btn||apBtns[0],txtBtn=apBtn.textContent;apBtn.disabled=true;apBtn.textContent='Gerando o pagamento…';
     fetch('/api/asaas/cobranca',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       vanguardistas:int(apN,1),meses:meses(apP(),apM),assinatura:apP()==='A',nome:v('ap-nome'),email:v('ap-email'),fone:v('ap-whats'),doc:v('ap-doc'),
       cep:v('ap-cep'),endereco:v('ap-rua'),bairro:v('ap-bairro'),numero:v('ap-num'),complemento:v('ap-comp')})})
@@ -1721,23 +1721,21 @@ section.band#apoiadores > .in{padding-top:48px}
         .forEach(function(x){if(j.erro&&x[0].test(j.erro))campoErro(document.getElementById(x[1]),j.erro.replace(/^O Asaas recusou: /,''));});
     },function(){apBtn.disabled=false;apBtn.textContent=txtBtn;errEl.textContent='Sem conexão com o servidor. Tente de novo em instantes.';errEl.hidden=false;});
   }
-  /* Cadastrar e Apoiar: cria a conta de apoiador com os dados do formulário */
-  function cidadeUf(v){var m=String(v).trim().match(/^(.+?)\s*[,\/-]\s*([A-Za-z]{2})$/);if(!m)return null;var uf=m[2].toUpperCase();
-    return 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ').indexOf(uf)<0?null:{cidade:m[1].trim(),uf:uf};}
+  /* Guardar meus dados (no Apoiar, sem login): cria a conta de apoiador com os dados do formulário */
   function criarContaApoiador(errEl,btn){
     function g(id){return document.getElementById(id);}
     function falha(msg,campo){errEl.textContent=campo?'Confira o campo destacado.':msg;errEl.hidden=false;if(campo){campoErro(campo,msg);campo.focus();}return null;}
     if(!sb)return Promise.resolve(falha(FORA));
-    var fone=dig(g('ap-whats').value),email=maskEmail(g('ap-email').value),ci=cidadeUf(g('ap-cidade').value);
-    var dados={tipo:'apoiador',nome:g('ap-nome').value.trim(),fone:fone,email_contato:email,doc:dig(g('ap-doc').value),cidade:ci.cidade,uf:ci.uf,
+    var fone=dig(g('ap-whats').value),email=maskEmail(g('ap-email').value);
+    var dados={tipo:'apoiador',nome:g('ap-nome').value.trim(),fone:fone,email_contato:email,doc:dig(g('ap-doc').value),cidade:g('ap-cidade').value.trim(),uf:g('ap-uf').value,
       cep:dig(g('ap-cep').value),rua:g('ap-rua').value.trim(),bairro:g('ap-bairro').value.trim(),numero:g('ap-num').value.trim(),complemento:g('ap-comp').value.trim()};
     if(refSelo())dados.ref=refSelo();
     var txt=btn.textContent;apBtns.forEach(function(b){b.disabled=true;});btn.textContent='Criando o cadastro…';
     function solta(){apBtns.forEach(function(b){b.disabled=false;});btn.textContent=txt;}
     return sb.rpc('contato_em_uso',{p_fone:fone,p_email:email||null}).then(function(r){
       if(r.error)throw r.error;
-      if(r.data==='fone')return falha('Já existe uma conta com esse celular. Use Entrar ou clique em Apenas Apoiar.',g('ap-whats'));
-      if(r.data==='email')return falha('Já existe uma conta com esse e-mail. Use Entrar ou clique em Apenas Apoiar.',g('ap-email'));
+      if(r.data==='fone')return falha('Já existe uma conta com esse celular. Use Entrar ou desmarque Guardar meus dados.',g('ap-whats'));
+      if(r.data==='email')return falha('Já existe uma conta com esse e-mail. Use Entrar ou desmarque Guardar meus dados.',g('ap-email'));
       return sb.auth.signUp({email:emailInterno(),password:g('ap-senha').value,options:{data:dados}}).then(function(res){
         if(res.error)throw res.error;
         g('ap-senha').value='';
@@ -1746,17 +1744,16 @@ section.band#apoiadores > .in{padding-top:48px}
       });
     }).catch(function(err){
       var m=String(err&&err.message||'');
-      return falha(/password/i.test(m)?'Escolha uma senha mais forte, com pelo menos 6 caracteres.':/database|duplicate|unique/i.test(m)?'Já existe uma conta com esse celular ou e-mail. Use Entrar ou clique em Apenas Apoiar.':'Não foi possível criar o cadastro agora. Tente de novo em instantes ou use Apenas Apoiar.');
+      return falha(/password/i.test(m)?'Escolha uma senha mais forte, com pelo menos 6 caracteres.':/database|duplicate|unique/i.test(m)?'Já existe uma conta com esse celular ou e-mail. Use Entrar ou desmarque Guardar meus dados.':'Não foi possível criar o cadastro agora. Tente de novo em instantes ou desmarque Guardar meus dados.');
     }).then(function(r){solta();return r;});
   }
-  /* logado: Apoiar e atualizar dados grava no cadastro o que foi preenchido para a nota fiscal
+  /* logado: Apoiar grava no cadastro o que foi preenchido para a nota fiscal
      (nome, celular, e-mail, CPF/CNPJ, CEP, rua, bairro, número, complemento, cidade e estado). */
   function atualizarCadastro(errEl){
     function g(id){return document.getElementById(id);}
     if(!sb||!perfil||!perfil.id)return Promise.resolve(true);
-    var ci=cidadeUf(g('ap-cidade').value),novo={nome:g('ap-nome').value.trim(),fone:dig(g('ap-whats').value),email:maskEmail(g('ap-email').value)||null,doc:dig(g('ap-doc').value),
+    var novo={cidade:g('ap-cidade').value.trim(),uf:g('ap-uf').value,nome:g('ap-nome').value.trim(),fone:dig(g('ap-whats').value),email:maskEmail(g('ap-email').value)||null,doc:dig(g('ap-doc').value),
       cep:dig(g('ap-cep').value),rua:g('ap-rua').value.trim(),bairro:g('ap-bairro').value.trim(),numero:g('ap-num').value.trim(),complemento:g('ap-comp').value.trim()||null};
-    if(ci){novo.cidade=ci.cidade;novo.uf=ci.uf;}
     var mudou=Object.keys(novo).filter(function(k){return String(novo[k]||'')!==String(perfil[k]||'');});
     if(!mudou.length)return Promise.resolve(true);
     var upd={};mudou.forEach(function(k){upd[k]=novo[k];});
@@ -1781,7 +1778,8 @@ section.band#apoiadores > .in{padding-top:48px}
     rua:[cheio,'Informe a rua.'],
     bairro:[cheio,'Informe o bairro.'],
     num:[function(v){return /\d|s\/?n/i.test(v);},'Informe o número ou s/n.'],
-    cidade:[function(v){return !!cidadeUf(v);},'Escreva a cidade e a sigla do estado, como Porto Alegre, RS.']
+    cidade:[cheio,'Informe a cidade.'],
+    uf:[cheio,'Escolha o estado.']
   };
   function campoErro(i,msg){
     var l=i.closest('label');if(!l)return;var s=l.querySelector('.err-campo');
@@ -1793,25 +1791,26 @@ section.band#apoiadores > .in{padding-top:48px}
   function problema(i,p){
     if(!i.required||i.closest('label').hidden)return '';
     var r=REGRAS[i.id.slice(p.length+1)];
-    if(r&&(p==='ap'||i.id.slice(p.length+1)!=='cidade'))return r[0](i.value)?'':r[1];
-    return cheio(i.value)?'':'Preencha este campo.';
+    if(r)return r[0](i.value||'')?'':r[1];
+    return cheio(i.value||'')?'':'Preencha este campo.';
   }
   document.querySelectorAll('[data-form]').forEach(function(f){
     var p=f.dataset.form;
-    f.querySelectorAll('.fields input[required]').forEach(function(i){
-      i.addEventListener('blur',function(){if(cheio(i.value)||i.closest('label').classList.contains('bad'))campoErro(i,problema(i,p));});
+    f.querySelectorAll('.fields input[required],.fields select[required]').forEach(function(i){
+      if(i.tagName==='SELECT')i.addEventListener('change',function(){campoErro(i,problema(i,p));});
+      i.addEventListener('blur',function(){if(cheio(i.value||'')||i.closest('label').classList.contains('bad'))campoErro(i,problema(i,p));});
       i.addEventListener('input',function(){if(i.closest('label').classList.contains('bad'))campoErro(i,problema(i,p));});
     });
     f.addEventListener('submit',function(e){
       e.preventDefault();
-      var ruins=[];f.querySelectorAll('.fields input[required]').forEach(function(i){var m=problema(i,p);campoErro(i,m);if(m)ruins.push(i);});
+      var ruins=[];f.querySelectorAll('.fields input[required],.fields select[required]').forEach(function(i){var m=problema(i,p);campoErro(i,m);if(m)ruins.push(i);});
       var ok=!ruins.length,ce=document.getElementById(p+'-cep');
       var errEl=document.getElementById(p+'-err');
       errEl.textContent=ok?'':(ruins.length===1?'Confira o campo destacado.':'Confira os '+ruins.length+' campos destacados.');
       errEl.hidden=ok;if(!ok){ruins[0].focus();return;}
-      var btn=p==='ap'?(e.submitter&&e.submitter.dataset.acao?e.submitter:apBtns[1]):null,contaMsg='';
-      var comConta=!!(btn&&btn.dataset.acao==='cadastrar'&&!perfil);
-      if(comConta){var se=document.getElementById('ap-senha');if(se.value.length<6){campoErro(se,'Crie uma senha com pelo menos 6 caracteres, ou use Apenas Apoiar.');errEl.textContent='Confira o campo destacado.';errEl.hidden=false;se.focus();return;}campoErro(se,'');
+      var btn=p==='ap'?apBtns[0]:null,contaMsg='';
+      var comConta=!!(p==='ap'&&!perfil&&document.getElementById('ap-guardar').checked);
+      if(comConta){var se=document.getElementById('ap-senha');if(se.value.length<6){campoErro(se,'Crie uma senha com pelo menos 6 caracteres, ou desmarque Guardar meus dados.');errEl.textContent='Confira o campo destacado.';errEl.hidden=false;se.focus();return;}campoErro(se,'');
 }
       if(ce){conferirCep(false).then(function(r){if(r.ok===false){campoErro(ce,'CEP não encontrado. Confira os números.');errEl.textContent='Confira o campo destacado.';errEl.hidden=false;ce.focus();return;}duplicados();});return;}
       duplicados();
@@ -1861,7 +1860,7 @@ section.band#apoiadores > .in{padding-top:48px}
 })();
 </script>
 <script>
-/* Painel do apoiador: selos sociais recomendados, material de divulgação e grupos de vanguardistas (dados só agregados).
+/* Minha conta: Meu negócio e Dados da conta para todos; para apoiadores, também selos sociais, material de divulgação e grupos de vanguardistas (dados só agregados).
    Banco: supabase/painel.sql. Sem as tabelas, perfil e selos ficam guardados neste navegador e os grupos aparecem como "em breve". */
 (function(){
   var VG=window.VG;if(!VG)return;
@@ -1941,7 +1940,8 @@ section.band#apoiadores > .in{padding-top:48px}
   }
 
   /* estado */
-  var st={perfil:null,ap:{marca:'',porte:'',setor:'',objetivos:[],selos:[]},db:true,grupos:true,fin:null,reg:null};
+  var st={perfil:null,ap:{marca:'',porte:'',setor:'',faturamento:'',objetivos:[],selos:[]},db:true,grupos:true,fin:null,reg:null};
+  function apoiador(){return !!(st.perfil&&st.perfil.tipo==='apoiador');}
   var LS='vg-painel-';
   function lsGet(){try{return JSON.parse(localStorage.getItem(LS+(st.perfil&&st.perfil.id||'x'))||'null');}catch(e){return null;}}
   function lsSet(){try{localStorage.setItem(LS+(st.perfil&&st.perfil.id||'x'),JSON.stringify(st.ap));}catch(e){}}
@@ -1951,14 +1951,25 @@ section.band#apoiadores > .in{padding-top:48px}
     var sb=VG.sb;
     var local=lsGet();if(local)st.ap=Object.assign(st.ap,local);
     if(!st.ap.marca)st.ap.marca=st.perfil.nome||'';
+    function doPerfil(){var p=st.perfil;if(p.porte_negocio)st.ap.porte=p.porte_negocio;if(p.ramo)st.ap.setor=p.ramo;if(p.faturamento)st.ap.faturamento=p.faturamento;}
+    doPerfil();
     if(!sb){st.db=false;return Promise.resolve();}
+    if(!apoiador())return Promise.resolve();
     return sb.from('apoiador_perfil').select('marca,porte,setor,objetivos,selos').eq('id',st.perfil.id).maybeSingle().then(function(r){
       if(r.error){if(semTabela(r.error))st.db=false;return;}
       if(r.data){Object.keys(r.data).forEach(function(k){if(r.data[k]!=null)st.ap[k]=r.data[k];});}
+      doPerfil(); /* o perfil (perfis) vale mais que a cópia antiga em apoiador_perfil */
     },function(){st.db=false;});
+  }
+  function salvarNegocio(){
+    var a=st.ap,p=st.perfil,upd={porte_negocio:a.porte||null,ramo:a.setor||null,faturamento:a.faturamento||null};
+    if(!VG.sb||!p)return Promise.resolve({ok:true,local:true});
+    if(upd.porte_negocio===(p.porte_negocio||null)&&upd.ramo===(p.ramo||null)&&upd.faturamento===(p.faturamento||null))return Promise.resolve({ok:true});
+    return VG.sb.from('perfis').update(upd).eq('id',p.id).then(function(r){if(r.error)return {ok:false};VG.perfilMudou(upd);return {ok:true};},function(){return {ok:false};});
   }
   function salvar(){
     lsSet();
+    if(!apoiador())return Promise.resolve({ok:true});
     if(!st.db||!VG.sb)return Promise.resolve({ok:true,local:true});
     var a=st.ap;
     return VG.sb.from('apoiador_perfil').upsert({id:st.perfil.id,marca:a.marca||null,porte:a.porte||null,setor:a.setor||null,objetivos:a.objetivos||[],selos:a.selos||[],atualizado_em:new Date().toISOString()})
@@ -1969,22 +1980,23 @@ section.band#apoiadores > .in{padding-top:48px}
   function preencherPerfil(){
     var a=st.ap;$('pn-marca').value=a.marca||'';
     document.querySelectorAll('input[name="pn-porte"]').forEach(function(r){r.checked=r.value===a.porte;});
-    $('pn-setor').value=a.setor||'';
+    $('pn-setor').value=a.setor||'';$('pn-fat').value=a.faturamento||'';
+    document.querySelectorAll('[data-so-apoiador]').forEach(function(el){el.hidden=!apoiador();});
+    $('pn-perfil-lede').textContent=apoiador()?'Com essas respostas o portal indica os selos mais adequados para você. Leva menos de um minuto e dá para mudar quando quiser.':'Porte, tipo de negócio e faturamento entram nos números da comunidade só somados, em grupos de pelo menos 5 pessoas, sem identificar ninguém. Tudo é opcional e dá para mudar quando quiser.';
+    $('pn-perfil-btn').textContent=apoiador()?'Salvar e ver selos recomendados':'Salvar';
     document.querySelectorAll('#pn-obj input').forEach(function(c){c.checked=(a.objetivos||[]).indexOf(c.value)>=0;});
   }
   function lerPerfil(){
     var a=st.ap;a.marca=$('pn-marca').value.trim();
-    var pr=document.querySelector('input[name="pn-porte"]:checked');a.porte=pr?pr.value:'';a.setor=$('pn-setor').value;
+    var pr=document.querySelector('input[name="pn-porte"]:checked');a.porte=pr?pr.value:'';a.setor=$('pn-setor').value;a.faturamento=$('pn-fat').value;
     a.objetivos=[].slice.call(document.querySelectorAll('#pn-obj input:checked')).map(function(c){return c.value;});
   }
   $('pn-form-perfil').addEventListener('submit',function(e){
     e.preventDefault();lerPerfil();var msg=$('pn-perfil-msg');msg.textContent='Salvando…';
-    var rec=recomendados(st.ap).top;
-    rec=rec.filter(liberado);
-    if(!(st.ap.selos||[]).length&&rec.length)st.ap.selos=rec.slice(0,1);
-    salvar().then(function(r){msg.textContent=r.ok?(r.local?'Guardado neste navegador.':'Perfil salvo.'):'Não foi possível salvar agora. Tente de novo.';});
-    desenharSelos();material();
-    $('pn-selos').scrollIntoView({block:'start'});
+    var ap=apoiador();
+    if(ap){var rec=recomendados(st.ap).top.filter(liberado);if(!(st.ap.selos||[]).length&&rec.length)st.ap.selos=rec.slice(0,1);}
+    Promise.all([salvarNegocio(),salvar()]).then(function(rs){var ok=rs[0].ok&&rs[1].ok;msg.textContent=ok?(rs[1].local?'Guardado neste navegador.':'Salvo.'):'Não foi possível salvar agora. Tente de novo.';});
+    if(ap){desenharSelos();material();aba('selos');$('pn-selos').scrollIntoView({block:'start'});}
   });
 
   /* 2. selos */
@@ -1992,7 +2004,7 @@ section.band#apoiadores > .in{padding-top:48px}
      (st.fin.apoios, de impacto_apoiador). Powered by exige, além disso, 180 meses de uso apadrinhados somando os apoios. */
   function mesesPagos(){return st.fin?Number(st.fin.meses_vanguardista)||0:0;}
   function liberado(id){var s=SELO[id];return !!s&&temApoio()&&(!s.req||mesesPagos()>=s.req.meses);}
-  /* condição para desbloquear (docs/selos.md), escrita em todo selo: painel, aba Desenvolvimento humano e página pública */
+  /* condição para desbloquear (docs/selos.md), escrita em todo selo: painel (Selos e divulgação) e página pública */
   function condHtml(s,status){return '<p class="req"><b>Condição para desbloquear:</b> '+esc(s.cond)+(status?' '+esc(status):'')+'</p>';}
   function faltaSelo(s){
     var t=!temApoio()?'Ainda não cumprida: falta o primeiro apoio pago.':'Ainda não cumprida.';
@@ -2007,11 +2019,21 @@ section.band#apoiadores > .in{padding-top:48px}
       return '<label class="selo'+(rec?' rec':'')+(on?' on':'')+(bloq?' bloq':'')+'"><input type="checkbox" value="'+s.id+'"'+(on?' checked':'')+(bloq?' disabled':'')+'>'+
         '<div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
         '<div class="tags"><span class="tag">'+esc(s.cat)+'</span>'+(bloq?'<span class="tag bloq">Bloqueado</span>':'')+(rec?'<span class="tag ok">Recomendado para você</span>':'')+(on?'<span class="tag sel">Selecionado</span>':'')+'</div>'+
-        '<p>'+esc(s.desc)+'</p>'+condHtml(s,bloq?faltaSelo(s):'Cumprida.')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+'</label>';
+        '<p>'+esc(s.desc)+'</p>'+condHtml(s,bloq?faltaSelo(s):'Cumprida.')+(rec&&por.length?'<p class="por">Por quê: '+esc(por.join('; '))+'.</p>':'')+
+        (bloq?'':'<button type="button" class="btn divulgar'+(on?'':' go')+'" data-divulgar="'+s.id+'">Divulgar</button>')+'</label>';
     }).join('');
     $('pn-selos-bloq').hidden=temApoio();
     $('pn-selos-msg').textContent=top.length?'':'Preencha o passo 1 para ver os selos recomendados para você.';
   }
+  /* Divulgar: seleciona o selo (se ainda não estiver) e abre o material já com ele */
+  $('pn-lista-selos').addEventListener('click',function(e){
+    var b=e.target.closest('[data-divulgar]');if(!b)return;e.preventDefault();
+    var id=b.getAttribute('data-divulgar');if(!liberado(id))return;
+    var s=st.ap.selos=st.ap.selos||[];if(s.indexOf(id)<0){s.push(id);salvar();}
+    desenharSelos();material();
+    var ss=$('pn-mat-selo');if(ss){ss.value=id;ss.dispatchEvent(new Event('change'));}
+    $('pn-material').scrollIntoView({block:'start'});
+  });
   $('pn-lista-selos').addEventListener('change',function(e){
     var c=e.target;if(!c||c.type!=='checkbox')return;
     if(c.checked&&!liberado(c.value)){c.checked=false;return;}
@@ -2084,45 +2106,78 @@ section.band#apoiadores > .in{padding-top:48px}
     }).then(function(d){
       st.fin=d?Object.assign({},d.financeiro):false;st.reg=d?d.regioes:false;
       st.codigo=d&&d.codigo||null;st.indic=d?{visitas:Number(d.visitas_selo)||0,cadastros:Number(d.cadastros_selo)||0}:null;
-      $('pn-imp-atualizar').disabled=false;desenharImpacto();desenharSelos();desenharDH();$('pn-mat-txt').value='';material();
+      $('pn-imp-atualizar').disabled=false;desenharImpacto();desenharSelos();$('pn-mat-txt').value='';material();
     });
   }
-  /* aba Desenvolvimento humano: aparece quando o apoiador tem pelo menos um apoio pago e não estornado (tabela apoios) */
-  var DH=['ods4','ods8','ods10'];
   function temApoio(){return !!(st.fin&&Number(st.fin.apoios)>0);}
+  /* abas de Minha conta: Meu negócio e Dados da conta para todos; Selos e divulgação e Vanguardistas só para quem apoia.
+     Os 3 selos de desenvolvimento humano (ODS 4, 8 e 10) ficam na lista de selos, com cadeado até o primeiro apoio pago. */
+  var ABAS=['negocio','selos','grupos','conta'],SO_APOIADOR={selos:1,grupos:1};
+  function abaVisivel(q){return !SO_APOIADOR[q]||apoiador();}
   function aba(qual,foco){
-    var dh=qual==='dh'&&temApoio();
-    $('pn-aba-geral').hidden=dh;$('pn-aba-dh').hidden=!dh;
-    [['pn-tab-geral',!dh],['pn-tab-dh',dh]].forEach(function(t){var b=$(t[0]);b.setAttribute('aria-selected',t[1]?'true':'false');b.tabIndex=t[1]?0:-1;if(t[1]&&foco)b.focus();});
+    if(ABAS.indexOf(qual)<0||!abaVisivel(qual))qual='negocio';
+    ABAS.forEach(function(q){var on=q===qual,b=$('pn-tab-'+q);$('pn-aba-'+q).hidden=!on;b.hidden=!abaVisivel(q);
+      b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;if(on&&foco)b.focus();});
   }
-  function desenharDH(){
-    var tem=temApoio();$('pn-tab-dh').hidden=!tem;
-    if(!tem){aba('geral');$('pn-dh-lista').innerHTML='';return;}
-    var sel=st.ap.selos||[],desde=st.fin.desde?new Date(st.fin.desde):null;
-    var quando=desde&&!isNaN(desde)?desde.toLocaleDateString('pt-BR',{month:'short',year:'numeric'}):'';
-    $('pn-dh-lista').innerHTML=DH.filter(function(id){return SELO[id];}).map(function(id){var s=SELO[id],on=sel.indexOf(id)>=0;
-      return '<div class="selo dh"><div class="selo-top"><span class="selo-badge" aria-hidden="true">'+esc(s.sigla)+'</span><h3>'+esc(s.nome)+'</h3></div>'+
-        '<div class="tags"><span class="tag">'+esc(s.cat)+'</span><span class="tag sel">Conquistado'+(quando?' em '+esc(quando):'')+'</span></div>'+
-        '<p>'+esc(s.desc)+'</p>'+condHtml(s,'Cumprida.')+
-        '<button type="button" class="btn'+(on?'':' go')+'" data-dh="'+id+'">'+(on?'Ver no material':'Usar no material')+'</button></div>';
-    }).join('');
-    $('pn-dh-nota').textContent='O selo vale enquanto houver apoio pago e sai se o pagamento for estornado.'+(st.ambiente==='sandbox'?' Ambiente de teste: os apoios são do sandbox do Asaas.':'');
-  }
-  $('pn-dh-lista').addEventListener('click',function(e){
-    var b=e.target.closest('[data-dh]');if(!b)return;var id=b.getAttribute('data-dh');if(!liberado(id))return;
-    var s=st.ap.selos=st.ap.selos||[];if(s.indexOf(id)<0){s.push(id);salvar();}
-    desenharSelos();material();desenharDH();aba('geral');
-    var ss=$('pn-mat-selo');if(ss){ss.value=id;ss.dispatchEvent(new Event('change'));}
-    $('pn-material').scrollIntoView({block:'start'});
-  });
-  $('pn-tab-geral').addEventListener('click',function(){aba('geral');});
-  $('pn-tab-dh').addEventListener('click',function(){aba('dh');});
+  ABAS.forEach(function(q){$('pn-tab-'+q).addEventListener('click',function(){aba(q);});});
   document.querySelector('.pn-abas').addEventListener('keydown',function(e){
-    if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;if(!temApoio())return;
-    e.preventDefault();aba($('pn-tab-dh').getAttribute('aria-selected')==='true'?'geral':'dh',true);
+    if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;e.preventDefault();
+    var vis=ABAS.filter(abaVisivel),at=vis.indexOf((document.querySelector('.pn-abas [aria-selected="true"]')||{}).dataset.aba);
+    aba(vis.at((at+(e.key==='ArrowRight'?1:-1)+vis.length)%vis.length),true);
   });
-  /* links como "Ver selos" e "Acompanhar grupos" levam de volta à primeira aba */
-  window.addEventListener('hashchange',function(){if(location.hash.indexOf('#pn-')===0)aba('geral');});
+  /* links para uma seção (#pn-selos, #pn-material, #pn-grupos, #pn-dados...) abrem a aba dela e rolam até lá */
+  function abaDoHash(){
+    var h=location.hash.slice(1),el=h&&document.getElementById(h),pn=el&&el.closest('.pn-aba');
+    if(!pn)return;aba(pn.id.replace('pn-aba-',''));setTimeout(function(){el.scrollIntoView({block:'start'});},0);
+  }
+  window.addEventListener('hashchange',abaDoHash);
+  /* Dados da conta: nome, celular, e-mail, CPF/CNPJ e endereço. CPF/CNPJ e endereço podem ficar vazios
+     (o Apoiar pede tudo na hora do apoio, para a nota fiscal). */
+  var U=VG.util;
+  function preencherDados(){
+    var p=st.perfil||{},v={'dd-nome':p.nome,'dd-fone':U.maskFone(p.fone||''),'dd-email':p.email,'dd-doc':U.maskDoc(p.doc||''),'dd-cep':p.cep?U.maskCep(p.cep):'',
+      'dd-rua':p.rua,'dd-num':p.numero,'dd-comp':p.complemento,'dd-bairro':p.bairro,'dd-cidade':p.cidade,'dd-uf':p.uf};
+    Object.keys(v).forEach(function(id){$(id).value=v[id]||'';});
+    $('dd-msg').textContent='';
+  }
+  (function(){var c=$('dd-cep'),m=$('dd-cep-msg'),ult='';
+    function msg(t,r){m.textContent=t;m.classList.toggle('bad',!!r);}
+    c.addEventListener('input',function(){var v=U.maskCep(c.value);if(v!==c.value)c.value=v;var d=U.dig(v);
+      if(d.length<8){ult='';msg('');return;}if(d===ult)return;ult=d;
+      if(!U.cepFormatoOk(d)){msg('CEP inválido.',true);return;}msg('Conferindo o CEP…');
+      U.consultaCep(d).then(function(r){if(U.dig(c.value)!==d)return;if(r.ok===false){msg('CEP não encontrado. Confira os números.',true);return;}msg('');if(!r.ok)return;
+        var j=r.dados;[['dd-rua',j.logradouro],['dd-bairro',j.bairro],['dd-cidade',j.localidade],['dd-uf',j.uf]].forEach(function(x){if(x[1])$(x[0]).value=x[1];});
+        $('dd-num').focus();});});
+  })();
+  $('pn-form-dados').addEventListener('submit',function(e){
+    e.preventDefault();var m=$('dd-msg'),g=function(id){return $(id).value.trim();};
+    function ruim(t,id){m.textContent=t;m.classList.add('bad');if(id)$(id).focus();}
+    m.classList.remove('bad');
+    if(!g('dd-nome'))return ruim('Informe o nome.','dd-nome');
+    if(!U.foneOk(g('dd-fone')))return ruim('Informe o celular com DDD.','dd-fone');
+    if(g('dd-email')&&!U.emailOk(g('dd-email')))return ruim('Confira o e-mail.','dd-email');
+    if(g('dd-doc')&&!U.docOk(g('dd-doc')))return ruim('Confira o CPF ou CNPJ, ou deixe em branco.','dd-doc');
+    if(apoiador()&&!g('dd-doc'))return ruim('Quem apoia precisa do CPF ou CNPJ, que vai na nota fiscal.','dd-doc');
+    if(g('dd-cep')&&!U.cepFormatoOk(g('dd-cep')))return ruim('Confira o CEP.','dd-cep');
+    if(!g('dd-cidade'))return ruim('Informe a cidade.','dd-cidade');
+    if(!$('dd-uf').value)return ruim('Escolha o estado.','dd-uf');
+    var p=st.perfil,novo={nome:g('dd-nome'),fone:U.dig(g('dd-fone')),email:g('dd-email').toLowerCase()||null,doc:U.dig(g('dd-doc'))||null,cep:U.dig(g('dd-cep'))||null,
+      rua:g('dd-rua')||null,numero:g('dd-num')||null,complemento:g('dd-comp')||null,bairro:g('dd-bairro')||null,cidade:g('dd-cidade'),uf:$('dd-uf').value};
+    var upd={};Object.keys(novo).forEach(function(k){if(String(novo[k]||'')!==String(p[k]||''))upd[k]=novo[k];});
+    if(!Object.keys(upd).length){m.textContent='Nada mudou.';return;}
+    if(!VG.sb){m.textContent='Não foi possível salvar agora.';return;}
+    $('dd-btn').disabled=true;m.textContent='Salvando…';
+    U.emUso(upd.fone||null,upd.email||null,upd.doc||null).then(function(u){
+      var em=U.EM_USO(),campo={fone:'dd-fone',email:'dd-email',doc:'dd-doc'};
+      if(u.length){$('dd-btn').disabled=false;return ruim(em[u[0]],campo[u[0]]);}
+      return VG.sb.from('perfis').update(upd).eq('id',p.id).then(function(r){
+        $('dd-btn').disabled=false;
+        if(r.error){var t=String(r.error.message||'')+' '+String(r.error.details||'');
+          return ruim(/duplicate|unique/i.test(t)?'Esse celular, e-mail ou CPF/CNPJ já está em outra conta.':/doc|null value|check/i.test(t)?'O banco ainda não aceita conta sem CPF ou CNPJ. Preencha o campo ou tente mais tarde.':'Não foi possível salvar agora. Tente de novo.');}
+        VG.perfilMudou(upd);m.textContent='Dados salvos.';
+      });
+    },function(){$('dd-btn').disabled=false;ruim('Sem conexão. Tente de novo.');});
+  });
   /* Apadrinhar dentro do painel: o mesmo formulário do Apoiar (#apoiar-cadastro) vem para cá, com tudo o que já funciona nele,
      e volta para a página Apoiar quando a pessoa sai do painel. */
   var apForm=$('apoiar-cadastro'),apLugar=null;
@@ -2265,8 +2320,8 @@ section.band#apoiadores > .in{padding-top:48px}
 
   /* 4. grupos (dados agregados calculados no banco: contar_grupo e painel_grupo) */
   var gTimer=null,gSeq=0;
-  function filtros(){return {uf:$('pn-g-uf').value||null,cidade:$('pn-g-cidade').value.trim()||null,tipo_doc:$('pn-g-doc').value||null};}
-  function descreve(g){var p=[];p.push(g.cidade?g.cidade+(g.uf?' / '+g.uf:''):(g.uf||'Todo o Brasil'));p.push(g.tipo_doc==='cpf'?'pessoa física':g.tipo_doc==='cnpj'?'empresa ou MEI':'todos os cadastros');return p.join(' · ');}
+  function filtros(){return {uf:$('pn-g-uf').value||null,cidade:$('pn-g-cidade').value.trim()||null,tipo_doc:null};} /* o filtro por CPF/CNPJ saiu: o documento ficou opcional no cadastro */
+  function descreve(g){var p=[];p.push(g.cidade?g.cidade+(g.uf?' / '+g.uf:''):(g.uf||'Todo o Brasil'));return p.join(' · ');}
   var POUCO='Grupo pequeno demais para mostrar com privacidade: são necessários pelo menos 5 vanguardistas, e o filtro não pode isolar menos de 5 pessoas em relação a um grupo maior. Amplie o filtro (outro estado, sem cidade ou todos os cadastros).';
   function conferirGrupo(){
     clearTimeout(gTimer);var msg=$('pn-g-msg'),btn=$('pn-g-salvar');btn.disabled=true;
@@ -2282,7 +2337,7 @@ section.band#apoiadores > .in{padding-top:48px}
       },function(){msg.textContent='Sem conexão com o servidor.';});
     },350);
   }
-  ['pn-g-uf','pn-g-doc'].forEach(function(id){$(id).addEventListener('change',conferirGrupo);});
+  ['pn-g-uf'].forEach(function(id){$(id).addEventListener('change',conferirGrupo);});
   $('pn-g-cidade').addEventListener('input',conferirGrupo);
   function gruposOff(){st.grupos=false;$('pn-grupos-off').hidden=false;$('pn-form-grupo').hidden=true;$('pn-lista-grupos').innerHTML='';}
   $('pn-form-grupo').addEventListener('submit',function(e){
@@ -2355,13 +2410,17 @@ section.band#apoiadores > .in{padding-top:48px}
   /* entrada no painel */
   var pronto=null;
   function abrir(){
-    var p=VG.perfil(),ok=!!(p&&p.tipo==='apoiador');
+    var p=VG.perfil(),ok=!!(p&&(p.tipo==='apoiador'||p.tipo==='vanguardista'));
     $('pn-fora').hidden=ok;$('pn-conteudo').hidden=!ok;
     if(!ok){st.perfil=null;pronto=null;return;}
+    st.perfil=p;
     if(location.hash==='#pn-apoiar'&&$('pn-apoiar').hidden){trazerApoio();$('pn-apoiar').scrollIntoView({block:'start'});}
-    if(pronto===p.id)return;pronto=p.id;st.perfil=p;st.fin=null;aba('geral');desenharDH();
-    $('pn-titulo').textContent='Olá, '+String(p.nome||'').split(' ')[0]+'. Este é o seu painel de impacto';
-    carregar().then(function(){preencherPerfil();desenharSelos();material();listarGrupos();conferirGrupo();carregarImpacto();});
+    if(pronto===p.id)return;pronto=p.id;st.fin=null;st.ap={marca:'',porte:'',setor:'',faturamento:'',objetivos:[],selos:[]};
+    var ap=apoiador();aba(ap?'selos':'negocio');abaDoHash();
+    $('pn-titulo').textContent='Olá, '+String(p.nome||'').split(' ')[0]+'. '+(ap?'Este é o seu painel de impacto':'Esta é a sua conta');
+    $('pn-lede').textContent=ap?'Veja os selos sociais que combinam com o seu negócio, gere material para divulgar o seu apoio e acompanhe, de forma agregada, grupos de vanguardistas.':'Conte sobre o seu negócio e mantenha seus dados em dia. Para apoiar o portal, use Apadrinhar vanguardistas.';
+    preencherDados();
+    carregar().then(function(){preencherPerfil();if(!ap)return;desenharSelos();material();listarGrupos();conferirGrupo();carregarImpacto();});
   }
   function naTela(){return (decodeURIComponent(location.hash.slice(1))||'').indexOf('painel')===0||location.hash.indexOf('#pn-')===0;}
   window.addEventListener('hashchange',function(){if(naTela())abrir();});
@@ -2817,7 +2876,7 @@ section.band#apoiadores > .in{padding-top:48px}
       var d={};CAMPOS.forEach(function(f){var i=slot.querySelector('[data-f="'+f[0]+'"]');d[f[0]]=i.value.trim();});
       if(!d.nome)return (m.className='msg bad',m.textContent='O nome é obrigatório.');
       if(!/^\d{10,11}$/.test(dig(d.fone)))return (m.className='msg bad',m.textContent='Celular com DDD: 10 ou 11 números.');
-      if(!/^(\d{11}|\d{14})$/.test(dig(d.doc)))return (m.className='msg bad',m.textContent='CPF com 11 números ou CNPJ com 14.');
+      if((dig(d.doc)||d.tipo==='apoiador')&&!/^(\d{11}|\d{14})$/.test(dig(d.doc)))return (m.className='msg bad',m.textContent=d.tipo==='apoiador'?'Apoiador precisa de CPF (11 números) ou CNPJ (14).':'CPF com 11 números ou CNPJ com 14, ou deixe em branco.');
       if(d.email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email))return (m.className='msg bad',m.textContent='Confira o e-mail.');
       if(d.cep&&!/^\d{8}$/.test(dig(d.cep)))return (m.className='msg bad',m.textContent='CEP com 8 números.');
       if(!/^[A-Za-z]{2}$/.test(d.uf))return (m.className='msg bad',m.textContent='Estado com 2 letras, por exemplo RS.');
